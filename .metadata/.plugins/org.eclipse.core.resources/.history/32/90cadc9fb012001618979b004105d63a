@@ -1,0 +1,11 @@
+package physicsManager;
+
+public class PhysicsManager {
+
+	List<CollisionObjects> colObjs = new List<CollisionObjects>();
+	
+	public static void main(String[] args) {
+		
+	}
+
+}

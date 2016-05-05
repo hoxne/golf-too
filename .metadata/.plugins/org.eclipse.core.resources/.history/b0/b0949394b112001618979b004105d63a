@@ -1,0 +1,13 @@
+package physicsManager;
+
+import java.util.List;
+
+public class PhysicsManager {
+
+	ArrayList<CollisionObjects> colObjs = new ArrayList<CollisionObjects>();
+	
+	public static void main(String[] args) {
+		
+	}
+
+}

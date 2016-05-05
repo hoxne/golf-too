@@ -1,0 +1,12 @@
+package physicsManager;
+
+// DUMMY collision objects class
+
+public class CollisionObjects {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
