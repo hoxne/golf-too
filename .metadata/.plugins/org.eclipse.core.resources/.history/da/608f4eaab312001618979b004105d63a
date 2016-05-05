@@ -1,0 +1,39 @@
+package physicsManager;
+
+import java.util.ArrayList;
+
+public class PhysicsManager {
+
+	ArrayList<CollisionObjects> colObjs = null;
+	Ball ball = null;
+	
+	PhysicsManager(ArrayList<CollisionObjects> colObjs) {
+		this.colObjs = new ArrayList<CollisionObjects>(colObjs);
+	}
+	
+	public PhysicsManager copy() {
+		
+		return this; // TODO 
+	}
+	
+	public void update(double dt) {
+		// TODO
+	}
+
+	public ArrayList<CollisionObjects> collideBallObj() {
+		ArrayList<CollisionObjects> collisions = new ArrayList<CollisionObjects>();
+		
+		
+		
+		
+		return collisions;
+	}
+	
+	
+		
+	
+	public static void main(String[] args) {
+		
+	}
+
+}

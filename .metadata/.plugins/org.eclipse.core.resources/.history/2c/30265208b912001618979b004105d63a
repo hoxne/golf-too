@@ -1,0 +1,62 @@
+package physicsManager;
+
+import java.util.ArrayList;
+
+public class PhysicsManager {
+
+	private ArrayList<CollisionObjects>		colObjs;
+	private ArrayList<Ball> 				balls;
+	
+	PhysicsManager(ArrayList<CollisionObjects> colObjs,
+			ArrayList<Ball> balls) {
+
+		this.colObjs = colObjs;
+		this.balls = balls; // TODO instantiate
+	}
+	
+	
+	public PhysicsManager copy() {
+		
+		
+		PhysicsManager newPM = new PhysicsManager(colObjs, ballsDeep);
+		return newPM;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public void update(double dt) {
+		// TODO
+	}
+
+	public ArrayList<CollisionObjects> collideBallObj() {
+		ArrayList<CollisionObjects> collisions = new ArrayList<CollisionObjects>();
+		
+		
+		
+		
+		return collisions;
+	}
+	
+	
+		
+	
+	public static void main(String[] args) {
+		
+	}
+
+}
