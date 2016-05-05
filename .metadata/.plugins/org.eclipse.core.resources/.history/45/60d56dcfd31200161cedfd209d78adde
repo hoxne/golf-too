@@ -27,30 +27,14 @@ public class CollisionObject {
 		
 		for(Vector3[] t: triangles) {
 			for(Vector3 p: t) {
-				if(p.x < xmin )
-					xmin = p.x;
 				
-				if(p.y < ymin )
-					ymin = p.y;
-
-				if(p.z < zmin )
-					zmin = p.z;
-				
-				if(p.x > xmax )
-					xmax = p.x;
-
-				if(p.y > ymax )
-					ymax = p.y;
-
-				if(p.z > zmax )
-					zmax = p.z;
 			}
 		}
 		
-		Vector3 min = new Vector3(xmin, ymin, zmin);
-		Vector3 max = new Vector3(xmax, ymax, zmax);
 		
-		return new BoundingBox(min, max);
+		BoundingBox bBox = new BoundingBox();
+		
+		return bBox;
 	}
 	
 	

@@ -44,13 +44,14 @@ public class CollisionObject {
 
 				if(p.z > zmax )
 					zmax = p.z;
+				
 			}
 		}
 		
-		Vector3 min = new Vector3(xmin, ymin, zmin);
-		Vector3 max = new Vector3(xmax, ymax, zmax);
 		
-		return new BoundingBox(min, max);
+		BoundingBox bBox = new BoundingBox();
+		
+		return bBox;
 	}
 	
 	
