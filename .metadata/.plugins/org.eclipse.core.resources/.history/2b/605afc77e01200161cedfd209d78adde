@@ -13,7 +13,6 @@ public class CollisionObject {
 	public CollisionObject(ArrayList<Vector3[]> triangles) {
 		this.triangles = triangles;
 		this.boundingBox = findBoundingBox();
-		this.trianglesNormals = findNormals();
 	}
 	
 	private BoundingBox findBoundingBox() {

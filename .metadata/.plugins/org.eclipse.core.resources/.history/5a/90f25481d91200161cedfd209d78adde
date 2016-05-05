@@ -26,7 +26,7 @@ public class PhysicsManager {
 		return new PhysicsManager(colObjs, ballsDeepCopy);
 	}
 	
-	public Map<Ball, CollisionObject> getBallBoundingBoxCollisions() {
+	public Map<Ball, CollisionObject> getBoundingBoxCollisions() {
 		
 		Map<Ball, CollisionObject> bbIntersects = new HashMap<Ball, CollisionObject>();
 
