@@ -110,7 +110,6 @@ public class Course implements Disposable {
 	}
 
 
-
 	// v v   MESH STUFF   v v
 
 	// adds a vertex to the vertex and index array, given a MeshPartBuilder.VertexInfo
@@ -144,9 +143,9 @@ public class Course implements Disposable {
 		// temp vector, to avoid excessive allocations
 		Vector3 tmpV = new Vector3();
 		// calculate normals
-		v0.normal.set(v0.position).sub(v1.position).nor().crs(tmpV.set(v0.position).sub(v2.position).nor());//.scl(-1);
-		v1.normal.set(v1.position).sub(v2.position).nor().crs(tmpV.set(v1.position).sub(v0.position).nor());//.scl(-1);
-		v2.normal.set(v2.position).sub(v0.position).nor().crs(tmpV.set(v2.position).sub(v1.position).nor());//.scl(-1);
+		v0.normal.set(v0.position).sub(v1.position).nor().crs(tmpV.set(v0.position).sub(v2.position).nor());
+		v1.normal.set(v0.normal);
+		v2.normal.set(v0.normal);
 		// add the vertices to the array
 		this.addVertex(v0);
 		this.addVertex(v1);
