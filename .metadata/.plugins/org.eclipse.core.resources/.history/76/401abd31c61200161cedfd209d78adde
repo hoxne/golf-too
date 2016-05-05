@@ -1,0 +1,17 @@
+package physicsManager;
+
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+
+// dummy ball class
+
+public class Ball {
+	public double radius = 1.0;
+	public Vector3 position = new Vector3();
+	// bounding box
+	
+	public Ball(double radius, Vector3 position) {
+		this.radius = radius;
+		this.position = position.cpy();		
+	}
+}

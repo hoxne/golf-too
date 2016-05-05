@@ -7,8 +7,7 @@ public class PhysicsManager {
 	private ArrayList<CollisionObject>		colObjs;
 	private ArrayList<Ball> 				balls;
 	
-	PhysicsManager(ArrayList<CollisionObject> colObjs,
-			ArrayList<Ball> balls) {
+	PhysicsManager(ArrayList<CollisionObject> colObjs, ArrayList<Ball> balls) {
 
 		this.colObjs = colObjs;
 		this.balls = balls;
