@@ -21,8 +21,4 @@ public class Ball {
 		
 		this.boundingBox = new BoundingBox(min, max);
 	}
-	
-	public Ball(Ball b) {
-		this(b.radius, b.position);
-	}
 }

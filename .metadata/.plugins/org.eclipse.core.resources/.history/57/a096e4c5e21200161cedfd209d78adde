@@ -20,7 +20,7 @@ public class PhysicsManager {
 		ArrayList<Ball> ballsDeepCopy = new ArrayList<Ball>();
 		try{ // TODO is this needed
 			for(Ball b: this.balls)
-				ballsDeepCopy.add(new Ball(b)); // TODO check if this works
+				ballsDeepCopy.add(b.clone()); // TODO b.clone()
 		} catch(Exception e) { System.out.println("Copy failed.");}
 		
 		return new PhysicsManager(colObjs, ballsDeepCopy);
