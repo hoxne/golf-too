@@ -18,9 +18,9 @@ import com.badlogic.gdx.utils.Disposable;
 
 public class Course implements Disposable {
 
-	static int MIN_HEIGHT = -3;
-	static int MAX_HEIGHT = 4;
-	static float HEIGHT_SCALE = 1.0f/(MAX_HEIGHT-MIN_HEIGHT);
+	static final int MIN_HEIGHT = -3;
+	static final int MAX_HEIGHT = 4;
+	static final float HEIGHT_SCALE = 1.0f/(MAX_HEIGHT-MIN_HEIGHT);
 
 	protected String path, name, desc;
 	// the width and height are how many tiles there are
@@ -28,12 +28,12 @@ public class Course implements Disposable {
 	protected int width, height;
 	protected Vector2 startpos, holepos;
 	protected ArrayList<Obstacle> obstacles;
-	// array to store the heightvalues
+	// array to store the height values
 	// 0 is the default ground level
 	protected int[][] heightmap;
 	// boolean array, determining if a tile is part of the map or not
 	// i.e. this determines the shape of the map
-	protected boolean[][] isTerrain;
+	protected boolean[][] isOutside;
 
 	// mesh stuff
 	protected Color color;
@@ -54,6 +54,7 @@ public class Course implements Disposable {
 		this.holepos = new Vector2(7, 7);
 		this.obstacles = new ArrayList<>();
 		this.heightmap = new int[width+1][height+1];
+		this.isOutside = new boolean[width][height];
 
 		// mesh stuff
 		// set default color (grass-green)
@@ -78,6 +79,39 @@ public class Course implements Disposable {
 		// allocate arrar to store indices
 		this.indices = new short[numIndices];
 	}
+
+	public void setCorner(int x, int y, int h){
+		if(x >= 0 && x < width+1 && y >= 0 && y < height+1 && heightmap[x][y] < MAX_HEIGHT)
+			heightmap[x][y] = (h > MAX_HEIGHT) ? MAX_HEIGHT : (h < MIN_HEIGHT ? MIN_HEIGHT : h);
+	}
+
+	public void raiseCorner(int x, int y){
+		if(x >= 0 && x < width+1 && y >= 0 && y < height+1 && heightmap[x][y] < MAX_HEIGHT)
+			heightmap[x][y]++;
+	}
+
+	public void lowerCorner(int x, int y){
+		if(x >= 0 && x < width+1 && y >= 0 && y < height+1 && heightmap[x][y] > MIN_HEIGHT)
+			heightmap[x][y]--;
+	}
+
+	public void setTileInMap(int x, int y, boolean isInMap){
+		if(x >= 0 && x < width && y >= 0 && y < height)
+			isOutside[x][y] = !isInMap;
+	}
+
+	public void setStartPosition(Vector2 pos){
+		if(pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height)
+			this.startpos = pos;
+	}
+	public void setHolePosition(Vector2 pos){
+		if(pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height)
+			this.holepos = pos;
+	}
+
+
+
+	// v v   MESH STUFF   v v
 
 	// adds a vertex to the vertex and index array, given a MeshPartBuilder.VertexInfo
 	private void addVertex(MeshPartBuilder.VertexInfo v){
@@ -133,6 +167,10 @@ public class Course implements Disposable {
 		// for each tile
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
+				// skip tile if it's outise of the map
+				if(isOutside[x][y])
+					continue;
+
 				// get heights at four corners
 				int h00 = heightmap[x][y];
 				int h10 = heightmap[x+1][y];
@@ -177,56 +215,6 @@ public class Course implements Disposable {
 		// pass data to mesh
 		mesh.setVertices(vertices);
 		mesh.setIndices(indices);
-	}
-
-	public void raiseTile(int x, int y){
-		if(x < 0 || x >= width || y < 0 || y >= height)
-			return;
-
-		if(heightmap[x][y] >= MAX_HEIGHT)
-			return;
-
-		// raise tile
-		heightmap[x][y]++;
-
-		// // recursively raise neighbours if necessary
-		// if(x > 0 && heightmap[x][y] - heightmap[x-1][y] > 1){
-		// 	raiseTile(x-1, y);
-		// }
-		// if(x < width-1 && heightmap[x][y] - heightmap[x+1][y] > 1){
-		// 	raiseTile(x+1, y);
-		// }
-		// if(y > 0 && heightmap[x][y] - heightmap[x][y-1] > 1){
-		// 	raiseTile(x, y-1);
-		// }
-		// if(y < height-1 && heightmap[x][y] - heightmap[x][y+1] > 1){
-		// 	raiseTile(x, y+1);
-		// }
-	}
-
-	public void lowerTile(int x, int y){
-		if(x < 0 || x >= width || y < 0 || y >= height)
-			return;
-
-		if(heightmap[x][y] <= MIN_HEIGHT)
-			return;
-
-		// lower tile
-		heightmap[x][y]--;
-
-		// // recursively lower neighbours if necessary
-		// if(x > 0 && heightmap[x][y] - heightmap[x-1][y] < -1){
-		// 	lowerTile(x-1, y);
-		// }
-		// if(x < width-1 && heightmap[x][y] - heightmap[x+1][y] < -1){
-		// 	lowerTile(x+1, y);
-		// }
-		// if(y > 0 && heightmap[x][y] - heightmap[x][y-1] < -1){
-		// 	lowerTile(x, y-1);
-		// }
-		// if(y < height-1 && heightmap[x][y] - heightmap[x][y+1] < -1){
-		// 	lowerTile(x, y+1);
-		// }
 	}
 
 	// public void load(String path){
