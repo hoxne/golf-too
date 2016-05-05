@@ -110,8 +110,9 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.input.setInputProcessor(multiplexer);
 
 
-		map = new Course(9,9);
+		map = new Course(8,8);
 		// map.heightmap[2][2]=10;
+		map.setTileInMap(5,4,false);
 		for (int i = 0; i < 1; i++) {
 			// map.raiseTile(2,2);
 		}
@@ -125,7 +126,7 @@ public class GameScreen implements Screen, InputProcessor {
 					int x = in.nextInt();
 					int y = in.nextInt();
 					// for(int i = 0; i < 4; i++)
-						map.raiseTile(x,y);
+						map.raiseCorner(x,y);
 					Gdx.app.postRunnable(new Runnable() {
 						@Override
 						public void run() {
