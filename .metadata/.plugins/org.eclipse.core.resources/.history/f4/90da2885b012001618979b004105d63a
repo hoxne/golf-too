@@ -1,9 +1,0 @@
-package physicsManager;
-
-public class PhysicsManager {
-
-	public static void main(String[] args) {
-		
-	}
-
-}

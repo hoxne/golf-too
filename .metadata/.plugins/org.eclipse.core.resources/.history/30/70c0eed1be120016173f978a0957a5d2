@@ -29,9 +29,6 @@ public class PhysicsManager {
 
 	private boolean ballIsInBox(Ball b, CollisionObject co) {
 		
-		
-		
-		return false;
 	}
 	
 }

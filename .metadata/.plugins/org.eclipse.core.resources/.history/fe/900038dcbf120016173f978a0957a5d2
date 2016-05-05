@@ -1,7 +1,6 @@
 package physicsManager;
 
 import java.util.ArrayList;
-import com.badlogic.gdx.math.Vector3;
 
 // dummy ball class
 
@@ -12,6 +11,7 @@ public class Ball extends PhysicsManager {
 	
 	public Ball(double radius, Vector3 position) {
 		this.radius = radius;
-		this.position = position.cpy();		
+		this.position = position.cpy();
+		
 	}
 }
