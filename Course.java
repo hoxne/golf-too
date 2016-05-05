@@ -18,26 +18,30 @@ import com.badlogic.gdx.utils.Disposable;
 
 public class Course implements Disposable {
 
-	static int MIN_HEIGHT = 0;
-	static int MAX_HEIGHT = 15;
+	static int MIN_HEIGHT = -3;
+	static int MAX_HEIGHT = 4;
 	static float HEIGHT_SCALE = 1.0f/(MAX_HEIGHT-MIN_HEIGHT);
 
 	protected String path, name, desc;
-	// the width and height are the dimensions between the corners of the tiles
-	// there are width-1 by height-1 tiles
+	// the width and height are how many tiles there are
+	// so, there are width+1 by height+1 vertices
 	protected int width, height;
 	protected Vector2 startpos, holepos;
 	protected ArrayList<Obstacle> obstacles;
-	// -1 means the tile is outside the terrain
-	// [0,15] are the heightvalues
-	// > 15 is invalid
+	// array to store the heightvalues
+	// 0 is the default ground level
 	protected int[][] heightmap;
+	// boolean array, determining if a tile is part of the map or not
+	// i.e. this determines the shape of the map
+	protected boolean[][] isTerrain;
 
 	// mesh stuff
 	protected Color color;
 	protected Mesh mesh;
 	private float[] vertices;
 	private short[] indices;
+	// keeps track of the position in vertex/index arrays
+	private int index;
 	private int stride;
 	private int posPos;
 	private int norPos;
@@ -49,18 +53,14 @@ public class Course implements Disposable {
 		this.startpos = new Vector2(1, 1);
 		this.holepos = new Vector2(7, 7);
 		this.obstacles = new ArrayList<>();
-		this.heightmap = new int[width][height];
-		// set all heights to the avg of min and max height
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				this.heightmap[i][j] = (MIN_HEIGHT+MAX_HEIGHT)/2;
-			}
-		}
-
+		this.heightmap = new int[width+1][height+1];
 
 		// mesh stuff
+		// set default color (grass-green)
 		this.color = new Color(0.4f, 0.8f, 0.2f, 1.0f);
+		// attributes stored at each vertex
 		VertexAttributes attributes = MeshBuilder.createAttributes(Usage.Position | Usage.Normal | Usage.ColorUnpacked);
+		// offsets for the atributes, needed to see what's what in the vertex array
 		this.posPos = attributes.getOffset(Usage.Position, -1);
 		this.norPos = attributes.getOffset(Usage.Normal, -1);
 		this.colPos = attributes.getOffset(Usage.ColorUnpacked, -1);
@@ -68,8 +68,8 @@ public class Course implements Disposable {
 		// number of floats per vertex
 		this.stride = attributes.vertexSize / 4;
 
-		int numVertices = (width - 1) * (height - 1) * 6;
-		int numIndices = (width - 1) * (height - 1) * 6;
+		int numVertices = 6 * width*height;
+		int numIndices = 6 * width*height;
 
 		// make new static mesh
 		this.mesh = new Mesh(true, numVertices, numIndices, attributes);
@@ -79,132 +79,99 @@ public class Course implements Disposable {
 		this.indices = new short[numIndices];
 	}
 
-	private void setVertex(int index, Vector3 pos, Vector3 normal, Color color){
-		index *= stride;
+	// adds a vertex to the vertex and index array, given a MeshPartBuilder.VertexInfo
+	private void addVertex(MeshPartBuilder.VertexInfo v){
+		// add the vertex to the index array
+		this.indices[index] = (short)(index);
+
+		// add the vertex to the vertex array
+		int vindex = index*stride;
 		// position
-		vertices[index + posPos + 0] = pos.x;
-		vertices[index + posPos + 1] = pos.y;
-		vertices[index + posPos + 2] = pos.z;
+		vertices[vindex + posPos + 0] = v.position.x;
+		vertices[vindex + posPos + 1] = v.position.y;
+		vertices[vindex + posPos + 2] = v.position.z;
 		// normal
-		vertices[index + norPos + 0] = normal.x;
-		vertices[index + norPos + 1] = normal.y;
-		vertices[index + norPos + 2] = normal.z;
+		vertices[vindex + norPos + 0] = v.normal.x;
+		vertices[vindex + norPos + 1] = v.normal.y;
+		vertices[vindex + norPos + 2] = v.normal.z;
 		// color
-		vertices[index + colPos + 0] = color.r;
-		vertices[index + colPos + 1] = color.g;
-		vertices[index + colPos + 2] = color.b;
-		vertices[index + colPos + 3] = color.a;
+		vertices[vindex + colPos + 0] = v.color.r;
+		vertices[vindex + colPos + 1] = v.color.g;
+		vertices[vindex + colPos + 2] = v.color.b;
+		vertices[vindex + colPos + 3] = v.color.a;
+
+		index++;
 	}
+
+	// function to generate a triangle from 3 vertices and add it to the vertex/index arrays
+	// it assumes the position of the 3 vertices is already set
+	// note: keep winding order in mind
+	private void generateTriangle(MeshPartBuilder.VertexInfo v0, MeshPartBuilder.VertexInfo v1, MeshPartBuilder.VertexInfo v2){
+		// temp vector, to avoid excessive allocations
+		Vector3 tmpV = new Vector3();
+		// calculate normals
+		v0.normal.set(v0.position).sub(v1.position).nor().crs(tmpV.set(v0.position).sub(v2.position).nor());//.scl(-1);
+		v1.normal.set(v1.position).sub(v2.position).nor().crs(tmpV.set(v1.position).sub(v0.position).nor());//.scl(-1);
+		v2.normal.set(v2.position).sub(v0.position).nor().crs(tmpV.set(v2.position).sub(v1.position).nor());//.scl(-1);
+		// add the vertices to the array
+		this.addVertex(v0);
+		this.addVertex(v1);
+		this.addVertex(v2);
+	}
+
+	// updates the whole mesh, based on the heightmap and isTerrain array
 	public void updateMesh(){
-		int w = width - 1;
-		int h = height - 1;
-		// vars to track the position in vertex/index arrays
-		int index = 0;
-		// buffer variables to store vertex data
+		// reset index to overwrite the arrays
+		this.index = 0;
+		// buffer variables to store temporary vertex data
+		// to avoid excessive allocations
 		MeshPartBuilder.VertexInfo v00 = new MeshPartBuilder.VertexInfo();
 		MeshPartBuilder.VertexInfo v10 = new MeshPartBuilder.VertexInfo();
 		MeshPartBuilder.VertexInfo v01 = new MeshPartBuilder.VertexInfo();
 		MeshPartBuilder.VertexInfo v11 = new MeshPartBuilder.VertexInfo();
-		// temp vector
-		Vector3 tmpV = new Vector3();
+
 		// for each tile
-		for (int y = 0; y < h; y++) {
-			for (int x = 0; x < w; x++) {
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
 				// get heights at four corners
 				int h00 = heightmap[x][y];
 				int h10 = heightmap[x+1][y];
 				int h01 = heightmap[x][y+1];
 				int h11 = heightmap[x+1][y+1];
-				// 'normalise' heights tobe either 0 or 1, but remember the offset (minh)
-				int minh = Math.min(h00, Math.min(h10, Math.min(h01, h11)));
-				h00 -= minh; h10 -= minh; h01 -= minh; h11 -= minh;
 
 				// set positions
-				v00.position.set(x,HEIGHT_SCALE*(minh+h00),y);
-				v10.position.set(x+1,HEIGHT_SCALE*(minh+h10),y);
-				v01.position.set(x,HEIGHT_SCALE*(minh+h01),y+1);
-				v11.position.set(x+1,HEIGHT_SCALE*(minh+h11),y+1);
+				v00.position.set(x,HEIGHT_SCALE*h00,y);
+				v10.position.set(x+1,HEIGHT_SCALE*h10,y);
+				v01.position.set(x,HEIGHT_SCALE*h01,y+1);
+				v11.position.set(x+1,HEIGHT_SCALE*h11,y+1);
 
 				// set colors
-				v00.color.set(this.color).mul(((1.0f*minh+h00)-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT));
-				v10.color.set(this.color).mul(((1.0f*minh+h10)-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT));
-				v01.color.set(this.color).mul(((1.0f*minh+h01)-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT));
-				v11.color.set(this.color).mul(((1.0f*minh+h11)-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT));
+				// lower vertices are darker, higher ones are lighter
+				float dark = 0.2f;
+				float light = 0.5f;
+				v00.color.set(this.color).mul((1f*h00-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(light-dark)+dark);
+				v10.color.set(this.color).mul((1f*h10-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(light-dark)+dark);
+				v01.color.set(this.color).mul((1f*h01-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(light-dark)+dark);
+				v11.color.set(this.color).mul((1f*h11-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(light-dark)+dark);
 
-				// set normals
 				// check which direction the diagonal should be
 				// this is to make everything look consistent and independent of rotation
-				// (same code is used to decide which indices to use)
+
+				// calculate the slope for both diagonals (i.e. the difference in height)
 				int d1 = Math.abs(h00-h11);
 				int d2 = Math.abs(h01-h10);
-				// if(((h00 > h01 && h00 > h10) || (h11 > h01 && h11 > h10))){
+				// pick the digonal with the highest slope
 				if(d1 > d2){
-				// if(
-				// 	(h00 == 1 &&  h10 == 0 && h01 == 0 && h11 == 0) ||
-				// 	(h00 == 1 &&  h10 == 1 && h01 == 1 && h11 == 0) ||
-				// 	(h00 == 0 &&  h10 == 0 && h01 == 0 && h11 == 1) ||
-				// 	(h00 == 1 &&  h10 == 0 && h01 == 0 && h11 == 1) ||
-				// 	(h00 == 0 &&  h10 == 1 && h01 == 1 && h11 == 1)
-				// ){
 					// first triangle (00 - 01 - 10)
-					// normals
-					v00.normal.set(v00.position).sub(v01.position).nor().crs(tmpV.set(v10.position).sub(v00.position).nor()).scl(-1);
-					v10.normal.set(v10.position).sub(v01.position).nor().crs(tmpV.set(v00.position).sub(v10.position).nor());
-					v01.normal.set(v01.position).sub(v00.position).nor().crs(tmpV.set(v10.position).sub(v01.position).nor());
-					// set vertices
-					this.setVertex(6*index+0, v00.position, v00.normal, v00.color);
-					this.setVertex(6*index+1, v10.position, v10.normal, v10.color);
-					this.setVertex(6*index+2, v01.position, v01.normal, v01.color);
-					// set indices
-					this.indices[6*index+0] = (short)(6*index+0);
-					this.indices[6*index+1] = (short)(6*index+2);
-					this.indices[6*index+2] = (short)(6*index+1);
-
+					generateTriangle(v00,v01,v10);
 					// second triangle (10 - 01 - 11)
-					// normals
-					v10.normal.set(v10.position).sub(v01.position).nor().crs(tmpV.set(v11.position).sub(v10.position).nor()).scl(-1);
-					v01.normal.set(v01.position).sub(v11.position).nor().crs(tmpV.set(v10.position).sub(v01.position).nor()).scl(-1);
-					v11.normal.set(v11.position).sub(v10.position).nor().crs(tmpV.set(v01.position).sub(v11.position).nor()).scl(-1);
-					// set vertices
-					this.setVertex(6*index+3, v10.position, v10.normal, v10.color);
-					this.setVertex(6*index+4, v01.position, v01.normal, v01.color);
-					this.setVertex(6*index+5, v11.position, v11.normal, v11.color);
-					// set indices
-					this.indices[6*index+3] = (short)(6*index+3);
-					this.indices[6*index+4] = (short)(6*index+4);
-					this.indices[6*index+5] = (short)(6*index+5);
+					generateTriangle(v10,v01,v11);
 				}else{
 					// first triangle (00 - 11 - 10)
-					// normals
-					v00.normal.set(v00.position).sub(v11.position).nor().crs(tmpV.set(v10.position).sub(v00.position).nor()).scl(-1);
-					v10.normal.set(v10.position).sub(v11.position).nor().crs(tmpV.set(v00.position).sub(v10.position).nor());
-					v11.normal.set(v11.position).sub(v00.position).nor().crs(tmpV.set(v10.position).sub(v11.position).nor());
-					// set vertices
-					this.setVertex(6*index+0, v00.position, v00.normal, v00.color);
-					this.setVertex(6*index+1, v10.position, v10.normal, v10.color);
-					this.setVertex(6*index+2, v11.position, v11.normal, v11.color);
-					// set indices
-					this.indices[6*index+0] = (short)(6*index+0);
-					this.indices[6*index+1] = (short)(6*index+2);
-					this.indices[6*index+2] = (short)(6*index+1);
-
+					generateTriangle(v00,v11,v10);
 					// second triangle (00 - 01 - 11)
-					// normals
-					v00.normal.set(v00.position).sub(v01.position).nor().crs(tmpV.set(v00.position).sub(v11.position).nor());
-					v01.normal.set(v01.position).sub(v11.position).nor().crs(tmpV.set(v00.position).sub(v01.position).nor()).scl(-1);
-					v11.normal.set(v11.position).sub(v00.position).nor().crs(tmpV.set(v01.position).sub(v11.position).nor()).scl(-1);
-					// set vertices
-					this.setVertex(6*index+3, v00.position, v00.normal, v00.color);
-					this.setVertex(6*index+4, v01.position, v01.normal, v01.color);
-					this.setVertex(6*index+5, v11.position, v11.normal, v11.color);
-					// set indices
-					this.indices[6*index+3] = (short)(6*index+3);
-					this.indices[6*index+4] = (short)(6*index+4);
-					this.indices[6*index+5] = (short)(6*index+5);
+					generateTriangle(v00,v01,v11);
 				}
-
-				index++;
-
 			}	
 		}
 		// pass data to mesh
