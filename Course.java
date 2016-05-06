@@ -51,7 +51,7 @@ public class Course implements Disposable {
 		this.width = width;
 		this.height = height;
 		this.startpos = new Vector2(1, 1);
-		this.holepos = new Vector2(7, 7);
+		this.holepos = new Vector2(5, 5);
 		this.obstacles = new ArrayList<>();
 		this.heightmap = new int[width+1][height+1];
 		this.isOutside = new boolean[width][height];
@@ -152,6 +152,19 @@ public class Course implements Disposable {
 		this.addVertex(v2);
 	}
 
+	// generates the vertices for the hole at the specified height.
+	// the position in given by the holepos member variable
+	private void generateHole(int h){
+		// buffer variables
+		MeshPartBuilder.VertexInfo v0 = new MeshPartBuilder.VertexInfo();
+		MeshPartBuilder.VertexInfo v1 = new MeshPartBuilder.VertexInfo();
+		MeshPartBuilder.VertexInfo v2 = new MeshPartBuilder.VertexInfo();
+		// radius of the hole
+		float r = 0.25;
+		// generate the flat space around the hole
+
+	}
+
 	// updates the whole mesh, based on the heightmap and isTerrain array
 	public void updateMesh(){
 		// reset index to overwrite the arrays
@@ -166,8 +179,8 @@ public class Course implements Disposable {
 		// for each tile
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				// skip tile if it's outise of the map
-				if(isOutside[x][y])
+				// skip tile if it's outise of the map or when it's the hole position
+				if(isOutside[x][y] || (x==holepos.x && y==holepos.y))
 					continue;
 
 				// get heights at four corners

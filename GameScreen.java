@@ -112,7 +112,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 		map = new Course(8,8);
 		// map.heightmap[2][2]=10;
-		map.setTileInMap(5,4,false);
+		map.setTileInMap(3,4,false);
 		for (int i = 0; i < 1; i++) {
 			// map.raiseTile(2,2);
 		}
