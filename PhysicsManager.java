@@ -1,3 +1,5 @@
+import com.badlogic.gdx.math.Vector3;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -5,16 +7,14 @@ import java.util.Map;
 public class PhysicsManager {
 
 	private ArrayList<CollisionObject>		colObjs;
-	private ArrayList<GolfBall> 				balls;
+	private ArrayList<GolfBall> 			balls;
 	
 	PhysicsManager(ArrayList<CollisionObject> colObjs, ArrayList<GolfBall> balls) {
-
 		this.colObjs = colObjs;
 		this.balls = balls;
 	}
 	
 	public PhysicsManager copy() {
-		
 		ArrayList<GolfBall> ballsDeepCopy = new ArrayList<GolfBall>();
 		try{ // TODO is this needed
 			for(GolfBall b: this.balls)
@@ -61,7 +61,18 @@ public class PhysicsManager {
 
 	public void update(double deltaTime) {
 		// wtf m8 how do i even
-		
+		Map<GolfBall, CollisionObject> ballVsObjects = getBallBoundingBoxCollisions();
+		Map<GolfBall, GolfBall> ballVsBall = getBallBallCollisions();
+
+		for (GolfBall ball : balls) {
+			CollisionObject collisionObject = ballVsObjects.get(ball);
+			if (collisionObject != null) {
+				ArrayList<Vector3> normals = collisionObject.trianglesNormals;
+				ball.bounce();
+			}
+		}
+
+
 	}
 		
 }
