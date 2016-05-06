@@ -28,7 +28,7 @@ public class GolfBall {
     }
 
     private void applyGravity(float deltaTime) {
-        this.velocity.y*0.95;
+        this.velocity.y*=0.95;
     }
 
     private void applyFriction(float deltaTime) {
@@ -46,8 +46,8 @@ public class GolfBall {
     }
 
     public void bounce(Vector3 normal){
-        componentA = normal.scl((velocity.dot(normal)));
-        componentB = velocity.cpy();
+        Vector3 componentA = normal.scl((velocity.dot(normal)));
+        Vector3 componentB = velocity.cpy();
         componentB.sub(componentA);
         this.velocity = componentB.sub(componentA);
     }
