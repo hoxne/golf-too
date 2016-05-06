@@ -17,49 +17,32 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 public class Editor implements Screen, InputProcessor {
 
 	private OrthographicCamera cam2d;
-	private PerspectiveCamera cam3d;
 	private Environment environment;
-	private DirectionalLight dirLight;
 	private ModelBatch modelBatch;
 	private Renderable terrain;
 	private Course map;
-	private Game game;
-	private static float VIEWPORT_HEIGHT = 100;
 	
-	public Editor(Game game) {
-
-		this.game = game;
-
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
-
-		cam2d = new OrthographicCamera(VIEWPORT_HEIGHT*(w/h), VIEWPORT_HEIGHT);
-	    cam2d.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam2d.position.set(0, 0, 0);
-		cam2d.update();
+	public Editor() {
 
         environment = new Environment();
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-		dirLight = new DirectionalLight().set(0.4f, 0.4f, 0.4f, -0.5f, -1.0f, -0.8f);
-		environment.add(dirLight);
-		
-		modelBatch = new ModelBatch();
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1f));
 
-		cam3d = new PerspectiveCamera(67, w, h);
-        cam3d.position.set(0,0,0);
-        cam3d.lookAt(0,0,0);
-        cam3d.near = 0.1f;
-        cam3d.far = 300f;
-        cam3d.update();
+		modelBatch = new ModelBatch();
 		
         // input somehow
-		createTerrain(20,20);
+		createTerrain(20,50);
 	}
 
 	private void createTerrain(int width, int height) {
 
 		map = new Course(width, height);
 		map.updateMesh();
+		
+		int m = Math.max(map.height, map.width);
+
+		cam2d = new OrthographicCamera(m*(Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight()), m);
+		cam2d.position.set(0, 0, 0);
+		cam2d.update();
 		
 		terrain = new Renderable();
 		terrain.environment = environment;
@@ -70,10 +53,7 @@ public class Editor implements Screen, InputProcessor {
 		terrain.meshPart.update();
 		terrain.material = new Material();
 		
-		cam3d.position.set(map.width/2, Math.max(map.width, map.height), map.height/2); // very hacky. fixy l8rs
-        cam3d.lookAt(map.width/2,0,map.height/2);
-        
-        cam2d.position.set(map.width/2, 1, map.height/2); // very hacky. fixy l8rs
+        cam2d.position.set(map.width/2, 1, map.height/2);
         cam2d.lookAt(map.width/2,0,map.height/2);
         
         
@@ -103,7 +83,6 @@ public class Editor implements Screen, InputProcessor {
 		
 		//handleInput();
 		cam2d.update();
-		cam3d.update();
 		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
