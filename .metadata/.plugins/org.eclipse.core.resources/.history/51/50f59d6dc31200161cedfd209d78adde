@@ -1,7 +1,0 @@
-package physicsManager;
-
-import libs.com.badlogic.gdx.math.collision.BoundingBox;
-
-public class CollisionObject {
-
-}
