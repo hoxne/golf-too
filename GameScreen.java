@@ -109,7 +109,6 @@ public class GameScreen implements Screen, InputProcessor {
 		multiplexer.addProcessor(cam3dController);
 		Gdx.input.setInputProcessor(multiplexer);
 
-
 		map = new Course(8,8);
 		// map.heightmap[2][2]=10;
 		map.setTileInMap(3,4,false);
