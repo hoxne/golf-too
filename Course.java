@@ -21,6 +21,10 @@ public class Course implements Disposable {
 	static final int MIN_HEIGHT = -3;
 	static final int MAX_HEIGHT = 4;
 	static final float HEIGHT_SCALE = 1.0f/(MAX_HEIGHT-MIN_HEIGHT);
+	static final float DARK_MULTIPLIER = 0.2f;
+	static final float LIGHT_MULTIPLIER = 1.0f;
+	// should be big enough so we reserve enough space for the hole
+	static final short VERTICES_FOR_HOLE = 100;
 
 	protected String path, name, desc;
 	// the width and height are how many tiles there are
@@ -69,8 +73,8 @@ public class Course implements Disposable {
 		// number of floats per vertex
 		this.stride = attributes.vertexSize / 4;
 
-		int numVertices = 6 * width*height;
-		int numIndices = 6 * width*height;
+		int numVertices = 6 * width*height + VERTICES_FOR_HOLE;
+		int numIndices = 6 * width*height + VERTICES_FOR_HOLE;
 
 		// make new static mesh
 		this.mesh = new Mesh(true, numVertices, numIndices, attributes);
@@ -152,6 +156,24 @@ public class Course implements Disposable {
 		this.addVertex(v2);
 	}
 
+	// helper function for generateHole
+	// generates a vertical segment and a slice of the 'floor' segment
+	private void generateHoleSegment(float x0, float y0, float x1, float y1, float depth, float h, MeshPartBuilder.VertexInfo v0, MeshPartBuilder.VertexInfo v1, MeshPartBuilder.VertexInfo v2){
+		// wall
+		v0.position.set(x0,h,y0);
+		v1.position.set(x0,h-depth,y0);
+		v2.position.set(x1,h-depth,y1);
+		generateTriangle(v0,v1,v2);
+		v0.position.set(x0,h,y0);
+		v1.position.set(x1,h,y1);
+		v2.position.set(x1,h-depth,y1);
+		generateTriangle(v0,v2,v1);
+		// floor segment
+		v0.position.set(x0,h-depth,y0);
+		v1.position.set(x1,h-depth,y1);
+		v2.position.set(holepos.x+0.5f,h-depth,holepos.y+0.5f);
+		generateTriangle(v0,v2,v1);
+	}
 	// generates the vertices for the hole at the specified height.
 	// the position in given by the holepos member variable
 	private void generateHole(int h){
@@ -159,10 +181,70 @@ public class Course implements Disposable {
 		MeshPartBuilder.VertexInfo v0 = new MeshPartBuilder.VertexInfo();
 		MeshPartBuilder.VertexInfo v1 = new MeshPartBuilder.VertexInfo();
 		MeshPartBuilder.VertexInfo v2 = new MeshPartBuilder.VertexInfo();
+		// set colors of the vertices
+		v0.color.set(this.color);//.mul((1f*h-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+		v1.color.set(v0.color);
+		v2.color.set(v0.color);
 		// radius of the hole
-		float r = 0.25;
+		float r = 0.15f;
+		// determines how big the corners are
+		float cornermult = 0.5f;//1f/3f;
 		// generate the flat space around the hole
-
+		// left side
+		// v0.position.set(holepos.x,HEIGHT_SCALE*h,holepos.y);
+		// v1.position.set(holepos.x,HEIGHT_SCALE*h,holepos.y+1);
+		// v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1);
+		// generateTriangle(v0,v1,v2);
+		// v0.position.set(holepos.x,HEIGHT_SCALE*h,holepos.y);
+		// v1.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1);
+		// v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y);
+		// generateTriangle(v0,v1,v2);
+		// // right side
+		// v0.position.set(holepos.x+1.0f,HEIGHT_SCALE*h,holepos.y);
+		// v1.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1);
+		// v2.position.set(holepos.x+1.0f,HEIGHT_SCALE*h,holepos.y+1);
+		// generateTriangle(v0,v1,v2);
+		// v0.position.set(holepos.x+1.0f,HEIGHT_SCALE*h,holepos.y);
+		// v1.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y);
+		// v2.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1);
+		// generateTriangle(v0,v1,v2);
+		// // top
+		// v0.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y);
+		// v1.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
+		// v2.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
+		// generateTriangle(v0,v1,v2);
+		// v0.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y);
+		// v1.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y);
+		// v2.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
+		// generateTriangle(v0,v1,v2);
+		// // bottom
+		// v0.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1.0f);
+		// v1.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1.0f-(0.5f-r));
+		// v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1.0f-(0.5f-r));
+		// generateTriangle(v0,v1,v2);
+		// v0.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1.0f);
+		// v1.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1.0f-(0.5f-r));
+		// v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1.0f);
+		// generateTriangle(v0,v1,v2);
+		// corners
+		v0.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
+		v1.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+(0.5f-r)+(r*cornermult));
+		v2.position.set(holepos.x+(0.5f-r)+(r*cornermult),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
+		generateTriangle(v0,v1,v2);
+		v0.position.set(holepos.x+1f-(0.5f-r),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
+		v1.position.set(holepos.x+1f-(0.5f-r)-(r*cornermult),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
+		v2.position.set(holepos.x+1f-(0.5f-r),HEIGHT_SCALE*h,holepos.y+(0.5f-r)+(r*cornermult));
+		generateTriangle(v0,v1,v2);
+		v0.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r));
+		v1.position.set(holepos.x+(0.5f-r)+(r*cornermult),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r));
+		v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r)-(r*cornermult));
+		generateTriangle(v0,v1,v2);
+		v0.position.set(holepos.x+1f-(0.5f-r),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r));
+		v1.position.set(holepos.x+1f-(0.5f-r),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r)-(r*cornermult));
+		v2.position.set(holepos.x+1f-(0.5f-r)-(r*cornermult),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r));
+		generateTriangle(v0,v1,v2);
+		// walls and 'floor'
+		generateHoleSegment(holepos.x+(0.5f-r)+(r*cornermult), holepos.y+1f-(0.5f-r), holepos.x+(0.5f-r), holepos.y+1f-(0.5f-r)-(r*cornermult), 0.5f, HEIGHT_SCALE*h, v0,v1,v2);
 	}
 
 	// updates the whole mesh, based on the heightmap and isTerrain array
@@ -179,10 +261,16 @@ public class Course implements Disposable {
 		// for each tile
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				// skip tile if it's outise of the map or when it's the hole position
-				if(isOutside[x][y] || (x==holepos.x && y==holepos.y))
+				// skip tile if it's outise of the map
+				if(isOutside[x][y])
 					continue;
 
+				// generate hole instead of tile if we're at the holepos
+				if(x==holepos.x && y==holepos.y){
+					generateHole(heightmap[x][y]);
+					continue;
+				}
+			
 				// get heights at four corners
 				int h00 = heightmap[x][y];
 				int h10 = heightmap[x+1][y];
@@ -197,12 +285,10 @@ public class Course implements Disposable {
 
 				// set colors
 				// lower vertices are darker, higher ones are lighter
-				float dark = 0.2f;
-				float light = 0.5f;
-				v00.color.set(this.color).mul((1f*h00-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(light-dark)+dark);
-				v10.color.set(this.color).mul((1f*h10-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(light-dark)+dark);
-				v01.color.set(this.color).mul((1f*h01-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(light-dark)+dark);
-				v11.color.set(this.color).mul((1f*h11-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(light-dark)+dark);
+				v00.color.set(this.color).mul((1f*h00-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+				v10.color.set(this.color).mul((1f*h10-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+				v01.color.set(this.color).mul((1f*h01-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+				v11.color.set(this.color).mul((1f*h11-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
 
 				// check which direction the diagonal should be
 				// this is to make everything look consistent and independent of rotation
