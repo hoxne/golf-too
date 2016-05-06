@@ -68,7 +68,7 @@ public class PhysicsManager {
 			CollisionObject collisionObject = ballVsObjects.get(ball);
 			if (collisionObject != null) {
 				ArrayList<Vector3> normals = collisionObject.trianglesNormals;
-				ball.bounce();
+				ball.bounce(collisionObject.getNormal(ball));
 			}
 		}
 

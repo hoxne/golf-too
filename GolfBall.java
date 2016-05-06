@@ -14,6 +14,7 @@ public class GolfBall {
     private float radius;
     private float mass;
     public BoundingBox boundingBox;
+    private Vector3 gravity;
 
     public GolfBall(Vector3 startPos, Vector3 velocity, float mass, float radius) {
         this.position = startPos;
@@ -29,6 +30,8 @@ public class GolfBall {
 	    max.add(radius);
 		
 	    this.boundingBox = new BoundingBox(min, max);
+
+        gravity = new Vector3(0, -1, 0);
     }
 
     public GolfBall(GolfBall b) {
@@ -42,7 +45,8 @@ public class GolfBall {
     }
 
     private void applyGravity(float deltaTime) {
-        this.velocity.y*=0.95;
+        this.gravity.scl((float)0.95);
+        this.velocity.add(gravity);
     }
 
     private void applyFriction(float deltaTime) {
