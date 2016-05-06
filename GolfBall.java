@@ -34,6 +34,7 @@ public class GolfBall {
         gravity = new Vector3(0, -1, 0);
     }
 
+    // NOTE: maybe make a copy function instead
     public GolfBall(GolfBall b) {
         this(b.position, b.velocity, b.mass, b.radius);
     }
@@ -45,11 +46,16 @@ public class GolfBall {
     }
 
     private void applyGravity(float deltaTime) {
+        // NOTE: this is gonna reduce gravity by 5% every frame :p
         this.gravity.scl((float)0.95);
+        // NOTE: gravity is a force, so to get the dv you need to do g*dt
         this.velocity.add(gravity);
     }
 
     private void applyFriction(float deltaTime) {
+        // NOTE: this will apply a constant force on the pass in the opposite direction of the velocity vector
+        //       no matter where it is, in the air or on the ground
+
         // friction
         if(velocity.len() > 0){
             double friction = FRICTION_COEFFICIENT * mass;
@@ -63,6 +69,8 @@ public class GolfBall {
         }
     }
 
+    // NOTE: this should probably take an Vector3[] of normals and calculate the average normal before bouncing
+    //       unless we do this in the physicsmanager, but I prefer if we did it here...
     public void bounce(Vector3 normal){
         Vector3 componentA = normal.scl((velocity.dot(normal)));
         Vector3 componentB = velocity.cpy();

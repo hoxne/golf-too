@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 public class CollisionObject {
 
 	public Vector3[] triangles;
+	// NOTE: a normal array would be better here I think, the array never changes and we know the size in advance
 	public ArrayList<Vector3> trianglesNormals;
 	public BoundingBox boundingBox;
 
@@ -42,6 +43,8 @@ public class CollisionObject {
 
 
 
+	// NOTE: maybe we should add some 'working memory' vectors to this class 
+	//       so we can re-use those instead of allocating new ones every time this function is called
 	public boolean collideTriangle(Vector3 aVector, Vector3 bVector, Vector3 cVector, GolfBall ball) {
 		Vector3 A = aVector.cpy();
 		Vector3 B = bVector.cpy();
@@ -108,6 +111,8 @@ public class CollisionObject {
 		return separated;
 	}
 
+	// NOTE: update this so it returns all colliding triangles instead of only one
+	//       this is important to properly collide with corners
 	public Vector3[] collide(GolfBall ball) {
 		for (int i = 0; i < this.triangles.length - 2; i += 3) {
 			if (collideTriangle(triangles[i], triangles[i + 1], triangles[i + 2], ball)) {
