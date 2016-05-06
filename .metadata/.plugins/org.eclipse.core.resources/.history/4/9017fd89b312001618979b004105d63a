@@ -1,0 +1,9 @@
+package physicsManager;
+
+// dummy ball class
+
+public class Ball extends PhysicsManager {
+	public double radius;
+	public Vector3 position = new Vector3();
+	public Vector3 position = new Vector3();
+}

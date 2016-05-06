@@ -1,0 +1,14 @@
+package physicsManager;
+
+import java.awt.List;
+
+public class CollisionObjects {
+
+	List<Vector3> triangleNormals = new List<Vector3>();
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

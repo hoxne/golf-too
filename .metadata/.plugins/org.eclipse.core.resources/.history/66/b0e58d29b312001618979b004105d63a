@@ -1,0 +1,7 @@
+package physicsManager;
+
+// dummy ball class
+
+public class Ball extends PhysicsManager {
+	
+}
