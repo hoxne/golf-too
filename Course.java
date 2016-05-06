@@ -24,7 +24,7 @@ public class Course implements Disposable {
 	static final float DARK_MULTIPLIER = 0.2f;
 	static final float LIGHT_MULTIPLIER = 1.0f;
 	// should be big enough so we reserve enough space for the hole
-	static final short VERTICES_FOR_HOLE = 100;
+	static final short VERTICES_FOR_HOLE = 200;
 
 	protected String path, name, desc;
 	// the width and height are how many tiles there are
@@ -182,7 +182,7 @@ public class Course implements Disposable {
 		MeshPartBuilder.VertexInfo v1 = new MeshPartBuilder.VertexInfo();
 		MeshPartBuilder.VertexInfo v2 = new MeshPartBuilder.VertexInfo();
 		// set colors of the vertices
-		v0.color.set(this.color);//.mul((1f*h-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+		v0.color.set(this.color).mul((1f*h-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
 		v1.color.set(v0.color);
 		v2.color.set(v0.color);
 		// radius of the hole
@@ -191,41 +191,41 @@ public class Course implements Disposable {
 		float cornermult = 0.5f;//1f/3f;
 		// generate the flat space around the hole
 		// left side
-		// v0.position.set(holepos.x,HEIGHT_SCALE*h,holepos.y);
-		// v1.position.set(holepos.x,HEIGHT_SCALE*h,holepos.y+1);
-		// v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1);
-		// generateTriangle(v0,v1,v2);
-		// v0.position.set(holepos.x,HEIGHT_SCALE*h,holepos.y);
-		// v1.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1);
-		// v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y);
-		// generateTriangle(v0,v1,v2);
-		// // right side
-		// v0.position.set(holepos.x+1.0f,HEIGHT_SCALE*h,holepos.y);
-		// v1.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1);
-		// v2.position.set(holepos.x+1.0f,HEIGHT_SCALE*h,holepos.y+1);
-		// generateTriangle(v0,v1,v2);
-		// v0.position.set(holepos.x+1.0f,HEIGHT_SCALE*h,holepos.y);
-		// v1.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y);
-		// v2.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1);
-		// generateTriangle(v0,v1,v2);
-		// // top
-		// v0.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y);
-		// v1.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
-		// v2.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
-		// generateTriangle(v0,v1,v2);
-		// v0.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y);
-		// v1.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y);
-		// v2.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
-		// generateTriangle(v0,v1,v2);
-		// // bottom
-		// v0.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1.0f);
-		// v1.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1.0f-(0.5f-r));
-		// v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1.0f-(0.5f-r));
-		// generateTriangle(v0,v1,v2);
-		// v0.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1.0f);
-		// v1.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1.0f-(0.5f-r));
-		// v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1.0f);
-		// generateTriangle(v0,v1,v2);
+		v0.position.set(holepos.x,HEIGHT_SCALE*h,holepos.y);
+		v1.position.set(holepos.x,HEIGHT_SCALE*h,holepos.y+1);
+		v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1);
+		generateTriangle(v0,v1,v2);
+		v0.position.set(holepos.x,HEIGHT_SCALE*h,holepos.y);
+		v1.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1);
+		v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y);
+		generateTriangle(v0,v1,v2);
+		// right side
+		v0.position.set(holepos.x+1.0f,HEIGHT_SCALE*h,holepos.y);
+		v1.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1);
+		v2.position.set(holepos.x+1.0f,HEIGHT_SCALE*h,holepos.y+1);
+		generateTriangle(v0,v1,v2);
+		v0.position.set(holepos.x+1.0f,HEIGHT_SCALE*h,holepos.y);
+		v1.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y);
+		v2.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1);
+		generateTriangle(v0,v1,v2);
+		// top
+		v0.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y);
+		v1.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
+		v2.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
+		generateTriangle(v0,v1,v2);
+		v0.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y);
+		v1.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y);
+		v2.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
+		generateTriangle(v0,v1,v2);
+		// bottom
+		v0.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1.0f);
+		v1.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1.0f-(0.5f-r));
+		v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1.0f-(0.5f-r));
+		generateTriangle(v0,v1,v2);
+		v0.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1.0f);
+		v1.position.set(holepos.x+(0.5f+r),HEIGHT_SCALE*h,holepos.y+1.0f-(0.5f-r));
+		v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1.0f);
+		generateTriangle(v0,v1,v2);
 		// corners
 		v0.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
 		v1.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+(0.5f-r)+(r*cornermult));
@@ -235,16 +235,28 @@ public class Course implements Disposable {
 		v1.position.set(holepos.x+1f-(0.5f-r)-(r*cornermult),HEIGHT_SCALE*h,holepos.y+(0.5f-r));
 		v2.position.set(holepos.x+1f-(0.5f-r),HEIGHT_SCALE*h,holepos.y+(0.5f-r)+(r*cornermult));
 		generateTriangle(v0,v1,v2);
-		v0.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r));
-		v1.position.set(holepos.x+(0.5f-r)+(r*cornermult),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r));
-		v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r)-(r*cornermult));
-		generateTriangle(v0,v1,v2);
 		v0.position.set(holepos.x+1f-(0.5f-r),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r));
 		v1.position.set(holepos.x+1f-(0.5f-r),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r)-(r*cornermult));
 		v2.position.set(holepos.x+1f-(0.5f-r)-(r*cornermult),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r));
 		generateTriangle(v0,v1,v2);
+		v0.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r));
+		v1.position.set(holepos.x+(0.5f-r)+(r*cornermult),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r));
+		v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r)-(r*cornermult));
+		generateTriangle(v0,v1,v2);
 		// walls and 'floor'
+		v0.color.set(new Color(0.0f,0.3f,0.3f,1f));//;.mul((1f*h-1-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+		// v0.color.set(this.color).mul((1f*h-1-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+		v1.color.set(v0.color);
+		v2.color.set(v0.color);
+		generateHoleSegment(holepos.x+(0.5f-r), holepos.y+(0.5f-r)+(r*cornermult), holepos.x+(0.5f-r)+(r*cornermult), holepos.y+(0.5f-r), 0.5f, HEIGHT_SCALE*h, v0,v1,v2);
+		generateHoleSegment(holepos.x+(0.5f-r)+(r*cornermult), holepos.y+(0.5f-r), holepos.x+1f-(0.5f-r)-(r*cornermult), holepos.y+(0.5f-r), 0.5f, HEIGHT_SCALE*h, v0,v1,v2);
+		generateHoleSegment(holepos.x+1f-(0.5f-r)-(r*cornermult), holepos.y+(0.5f-r), holepos.x+1f-(0.5f-r), holepos.y+(0.5f-r)+(r*cornermult), 0.5f, HEIGHT_SCALE*h, v0,v1,v2);
+		generateHoleSegment(holepos.x+1f-(0.5f-r)-(r*cornermult), holepos.y+(0.5f-r), holepos.x+1f-(0.5f-r), holepos.y+(0.5f-r)+(r*cornermult), 0.5f, HEIGHT_SCALE*h, v0,v1,v2);
+		generateHoleSegment(holepos.x+1f-(0.5f-r), holepos.y+(0.5f-r)+(r*cornermult), holepos.x+1f-(0.5f-r), holepos.y+1f-(0.5f-r)-(r*cornermult), 0.5f, HEIGHT_SCALE*h, v0,v1,v2);
+		generateHoleSegment(holepos.x+1f-(0.5f-r), holepos.y+1f-(0.5f-r)-(r*cornermult), holepos.x+1f-(0.5f-r)-(r*cornermult), holepos.y+1f-(0.5f-r), 0.5f, HEIGHT_SCALE*h, v0,v1,v2);
+		generateHoleSegment(holepos.x+1f-(0.5f-r)-(r*cornermult), holepos.y+1f-(0.5f-r), holepos.x+(0.5f-r)+(r*cornermult), holepos.y+1f-(0.5f-r), 0.5f, HEIGHT_SCALE*h, v0,v1,v2);
 		generateHoleSegment(holepos.x+(0.5f-r)+(r*cornermult), holepos.y+1f-(0.5f-r), holepos.x+(0.5f-r), holepos.y+1f-(0.5f-r)-(r*cornermult), 0.5f, HEIGHT_SCALE*h, v0,v1,v2);
+		generateHoleSegment(holepos.x+(0.5f-r), holepos.y+1f-(0.5f-r)-(r*cornermult), holepos.x+(0.5f-r), holepos.y+(0.5f-r)+(r*cornermult), 0.5f, HEIGHT_SCALE*h, v0,v1,v2);
 	}
 
 	// updates the whole mesh, based on the heightmap and isTerrain array
