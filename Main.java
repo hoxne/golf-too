@@ -18,7 +18,8 @@ public class Main extends Game {
 	public void create() {
 		fps = new FPSLogger();
 
-		this.setScreen(new GameScreen(this));
+		//this.setScreen(new GameScreen(this));
+		this.setScreen(new Editor());
 	}
 
 	@Override
