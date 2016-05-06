@@ -5,9 +5,9 @@ import java.util.Map;
 public class PhysicsManager {
 
 	private ArrayList<CollisionObject>		colObjs;
-	private ArrayList<Ball> 				balls;
+	private ArrayList<GolfBall> 				balls;
 	
-	PhysicsManager(ArrayList<CollisionObject> colObjs, ArrayList<Ball> balls) {
+	PhysicsManager(ArrayList<CollisionObject> colObjs, ArrayList<GolfBall> balls) {
 
 		this.colObjs = colObjs;
 		this.balls = balls;
@@ -15,20 +15,20 @@ public class PhysicsManager {
 	
 	public PhysicsManager copy() {
 		
-		ArrayList<Ball> ballsDeepCopy = new ArrayList<Ball>();
+		ArrayList<GolfBall> ballsDeepCopy = new ArrayList<GolfBall>();
 		try{ // TODO is this needed
-			for(Ball b: this.balls)
-				ballsDeepCopy.add(new Ball(b)); // TODO check if this works
+			for(GolfBall b: this.balls)
+				ballsDeepCopy.add(new GolfBall(b)); // TODO check if this works
 		} catch(Exception e) { System.out.println("Copy failed.");}
 		
 		return new PhysicsManager(colObjs, ballsDeepCopy);
 	}
 	
-	public Map<Ball, CollisionObject> getBallBoundingBoxCollisions() {
+	public Map<GolfBall, CollisionObject> getBallBoundingBoxCollisions() {
 		
-		Map<Ball, CollisionObject> bbIntersects = new HashMap<Ball, CollisionObject>();
+		Map<GolfBall, CollisionObject> bbIntersects = new HashMap<GolfBall, CollisionObject>();
 
-		for(Ball b : this.balls) {
+		for(GolfBall b : this.balls) {
 			for(CollisionObject co : this.colObjs) {
 				// this might not need both checks
 				if(co.boundingBox.intersects(b.boundingBox) ||
@@ -40,19 +40,19 @@ public class PhysicsManager {
 		return bbIntersects;
 	}
 	
-	public Map<Ball, Ball> getBallBallCollisions() {
+	public Map<GolfBall, GolfBall> getBallBallCollisions() {
 		
-		Map<Ball, Ball> bbIntersects = new HashMap<Ball, Ball>();
+		Map<GolfBall, GolfBall> bbIntersects = new HashMap<GolfBall, GolfBall>();
 		
 		for (int i = 0; i < this.balls.size()-1; i++) {
 			   for (int k = i+1; k < this.balls.size(); k++) {
 				   
-				   Ball b1 = balls.get(i);
-				   Ball b2 = balls.get(k);
+				   GolfBall b1 = balls.get(i);
+				   GolfBall b2 = balls.get(k);
 
 				   // only works with equally sized balls
 				   
-				   if(b1.position.dst2(b2.position) <= (b1.radius+b1.radius)*(b1.radius+b1.radius))
+				   if(b1.getPosition().dst2(b2.getPosition()) <= (b1.getRadius()+b1.getRadius())*(b1.getRadius()+b1.getRadius()))
 					   bbIntersects.put(b1, b2);
 			   }
 		}

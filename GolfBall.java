@@ -70,4 +70,20 @@ public class GolfBall {
         this.velocity.add(dv);
     }
 
+    public Vector3 getPosition() {
+        return this.position;
+    }
+
+    public void setPosition(Vector3 newPos) {
+        this.position = newPos;
+    }
+
+    public float getRadius() {
+        return this.radius;
+    }
+
+    public void setRadius(float newRadius) {
+        this.radius = newRadius;
+    }
+
 }
