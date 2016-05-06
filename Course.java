@@ -160,7 +160,7 @@ public class Course implements Disposable {
 		MeshPartBuilder.VertexInfo v1 = new MeshPartBuilder.VertexInfo();
 		MeshPartBuilder.VertexInfo v2 = new MeshPartBuilder.VertexInfo();
 		// radius of the hole
-		float r = 0.25;
+		float r = 0.25f;
 		// generate the flat space around the hole
 
 	}

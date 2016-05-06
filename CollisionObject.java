@@ -1,5 +1,3 @@
-package physicsManager;
-
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Vector3;
