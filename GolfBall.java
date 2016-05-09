@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
+import java.util.ArrayList;
+
 public class GolfBall {
     private static float FRICTION_COEFFICIENT = 10;
 
@@ -17,12 +19,10 @@ public class GolfBall {
     private Vector3 gravity;
 
     public GolfBall(Vector3 startPos, Vector3 velocity, float mass, float radius) {
-        this.position = startPos;
-        this.velocity = velocity;
+        this.position = startPos.cpy();
+        this.velocity = velocity.cpy();
         this.mass = mass;
         this.radius = radius;
-
-	    this.position = startPos.cpy();
 		
 	    Vector3 min = startPos.cpy();
 	    Vector3 max = startPos.cpy();
@@ -34,9 +34,9 @@ public class GolfBall {
         gravity = new Vector3(0, -1, 0);
     }
 
-    // NOTE: maybe make a copy function instead
-    public GolfBall(GolfBall b) {
-        this(b.position, b.velocity, b.mass, b.radius);
+    @Override
+    public GolfBall clone() {
+        return new GolfBall(this.position, this.velocity, this.mass, this.radius);
     }
 
     public void update(float deltaTime){
@@ -46,17 +46,13 @@ public class GolfBall {
     }
 
     private void applyGravity(float deltaTime) {
-        // NOTE: this is gonna reduce gravity by 5% every frame :p
-        this.gravity.scl((float)0.95);
-        // NOTE: gravity is a force, so to get the dv you need to do g*dt
-        this.velocity.add(gravity);
+        this.velocity.add(gravity.cpy().scl(deltaTime));
     }
 
     private void applyFriction(float deltaTime) {
         // NOTE: this will apply a constant force on the pass in the opposite direction of the velocity vector
         //       no matter where it is, in the air or on the ground
 
-        // friction
         if(velocity.len() > 0){
             double friction = FRICTION_COEFFICIENT * mass;
             Vector3 frictionForce = velocity.cpy();
@@ -69,9 +65,14 @@ public class GolfBall {
         }
     }
 
-    // NOTE: this should probably take an Vector3[] of normals and calculate the average normal before bouncing
-    //       unless we do this in the physicsmanager, but I prefer if we did it here...
-    public void bounce(Vector3 normal){
+    public void bounce(ArrayList<Vector3> normals){
+        Vector3 normal = new Vector3();
+
+        for (Vector3 vect : normals) {
+            normal.add(vect);
+        }
+        normal.nor();
+
         Vector3 componentA = normal.scl((velocity.dot(normal)));
         Vector3 componentB = velocity.cpy();
         componentB.sub(componentA);
@@ -96,6 +97,14 @@ public class GolfBall {
 
     public void setRadius(float newRadius) {
         this.radius = newRadius;
+    }
+
+    public Vector3 getCollisionNormal(GolfBall ball) {
+        Vector3 start = this.position;
+        Vector3 normal = ball.position.cpy();
+        normal.sub(start).nor();
+
+        return  normal;
     }
 
 }
