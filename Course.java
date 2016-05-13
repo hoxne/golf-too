@@ -43,8 +43,8 @@ public class Course implements Disposable {
 	// mesh stuff
 	protected Color color;
 	protected Mesh mesh;
-	private float[] vertices;
-	private short[] indices;
+	protected float[] vertices;
+	protected short[] indices;
 	// keeps track of the position in vertex/index arrays
 	private int index;
 	private int stride;
