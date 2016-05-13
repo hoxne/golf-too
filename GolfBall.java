@@ -23,15 +23,18 @@ public class GolfBall {
         this.velocity = velocity.cpy();
         this.mass = mass;
         this.radius = radius;
-		
-	    Vector3 min = startPos.cpy();
-	    Vector3 max = startPos.cpy();
-	    min.add(-radius);
-	    max.add(radius);
-		
-	    this.boundingBox = new BoundingBox(min, max);
+        updateBoundingBox();
 
-        gravity = new Vector3(0, -1, 0);
+        gravity = new Vector3(0, -15, 0);
+    }
+
+    public void updateBoundingBox() {
+        Vector3 min = position.cpy();
+        Vector3 max = position.cpy();
+        min.add(-radius);
+        max.add(radius);
+
+        this.boundingBox = new BoundingBox(min, max);
     }
 
     @Override
@@ -40,8 +43,11 @@ public class GolfBall {
     }
 
     public void update(float deltaTime){
-        this.position.set(new Vector3(this.position.add(this.velocity.scl(deltaTime))));
-        applyFriction(deltaTime);
+        //this.position.set(new Vector3(this.position.add(this.velocity.scl(deltaTime))));
+
+        this.position.add(this.velocity.cpy().scl(deltaTime));
+        updateBoundingBox();
+       // applyFriction(deltaTime);
         applyGravity(deltaTime);
     }
 
@@ -66,6 +72,7 @@ public class GolfBall {
     }
 
     public void bounce(ArrayList<Vector3> normals){
+        applyFriction(0.01f);
         Vector3 normal = new Vector3();
 
         for (Vector3 vect : normals) {

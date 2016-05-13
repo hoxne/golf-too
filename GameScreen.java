@@ -69,7 +69,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private Model ball;
 	private ModelInstance ballInstance;
-	private Vector3 ballPos = new Vector3(0,0,0);
+	private Vector3 ballPos = new Vector3(1,5,1);
 	
 	public GameScreen(Game game) {
 		this.game = game;
@@ -172,6 +172,8 @@ public class GameScreen implements Screen, InputProcessor {
 	@Override
 	public void render(float delta) {
 
+		mainController.update(delta);
+
 		// rotate light
 		dirLight.direction.rotate(0.3f, 0,1,0);
 
@@ -190,7 +192,10 @@ public class GameScreen implements Screen, InputProcessor {
         // ball
         ballInstance.transform.idt();
         //float y = map.getHeightAt(ballPos.x, ballPos.z);
-		//ballInstance.transform.setTranslation(ballPos.x, y+ball., ballPos.z);
+		ArrayList<GolfBall> balls = mainController.getBalls();
+		Vector3 ballPos = balls.get(0).getPosition();
+		float radius = balls.get(0).getRadius();
+		ballInstance.transform.setTranslation(ballPos.x, ballPos.y+radius, ballPos.z);
 		modelBatch.render(ballInstance, environment);
 
         modelBatch.end();
@@ -320,7 +325,7 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	public ArrayList<Vector3> getCollisionObjectsVertices() {
-		return this.map.getCollisionObjectsVertices();
+		return map.getCollisionObjectsVertices();
 	}
 
 	private MainController mainController;

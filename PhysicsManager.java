@@ -66,7 +66,7 @@ public class PhysicsManager {
 		return bbIntersects;
 	}
 
-	public void update(double deltaTime) {
+	public void update(float deltaTime) {
 		Map<GolfBall, ArrayList<CollisionObject> > ballVsObjects = getBallBoundingBoxCollisions();
 		Map<GolfBall, ArrayList<GolfBall> > ballVsBalls = getBallBallCollisions();
 
@@ -87,6 +87,14 @@ public class PhysicsManager {
 
 			ball.bounce(normals);
 		}
+
+		for (GolfBall ball : balls) {
+			ball.update(deltaTime);
+		}
+	}
+
+	public ArrayList<GolfBall> getBalls() {
+		return balls;
 	}
 		
 }

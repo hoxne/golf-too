@@ -1,6 +1,5 @@
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector3;
-
 import java.util.ArrayList;
 
 /**
@@ -10,13 +9,14 @@ public class MainController {
     public MainController(Game game) {
         this.game = game;
         gameScreen = new GameScreen(game);
-        editorScreen = new Editor();
+        //editorScreen = new Editor();
 
         ArrayList<Vector3> vertices = gameScreen.getCollisionObjectsVertices();
         ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
         Vector3[] triangles = vertices.toArray(new Vector3[0]);
         CollisionObject object = new CollisionObject(triangles);
-        GolfBall golfBall = new GolfBall(new Vector3(0, 0, 0), new Vector3(0, 0, 0), 100, 50);
+        collisionObjects.add(object);
+        GolfBall golfBall = new GolfBall(new Vector3(3, 5, 3), new Vector3(0, 0, 0), 100, 0.5f);
         ArrayList<GolfBall> golfBalls = new ArrayList<>();
         golfBalls.add(golfBall);
 
@@ -36,7 +36,12 @@ public class MainController {
         }
     }
 
+    public ArrayList<GolfBall> getBalls() {
+        return physicsManager.getBalls();
+    }
+
     public void update(float delta) {
+        physicsManager.update(delta);
     }
 
     private Game game;
