@@ -17,9 +17,10 @@ public class Main extends Game {
 	@Override
 	public void create() {
 		fps = new FPSLogger();
-
-		//this.setScreen(new GameScreen(this));
-		this.setScreen(new Editor());
+		gameScreen = new GameScreen(this);
+		editorScreen = new Editor();
+		MainController mainController = new MainController(this);
+		mainController.showMainMenu();
 	}
 
 	@Override
@@ -44,6 +45,22 @@ public class Main extends Game {
 	public void pause() {
 	}
 
+	public void setGameScreen(GameScreen gameScreen) {
+		this.gameScreen = gameScreen;
+	}
+
+	public void setEditorScreen(Editor editor) {
+		this.editorScreen = editor;
+	}
+
+	public GameScreen getGameScreen() {
+		return  gameScreen;
+	}
+
+	public Editor getEditorScreen() {
+		return editorScreen;
+	}
+
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
@@ -55,4 +72,8 @@ public class Main extends Game {
 
 		new LwjglApplication(new Main(), config);
 	}
+
+	private GameScreen gameScreen;
+	private Editor editorScreen;
+
 }

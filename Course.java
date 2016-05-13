@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import org.lwjgl.opengl.ARBBaseInstance;
 
 
 public class Course implements Disposable {
@@ -138,6 +139,15 @@ public class Course implements Disposable {
 		vertices[vindex + colPos + 3] = v.color.a;
 
 		index++;
+	}
+
+	public ArrayList<Vector3> getCollisionObjectsVertices() {
+		ArrayList<Vector3> result = new ArrayList<>();
+		for (int i = 0; i < vertices.length - (stride - 1); i+=stride){
+			result.add(new Vector3(vertices[i], vertices[i+1], vertices[i+2]));
+
+		}
+		return result;
 	}
 
 	// function to generate a triangle from 3 vertices and add it to the vertex/index arrays

@@ -188,10 +188,10 @@ public class GameScreen implements Screen, InputProcessor {
 		// terrain
         modelBatch.render(terrain);
         // ball
-        // ballInstance.transform.idt();
-        // float y = map.getHeightAt(ballPos.x, ballPos.z);
-		// ballInstance.transform.setTranslation(ballPos.x, y+0.25f, ballPos.z);
-		// modelBatch.render(ballInstance, environment);
+        ballInstance.transform.idt();
+        //float y = map.getHeightAt(ballPos.x, ballPos.z);
+		//ballInstance.transform.setTranslation(ballPos.x, y+ball., ballPos.z);
+		modelBatch.render(ballInstance, environment);
 
         modelBatch.end();
 
@@ -227,6 +227,11 @@ public class GameScreen implements Screen, InputProcessor {
 	// INPUT
 	public boolean keyDown(int key){
 		float ds = 0.5f;
+
+		if (key == Input.Keys.ESCAPE) {
+			mainController.showMainMenu();
+		}
+
 		if (key == Input.Keys.LEFT || key == Input.Keys.A) {
 			ballPos.z -= ds;
 		}
@@ -309,4 +314,14 @@ public class GameScreen implements Screen, InputProcessor {
 	@Override
 	public void show(){
 	}
+
+	public void setMainController(MainController controller) {
+		this.mainController = controller;
+	}
+
+	public ArrayList<Vector3> getCollisionObjectsVertices() {
+		return this.map.getCollisionObjectsVertices();
+	}
+
+	private MainController mainController;
 }
