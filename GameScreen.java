@@ -172,6 +172,9 @@ public class GameScreen implements Screen, InputProcessor {
 	@Override
 	public void render(float delta) {
 
+		if (delta > 0.01f)
+			delta = 0.01f;
+
 		mainController.update(delta);
 
 		// rotate light

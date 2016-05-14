@@ -5,6 +5,7 @@
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import org.lwjgl.Sys;
 
 import java.util.ArrayList;
 
@@ -25,7 +26,7 @@ public class GolfBall {
         this.radius = radius;
         updateBoundingBox();
 
-        gravity = new Vector3(0, -15, 0);
+        gravity = new Vector3(0, -10, 0);
     }
 
     public void updateBoundingBox() {
@@ -47,7 +48,7 @@ public class GolfBall {
 
         this.position.add(this.velocity.cpy().scl(deltaTime));
         updateBoundingBox();
-       // applyFriction(deltaTime);
+        //applyFriction(deltaTime);
         applyGravity(deltaTime);
     }
 
@@ -72,18 +73,24 @@ public class GolfBall {
     }
 
     public void bounce(ArrayList<Vector3> normals){
-        applyFriction(0.01f);
+        //applyFriction(0.01f);
         Vector3 normal = new Vector3();
+
+        System.out.println("Velocity before bounce: " + this.velocity.toString());
 
         for (Vector3 vect : normals) {
             normal.add(vect);
         }
         normal.nor();
 
+        System.out.println("Bouncing normal: " + normal.toString());
+
         Vector3 componentA = normal.scl((velocity.dot(normal)));
         Vector3 componentB = velocity.cpy();
         componentB.sub(componentA);
         this.velocity = componentB.sub(componentA);
+
+        System.out.println("Velocity after bounce: " + this.velocity.toString());
     }
 
     public void kick(Vector3 dv) {

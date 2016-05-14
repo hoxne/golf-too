@@ -23,8 +23,8 @@ public class CollisionObject {
 
 		for(int i = 0; i < triangles.length-2; i+=3) {
 
-			Vector3 p1p0 = triangles[i+1].sub(triangles[i]).nor();
-			Vector3 p2p0 = triangles[i+2].sub(triangles[i]).nor();
+			Vector3 p1p0 = triangles[i+1].cpy().sub(triangles[i]).nor();
+			Vector3 p2p0 = triangles[i+2].cpy().sub(triangles[i]).nor();
 			normals.add(p1p0.crs(p2p0));
 		}
 
@@ -40,8 +40,6 @@ public class CollisionObject {
 		Vector3 p2p0 = collidingTriangle[2].sub(collidingTriangle[0]).nor();
 		return p1p0.crs(p2p0);
 	}
-
-
 
 	// NOTE: maybe we should add some 'working memory' vectors to this class 
 	//       so we can re-use those instead of allocating new ones every time this function is called
