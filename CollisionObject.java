@@ -14,6 +14,7 @@ public class CollisionObject {
 		this.triangles = triangles;
 		this.boundingBox = new BoundingBox();
 		this.boundingBox.set(triangles);
+		this.boundingBox.ext(0.1f, 0.1f, 0.1f);
 		this.trianglesNormals = findNormals();
 	}
 
@@ -36,9 +37,24 @@ public class CollisionObject {
 		if (collidingTriangle == null)
 			return null;
 
-		Vector3 p1p0 = collidingTriangle[1].sub(collidingTriangle[0]).nor();
-		Vector3 p2p0 = collidingTriangle[2].sub(collidingTriangle[0]).nor();
-		return p1p0.crs(p2p0);
+		else{
+			int j = 0;
+			ArrayList<Vector3> normals = new ArrayList<>();
+			for (int i = 0; i < collidingTriangle.length - 2 ; i+=3){
+				j++;
+				Vector3 p1p0 = collidingTriangle[i+1].cpy().sub(collidingTriangle[i]).nor();
+				Vector3 p2p0 = collidingTriangle[i+2].cpy().sub(collidingTriangle[i]).nor();
+				Vector3 normal = p1p0.crs(p2p0);
+				normals.add(normal);
+
+			}
+			Vector3 averaged = new Vector3(0, 0, 0);
+			for (int k = 0; k < normals.size();k ++){
+				averaged.add(normals.get(k));
+			}
+			return averaged.scl((float)1/j);
+		}
+
 	}
 
 	// NOTE: maybe we should add some 'working memory' vectors to this class 
@@ -112,17 +128,20 @@ public class CollisionObject {
 	// NOTE: update this so it returns all colliding triangles instead of only one
 	//       this is important to properly collide with corners
 	public Vector3[] collide(GolfBall ball) {
+		ArrayList<Vector3> collidingTriangles = new ArrayList<>();
 		for (int i = 0; i < this.triangles.length - 2; i += 3) {
 			if (collideTriangle(triangles[i], triangles[i + 1], triangles[i + 2], ball)) {
-				Vector3[] triangle = new Vector3[3];
-				triangle[0] = triangles[i];
-				triangle[1] = triangles[i + 1];
-				triangle[2] = triangles[i + 2];
-				return triangle;
+
+				collidingTriangles.add(triangles[i]);
+				collidingTriangles.add(triangles[i + 1]);
+				collidingTriangles.add(triangles[i + 2]);
+
 			}
 		}
 
-		return null;
+		Vector3[] collTrgls = collidingTriangles.toArray(new Vector3[0]);
+
+		return collTrgls;
 	}
 
 }

@@ -17,12 +17,14 @@ public class MainController {
         Vector3[] triangles = vertices.toArray(new Vector3[0]);
         CollisionObject object = new CollisionObject(triangles);
         collisionObjects.add(object);
-        GolfBall golfBall = new GolfBall(new Vector3(3, 5, 3), new Vector3(0, 0, 0), 100, 0.5f);
+        GolfBall golfBall = new GolfBall(new Vector3(3, 1, 3), new Vector3(0, 0, 0), 100, 0.5f);
 
         ArrayList<GolfBall> golfBalls = new ArrayList<>();
         golfBalls.add(golfBall);
 
         physicsManager = new PhysicsManager(collisionObjects, golfBalls);
+        Vector3 initialKick = new Vector3(1, 1, 1);
+        golfBall.kick(initialKick);
     }
 
     public void showMainMenu()

@@ -111,7 +111,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 		map = new Course(8,8);
 		// map.heightmap[2][2]=10;
-		map.setTileInMap(3,4,false);
+		//map.setTileInMap(3,4,false);
 		for (int i = 0; i < 1; i++) {
 			// map.raiseTile(2,2);
 		}
@@ -140,7 +140,7 @@ public class GameScreen implements Screen, InputProcessor {
 		terrain = new Renderable();
 		terrain.environment = environment;
 		terrain.meshPart.mesh = map.mesh;
-		terrain.meshPart.primitiveType = GL20.GL_TRIANGLES;
+		terrain.meshPart.primitiveType = GL20.GL_LINE_STRIP;
 		terrain.meshPart.offset = 0;
 		terrain.meshPart.size = map.mesh.getNumIndices();
 		terrain.meshPart.update();
@@ -198,7 +198,7 @@ public class GameScreen implements Screen, InputProcessor {
 		ArrayList<GolfBall> balls = mainController.getBalls();
 		Vector3 ballPos = balls.get(0).getPosition();
 		float radius = balls.get(0).getRadius();
-		ballInstance.transform.setTranslation(ballPos.x, ballPos.y+radius, ballPos.z);
+		ballInstance.transform.setTranslation(ballPos.x, ballPos.y - (radius/2), ballPos.z);
 		modelBatch.render(ballInstance, environment);
 
         modelBatch.end();

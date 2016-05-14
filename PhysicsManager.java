@@ -31,8 +31,10 @@ public class PhysicsManager {
 			ArrayList<CollisionObject> list = new ArrayList<>();
 			bbIntersects.put(b, list);
 			for(CollisionObject co : this.colObjs) {
-				if(co.boundingBox.intersects(b.boundingBox)) {
+				if(b.boundingBox.intersects(co.boundingBox)) {
+					System.out.println("bbouh");
 					list.add(co);
+
 				}
 			}
 		}
@@ -85,7 +87,9 @@ public class PhysicsManager {
 				normals.add(normal);
 			}
 
-			ball.bounce(normals);
+			if (normals.size() > 0) {
+				ball.bounce(normals, deltaTime);
+			}
 		}
 
 		for (GolfBall ball : balls) {

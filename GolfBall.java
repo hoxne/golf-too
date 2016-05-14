@@ -26,7 +26,7 @@ public class GolfBall {
         this.radius = radius;
         updateBoundingBox();
 
-        gravity = new Vector3(0, -10, 0);
+        gravity = new Vector3(0, -5, 0);
     }
 
     public void updateBoundingBox() {
@@ -34,8 +34,13 @@ public class GolfBall {
         Vector3 max = position.cpy();
         min.add(-radius);
         max.add(radius);
+       // max.add(radius);
+
 
         this.boundingBox = new BoundingBox(min, max);
+       // System.out.println("Ball position: " + this.getPosition());
+        //System.out.println("Bounding box positon: " + this.boundingBox.toString());
+
     }
 
     @Override
@@ -53,14 +58,18 @@ public class GolfBall {
     }
 
     private void applyGravity(float deltaTime) {
-        this.velocity.add(gravity.cpy().scl(deltaTime));
+        if (velocity.len() > 0.01)
+            this.velocity.add(gravity.cpy().scl(deltaTime));
+
+        else
+            velocity = new Vector3(0,0,0);
     }
 
     private void applyFriction(float deltaTime) {
         // NOTE: this will apply a constant force on the pass in the opposite direction of the velocity vector
         //       no matter where it is, in the air or on the ground
 
-        if(velocity.len() > 0){
+        if(velocity.len() > 0.01){
             double friction = FRICTION_COEFFICIENT * mass;
             Vector3 frictionForce = velocity.cpy();
             frictionForce.scl(-1);
@@ -70,10 +79,13 @@ public class GolfBall {
             dv.scl(deltaTime / mass);
             velocity.add(dv);
         }
+
+        else
+            velocity = new Vector3(0,0,0);
     }
 
-    public void bounce(ArrayList<Vector3> normals){
-        //applyFriction(0.01f);
+    public void bounce(ArrayList<Vector3> normals, float deltaTime){
+        applyFriction(deltaTime);
         Vector3 normal = new Vector3();
 
         System.out.println("Velocity before bounce: " + this.velocity.toString());
