@@ -27,6 +27,9 @@ public class Editor implements Screen, InputProcessor {
 	private Renderable terrain;
 	private Course map;
 	private BoundingBox mapBB;
+	
+	
+	private boolean raise = true;
 
 	public Editor() {
 
@@ -131,8 +134,11 @@ public class Editor implements Screen, InputProcessor {
 	}
 
 	@Override
-	public boolean keyTyped(char arg0) {
-		// TODO Auto-generated method stub
+	public boolean keyTyped(char key) {
+
+		if(key == 'q' || key == 'Q')
+			raise = !raise;
+		
 		return false;
 	}
 
@@ -156,24 +162,27 @@ public class Editor implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if(pointer > 0)
-			return false;
 		
-		Ray ray = cam2d.getPickRay(screenX, screenY);
-		Vector3 intersection = new Vector3();
-		
-		if (Intersector.intersectRayBounds(ray, this.mapBB, intersection)) {
-			System.out.println(intersection);
+		if(button == Input.Buttons.LEFT) {
 			
-			if(button == Input.Buttons.LEFT)
-				map.raiseCorner(Math.round(intersection.x), Math.round(intersection.z));
-			else if(button == Input.Buttons.RIGHT)
-				map.lowerCorner(Math.round(intersection.x), Math.round(intersection.z));
+			Ray ray = cam2d.getPickRay(screenX, screenY);
+			Vector3 intersection = new Vector3();
 			
-			map.updateMesh();
-			
-			return true;
+			if (Intersector.intersectRayBounds(ray, this.mapBB, intersection)) {
+				
+				if(raise)
+					map.raiseCorner(Math.round(intersection.x), Math.round(intersection.z));
+				else
+					map.lowerCorner(Math.round(intersection.x), Math.round(intersection.z));
+				
+				map.updateMesh();
+			}
 		}
+		
+		else if(button == Input.Buttons.RIGHT) {
+			
+		}
+		
 
 		return false;
 	}

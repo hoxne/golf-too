@@ -12,7 +12,7 @@ public class MainController {
 
         ArrayList<Vector3> vertices = main.getGameScreen().getCollisionObjectsVertices();
         ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
-        CollisionObject object = new CollisionObject((Vector3[])vertices.toArray());
+        CollisionObject object = new CollisionObject((Vector3[]) vertices.toArray());
         GolfBall golfBall = new GolfBall(new Vector3(0, 0, 0), new Vector3(0, 0, 0), 100, 50);
         ArrayList<GolfBall> golfBalls = new ArrayList<>();
         golfBalls.add(golfBall);
