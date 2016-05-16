@@ -32,9 +32,8 @@ public class PhysicsManager {
 			bbIntersects.put(b, list);
 			for(CollisionObject co : this.colObjs) {
 				if(b.boundingBox.intersects(co.boundingBox)) {
-					System.out.println("bbouh");
+					// System.out.println("bbouh");
 					list.add(co);
-
 				}
 			}
 		}

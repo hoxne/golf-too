@@ -51,10 +51,10 @@ public class GolfBall {
     public void update(float deltaTime){
         //this.position.set(new Vector3(this.position.add(this.velocity.scl(deltaTime))));
 
-        this.position.add(this.velocity.cpy().scl(deltaTime));
-        updateBoundingBox();
         //applyFriction(deltaTime);
         applyGravity(deltaTime);
+        this.position.add(this.velocity.cpy().scl(deltaTime));
+        updateBoundingBox();
     }
 
     private void applyGravity(float deltaTime) {
@@ -88,6 +88,7 @@ public class GolfBall {
         // applyFriction(deltaTime);
         Vector3 normal = new Vector3();
 
+        System.out.println("Position: " + this.position);
         System.out.println("Velocity before bounce: " + this.velocity.toString());
 
         for (Vector3 vect : normals) {
@@ -104,6 +105,7 @@ public class GolfBall {
         this.velocity = componentB.sub(componentA);
 
         System.out.println("Velocity after bounce: " + this.velocity.toString());
+        System.out.println();
     }
 
     public void kick(Vector3 dv) {

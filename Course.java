@@ -52,6 +52,8 @@ public class Course implements Disposable {
 	private int norPos;
 	private int colPos;
 
+	private ArrayList<Vector3> collisionVertices;
+
 	Course(int width, int height){
 		this.width = width;
 		this.height = height;
@@ -83,6 +85,8 @@ public class Course implements Disposable {
 		this.vertices = new float[numVertices * stride];
 		// allocate arrar to store indices
 		this.indices = new short[numIndices];
+
+		this.collisionVertices =  new ArrayList<>();
 	}
 
 	public void setCorner(int x, int y, int h){
@@ -139,15 +143,18 @@ public class Course implements Disposable {
 		vertices[vindex + colPos + 3] = v.color.a;
 
 		index++;
+
+		this.collisionVertices.add(v.position.cpy());
 	}
 
 	public ArrayList<Vector3> getCollisionObjectsVertices() {
-		ArrayList<Vector3> result = new ArrayList<>();
-		for (int i = 0; i < vertices.length - (stride - 1); i+=stride){
-			result.add(new Vector3(vertices[i], vertices[i+1], vertices[i+2]));
+		// ArrayList<Vector3> result = new ArrayList<>();
+		// for (int i = 0; i < vertices.length - (stride - 1); i+=stride){
+		// 	result.add(new Vector3(vertices[i], vertices[i+1], vertices[i+2]));
 
-		}
-		return result;
+		// }
+		// return result;
+		return this.collisionVertices;
 	}
 
 	// function to generate a triangle from 3 vertices and add it to the vertex/index arrays
@@ -271,6 +278,8 @@ public class Course implements Disposable {
 
 	// updates the whole mesh, based on the heightmap and isTerrain array
 	public void updateMesh(){
+		// reset collisionVertices
+		this.collisionVertices =  new ArrayList<>();
 		// reset index to overwrite the arrays
 		this.index = 0;
 		// buffer variables to store temporary vertex data

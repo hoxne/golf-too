@@ -24,8 +24,8 @@ public class CollisionObject {
 
 		for(int i = 0; i < triangles.length-2; i+=3) {
 
-			Vector3 p1p0 = triangles[i+1].cpy().sub(triangles[i]).nor();
-			Vector3 p2p0 = triangles[i+2].cpy().sub(triangles[i]).nor();
+			Vector3 p1p0 = triangles[i+1].cpy().sub(triangles[i]);
+			Vector3 p2p0 = triangles[i+2].cpy().sub(triangles[i]);
 			normals.add(p1p0.crs(p2p0));
 		}
 
@@ -51,22 +51,22 @@ public class CollisionObject {
 	// NOTE: maybe we should add some 'working memory' vectors to this class 
 	//       so we can re-use those instead of allocating new ones every time this function is called
 	public boolean collideTriangle(Vector3 aVector, Vector3 bVector, Vector3 cVector, GolfBall ball) {
-		Vector3 A = aVector.cpy();
-		Vector3 B = bVector.cpy();
-		Vector3 C = bVector.cpy();
-		A.sub(ball.getPosition());
-		B.sub(ball.getPosition());
-		C.sub(ball.getPosition());
+		Vector3 A = aVector.cpy().sub(ball.getPosition());
+		Vector3 B = bVector.cpy().sub(ball.getPosition());
+		Vector3 C = cVector.cpy().sub(ball.getPosition());
+
 		float rr = ball.getRadius()*ball.getRadius();
 
-		Vector3 V = B.cpy();
-		Vector3 c = C.cpy();
-		V = (V.sub(A)).crs(c.sub(A));
-
+		// check distance to triangle plane
+		Vector3 V = (B.cpy().sub(A)).crs(C.cpy().sub(A));
 		float d = A.dot(V);
 		float e = V.dot(V);
-		boolean sep1 = d*d > rr*e;
 
+		if(d*d > rr*e)
+			return false;
+
+
+		// check vertices
 		float aa = A.dot(A);
 		float ab = A.dot(B);
 		float ac = A.dot(C);
@@ -78,12 +78,13 @@ public class CollisionObject {
 		boolean sep3 = (bb > rr) && (ab > bb) && (bc > bb);
 		boolean sep4 = (cc > rr) && (ac > cc) && (bc > cc);
 
-		Vector3 AB = B.cpy();
-		Vector3 BC = C.cpy();
-		Vector3 CA = C.cpy();
-		AB.sub(A);
-		BC.sub(B);
-		CA.sub(A);
+		if(sep2 || sep3 || sep4)
+			return false;
+
+		// check edges
+		Vector3 AB = B.cpy().sub(A);
+		Vector3 BC = C.cpy().sub(B);
+		Vector3 CA = C.cpy().sub(A);
 
 		float d1 = ab - aa;
 		float d2 = bc - bb;
@@ -93,27 +94,23 @@ public class CollisionObject {
 		float e2 = BC.dot(BC);
 		float e3 = CA.dot(CA);
 
-		Vector3 a = A.cpy();
-		Vector3 aB = AB.cpy();
-		Vector3 Q1 = (a.scl(e1)).sub(aB.scl(d1));
-		Vector3 b = B.cpy();
-		Vector3 bC = BC.cpy();
-		Vector3 Q2 = (b.scl(e2)).sub(bC.scl(d2));
-		c = C.cpy();
-		Vector3 ca = CA.cpy();
-		Vector3 Q3 = (c.scl(e3)).sub(ca.scl(d3));
+		Vector3 Q1 = A.cpy().scl(e1).sub(AB.cpy().scl(d1));
+		Vector3 Q2 = B.cpy().scl(e2).sub(BC.cpy().scl(d2));
+		Vector3 Q3 = C.cpy().scl(e3).sub(CA.cpy().scl(d3));
 
-		Vector3 QC = (C.scl(e1)).sub(Q1);
-		Vector3 QA = (A.scl(e2)).sub(Q2);
-		Vector3 QB = (B.scl(e3)).sub(Q3);
+		Vector3 QC = C.cpy().scl(e1).sub(Q1);
+		Vector3 QA = A.cpy().scl(e2).sub(Q2);
+		Vector3 QB = B.cpy().scl(e3).sub(Q3);
 
 		boolean sep5 = (Q1.dot(Q1) > rr * e1 * e1) && (Q1.dot(QC) > 0);
 		boolean sep6 = (Q2.dot(Q2) > rr * e2 * e2) && (Q2.dot(QA) > 0);
 		boolean sep7 = (Q3.dot(Q3) > rr * e3 * e3) && (Q3.dot(QB) > 0);
 
-		boolean separated = !(sep1 || sep2 || sep3 || sep4 || sep5 || sep6 || sep7);
+		if(sep5 || sep6 || sep7)
+			return false;
 
-		return separated;
+		// if all else fails...
+		return true;
 	}
 
 	// NOTE: update this so it returns all colliding triangles instead of only one
@@ -125,15 +122,15 @@ public class CollisionObject {
 				collidingTriangles.add(triangles[i]);
 				collidingTriangles.add(triangles[i + 1]);
 				collidingTriangles.add(triangles[i + 2]);
-
 			}
 		}
 
-		// looks like the ball is colliding with just about all triangles in the mesh...
-		System.out.println("\t" + collidingTriangles);
-		Vector3[] collTrgls = collidingTriangles.toArray(new Vector3[0]);
-
-		return collTrgls;
+		if(collidingTriangles.size() > 0){
+			System.out.println("\t" + collidingTriangles);
+			return collidingTriangles.toArray(new Vector3[0]);
+		}else{
+			return null;
+		}
 	}
 
 }

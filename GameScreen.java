@@ -113,7 +113,7 @@ public class GameScreen implements Screen, InputProcessor {
 		// map.heightmap[2][2]=10;
 		//map.setTileInMap(3,4,false);
 		for (int i = 0; i < 1; i++) {
-			// map.raiseTile(2,2);
+			map.raiseCorner(3,3);
 		}
 		map.updateMesh();
 
@@ -140,7 +140,8 @@ public class GameScreen implements Screen, InputProcessor {
 		terrain = new Renderable();
 		terrain.environment = environment;
 		terrain.meshPart.mesh = map.mesh;
-		terrain.meshPart.primitiveType = GL20.GL_LINE_STRIP;
+		// terrain.meshPart.primitiveType = GL20.GL_LINE_STRIP;
+		terrain.meshPart.primitiveType = GL20.GL_TRIANGLES;
 		terrain.meshPart.offset = 0;
 		terrain.meshPart.size = map.mesh.getNumIndices();
 		terrain.meshPart.update();
