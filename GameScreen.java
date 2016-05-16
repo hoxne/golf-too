@@ -149,7 +149,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         ModelBuilder modelBuilder = new ModelBuilder();
         // modelBuilder.begin();
-        ball = modelBuilder.createSphere(0.5f, 0.5f, 0.5f, 20, 20, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Position | Usage.Normal);
+        ball = modelBuilder.createSphere(1.0f, 1.0f, 1.0f, 20, 20, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Position | Usage.Normal);
         // ball = modelBuilder.end();
         ballInstance = new ModelInstance(ball);
 
@@ -198,6 +198,7 @@ public class GameScreen implements Screen, InputProcessor {
 		ArrayList<GolfBall> balls = mainController.getBalls();
 		Vector3 ballPos = balls.get(0).getPosition();
 		float radius = balls.get(0).getRadius();
+		ballInstance.transform.scale(balls.get(0).getRadius(), balls.get(0).getRadius(), balls.get(0).getRadius());
 		ballInstance.transform.setTranslation(ballPos.x, ballPos.y - (radius/2), ballPos.z);
 		modelBatch.render(ballInstance, environment);
 

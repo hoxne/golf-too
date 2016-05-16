@@ -34,25 +34,16 @@ public class CollisionObject {
 
 	public Vector3 getNormal(GolfBall ball){
 		Vector3[] collidingTriangle = this.collide(ball);
-		if (collidingTriangle == null)
+		if (collidingTriangle == null){
 			return null;
-
-		else{
-			int j = 0;
-			ArrayList<Vector3> normals = new ArrayList<>();
+		}else{
+			Vector3 normal = new Vector3(0, 0, 0);
 			for (int i = 0; i < collidingTriangle.length - 2 ; i+=3){
-				j++;
-				Vector3 p1p0 = collidingTriangle[i+1].cpy().sub(collidingTriangle[i]).nor();
-				Vector3 p2p0 = collidingTriangle[i+2].cpy().sub(collidingTriangle[i]).nor();
-				Vector3 normal = p1p0.crs(p2p0);
-				normals.add(normal);
-
+				Vector3 p1p0 = collidingTriangle[i+1].cpy().sub(collidingTriangle[i]);
+				Vector3 p2p0 = collidingTriangle[i+2].cpy().sub(collidingTriangle[i]);
+				normal.add(p1p0.crs(p2p0).nor());
 			}
-			Vector3 averaged = new Vector3(0, 0, 0);
-			for (int k = 0; k < normals.size();k ++){
-				averaged.add(normals.get(k));
-			}
-			return averaged.scl((float)1/j);
+			return normal.nor();
 		}
 
 	}
@@ -131,7 +122,6 @@ public class CollisionObject {
 		ArrayList<Vector3> collidingTriangles = new ArrayList<>();
 		for (int i = 0; i < this.triangles.length - 2; i += 3) {
 			if (collideTriangle(triangles[i], triangles[i + 1], triangles[i + 2], ball)) {
-
 				collidingTriangles.add(triangles[i]);
 				collidingTriangles.add(triangles[i + 1]);
 				collidingTriangles.add(triangles[i + 2]);
@@ -139,6 +129,8 @@ public class CollisionObject {
 			}
 		}
 
+		// looks like the ball is colliding with just about all triangles in the mesh...
+		System.out.println("\t" + collidingTriangles);
 		Vector3[] collTrgls = collidingTriangles.toArray(new Vector3[0]);
 
 		return collTrgls;

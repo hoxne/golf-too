@@ -85,13 +85,14 @@ public class GolfBall {
     }
 
     public void bounce(ArrayList<Vector3> normals, float deltaTime){
-        applyFriction(deltaTime);
+        // applyFriction(deltaTime);
         Vector3 normal = new Vector3();
 
         System.out.println("Velocity before bounce: " + this.velocity.toString());
 
         for (Vector3 vect : normals) {
             normal.add(vect);
+            System.out.println("\t" + vect.toString());
         }
         normal.nor();
 
