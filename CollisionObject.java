@@ -50,7 +50,7 @@ public class CollisionObject {
 
 	// NOTE: maybe we should add some 'working memory' vectors to this class 
 	//       so we can re-use those instead of allocating new ones every time this function is called
-	public boolean collideTriangle(Vector3 aVector, Vector3 bVector, Vector3 cVector, GolfBall ball) {
+	public static boolean collideTriangle(Vector3 aVector, Vector3 bVector, Vector3 cVector, GolfBall ball) {
 		Vector3 A = aVector.cpy().sub(ball.getPosition());
 		Vector3 B = bVector.cpy().sub(ball.getPosition());
 		Vector3 C = cVector.cpy().sub(ball.getPosition());
@@ -74,17 +74,17 @@ public class CollisionObject {
 		float bc = B.dot(C);
 		float cc = C.dot(C);
 
-		boolean sep2 = (aa > rr) && (ab > aa) && (ac > aa);
-		boolean sep3 = (bb > rr) && (ab > bb) && (bc > bb);
-		boolean sep4 = (cc > rr) && (ac > cc) && (bc > cc);
+		boolean sepA = (aa > rr) && (ab > aa) && (ac > aa);
+		boolean sepB = (bb > rr) && (ab > bb) && (bc > bb);
+		boolean sepC = (cc > rr) && (ac > cc) && (bc > cc);
 
-		if(sep2 || sep3 || sep4)
+		if(sepA || sepB || sepC)
 			return false;
 
 		// check edges
 		Vector3 AB = B.cpy().sub(A);
 		Vector3 BC = C.cpy().sub(B);
-		Vector3 CA = C.cpy().sub(A);
+		Vector3 CA = A.cpy().sub(C);
 
 		float d1 = ab - aa;
 		float d2 = bc - bb;
@@ -102,11 +102,11 @@ public class CollisionObject {
 		Vector3 QA = A.cpy().scl(e2).sub(Q2);
 		Vector3 QB = B.cpy().scl(e3).sub(Q3);
 
-		boolean sep5 = (Q1.dot(Q1) > rr * e1 * e1) && (Q1.dot(QC) > 0);
-		boolean sep6 = (Q2.dot(Q2) > rr * e2 * e2) && (Q2.dot(QA) > 0);
-		boolean sep7 = (Q3.dot(Q3) > rr * e3 * e3) && (Q3.dot(QB) > 0);
+		boolean sepAB = (Q1.dot(Q1) > rr * e1 * e1) && (Q1.dot(QC) > 0);
+		boolean sepBC = (Q2.dot(Q2) > rr * e2 * e2) && (Q2.dot(QA) > 0);
+		boolean sepCA = (Q3.dot(Q3) > rr * e3 * e3) && (Q3.dot(QB) > 0);
 
-		if(sep5 || sep6 || sep7)
+		if(sepAB || sepBC || sepCA)
 			return false;
 
 		// if all else fails...
@@ -126,11 +126,26 @@ public class CollisionObject {
 		}
 
 		if(collidingTriangles.size() > 0){
-			System.out.println("\t" + collidingTriangles);
+			System.out.println("Colliding with: " + collidingTriangles);
 			return collidingTriangles.toArray(new Vector3[0]);
 		}else{
 			return null;
 		}
 	}
+
+
+	// public static void main(String[] args) {
+	// 	Vector3 a = new Vector3(5.4249997f,0.0f,5.65f);
+	// 	Vector3 b = new Vector3(5.4249997f,-0.5f,5.65f);
+	// 	Vector3 c = new Vector3(5.35f,-0.5f,5.5750003f);
+
+	// 	Vector3 p = new Vector3(4.264173f,0.34265694f,4.264173f);
+
+	// 	GolfBall ball = new GolfBall(p, new Vector3(), 1f, 0.2f);
+
+	// 	boolean colliding = collideTriangle(a, b, c, ball);
+
+	// 	System.out.println(colliding);
+	// }
 
 }

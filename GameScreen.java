@@ -172,9 +172,11 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public void render(float delta) {
+		// if(delta > 1f/60 * 1.1)
+		// 	System.out.println("dt: " + delta);
 
-		if (delta > 0.01f)
-			delta = 0.01f;
+		if (delta > 1f/60)
+			delta = 1f/60;
 
 		mainController.update(delta);
 
