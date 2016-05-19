@@ -9,7 +9,7 @@ public class MainController {
     public MainController(Game game) {
         this.game = game;
         gameScreen = new GameScreen(game);
-        //editorScreen = new Editor();
+        editorScreen = new Editor();
 
         ArrayList<Vector3> vertices = gameScreen.getCollisionObjectsVertices();
         ArrayList<CollisionObject> collisionObjects = new ArrayList<>();

@@ -56,6 +56,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private PerspectiveCamera cam3d;
 	private CameraInputController cam3dController;
+	private InputMultiplexer inputMultiplexer;
 	private DirectionalLight dirLight;
 	private Environment environment;
 	// private Model model;
@@ -106,11 +107,10 @@ public class GameScreen implements Screen, InputProcessor {
 		
 		modelBatch = new ModelBatch();
 
-		InputMultiplexer multiplexer = new InputMultiplexer();
-		multiplexer.addProcessor(this);
+		inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(this);
  		cam3dController = new CameraInputController(cam3d);
-		multiplexer.addProcessor(cam3dController);
-		Gdx.input.setInputProcessor(multiplexer);
+		inputMultiplexer.addProcessor(cam3dController);
 
 		map = new Course(20,20);
 		// map.heightmap[2][2]=10;
@@ -398,6 +398,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public void show(){
+		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 
 	public void setMainController(MainController controller) {

@@ -38,8 +38,6 @@ public class Editor implements Screen, InputProcessor {
 
 		modelBatch = new ModelBatch();
 
-		Gdx.input.setInputProcessor(this);
-
 		// input somehow
 		createTerrain(8, 8);
 	}
@@ -124,6 +122,7 @@ public class Editor implements Screen, InputProcessor {
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
+		Gdx.input.setInputProcessor(this);
 
 	}
 
