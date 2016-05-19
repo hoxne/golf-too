@@ -207,6 +207,10 @@ public class GameScreen implements Screen, InputProcessor {
 		// rotate light
 		dirLight.direction.rotate(0.3f, 0,1,0);
 
+		// look at ball
+		cam3d.lookAt(mainController.getBalls().get(0).getPosition());
+		cam3dController.target = mainController.getBalls().get(0).getPosition();
+
 		cam2d.update();
 		cam3d.update();
 
