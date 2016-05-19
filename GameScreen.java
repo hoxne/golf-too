@@ -211,6 +211,10 @@ public class GameScreen implements Screen, InputProcessor {
 		cam3d.lookAt(mainController.getBalls().get(0).getPosition());
 		cam3dController.target = mainController.getBalls().get(0).getPosition();
 
+		cam3d.up.x = 0f;
+		cam3d.up.y = 1f;
+		cam3d.up.z = 0f;
+
 		cam2d.update();
 		cam3d.update();
 
