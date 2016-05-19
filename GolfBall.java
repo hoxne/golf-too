@@ -61,32 +61,28 @@ public class GolfBall {
     private void applyGravity(float deltaTime) {
         if (velocity.len() > 0.01)
             this.velocity.add(gravity.cpy().scl(deltaTime));
-
         else
             velocity = new Vector3(0,0,0);
     }
 
-    private void applyFriction(float deltaTime) {
-        // NOTE: this will apply a constant force on the pass in the opposite direction of the velocity vector
-        //       no matter where it is, in the air or on the ground
-
+    private void applyFriction(Vector3 normal, float deltaTime) {
         if(velocity.len() > 0.01){
             double friction = FRICTION_COEFFICIENT * mass;
             Vector3 frictionForce = velocity.cpy();
+            Vector3 velocityUp = normal.cpy().scl((velocity.dot(normal)));
             frictionForce.scl(-1);
             frictionForce.nor();
             frictionForce.scl((float)friction);
+            frictionForce.scl(velocityUp.len());
             Vector3 dv = frictionForce.cpy();
             dv.scl(deltaTime / mass);
             velocity.add(dv);
-        }
-
-        else
+        }else{
             velocity = new Vector3(0,0,0);
+        }
     }
 
     public void bounce(ArrayList<Vector3> normals, float deltaTime){
-       // applyFriction(deltaTime);
         Vector3 normal = new Vector3();
 
         System.out.println("Position: " + this.position);
@@ -100,12 +96,14 @@ public class GolfBall {
 
         System.out.println("Bouncing normal: " + normal.toString());
 
-        Vector3 componentA = normal.scl((velocity.dot(normal)));
-        Vector3 componentB = velocity.cpy();
-        componentB.sub(componentA);
-        this.velocity = componentB.sub(componentA);
+        Vector3 componentA = normal.cpy().scl((velocity.dot(normal)));
+        Vector3 componentB = velocity.cpy().sub(componentA);
+        this.velocity = componentB.cpy().sub(componentA);
 
         this.position.add(this.velocity.cpy().scl(deltaTime));
+
+        // friction
+        applyFriction(normal, deltaTime);
 
         System.out.println("Velocity after bounce: " + this.velocity.toString());
         System.out.println();
