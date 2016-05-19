@@ -55,6 +55,7 @@ public class GolfBall {
         applyGravity(deltaTime);
         this.position.add(this.velocity.cpy().scl(deltaTime));
         updateBoundingBox();
+        System.out.println(this.position);
     }
 
     private void applyGravity(float deltaTime) {
@@ -103,6 +104,8 @@ public class GolfBall {
         Vector3 componentB = velocity.cpy();
         componentB.sub(componentA);
         this.velocity = componentB.sub(componentA);
+
+        this.position.add(this.velocity.cpy().scl(deltaTime));
 
         System.out.println("Velocity after bounce: " + this.velocity.toString());
         System.out.println();
