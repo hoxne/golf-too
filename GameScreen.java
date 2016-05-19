@@ -174,7 +174,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         ModelBuilder modelBuilder = new ModelBuilder();
         // modelBuilder.begin();
-        ball = modelBuilder.createSphere(1.0f, 1.0f, 1.0f, 20, 20, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Position | Usage.Normal);
+        ball = modelBuilder.createSphere(1.0f, 1.0f, 1.0f, 20, 20, new Material(ColorAttribute.createDiffuse(new Color(0.224f, 1, 0.078f, 1))), Usage.Position | Usage.Normal);
         // ball = modelBuilder.end();
         ballInstance = new ModelInstance(ball);
 
@@ -255,7 +255,7 @@ public class GameScreen implements Screen, InputProcessor {
 		float h = Gdx.graphics.getHeight();
 
 		spriteBatch.begin();
-		font.setColor(1,0,1,1);
+		font.setColor(0.251f, 0.878f, 0.81f,1);
 		font.getData().setScale(1f);
 		font.draw(spriteBatch, "Test Text", 0, h-font.getCapHeight(), w, Align.center, false);
 		spriteBatch.end();
