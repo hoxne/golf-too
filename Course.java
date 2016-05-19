@@ -65,7 +65,7 @@ public class Course implements Disposable {
 
 		// mesh stuff
 		// set default color (grass-green)
-		this.color = new Color(0.4f, 0.8f, 0.2f, 1.0f);
+		this.color = new Color(1f, 0.078f, 0.576f, 1.0f);
 		// attributes stored at each vertex
 		VertexAttributes attributes = MeshBuilder.createAttributes(Usage.Position | Usage.Normal | Usage.ColorUnpacked);
 		// offsets for the atributes, needed to see what's what in the vertex array
@@ -261,7 +261,7 @@ public class Course implements Disposable {
 		v2.position.set(holepos.x+(0.5f-r),HEIGHT_SCALE*h,holepos.y+1f-(0.5f-r)-(r*cornermult));
 		generateTriangle(v0,v1,v2);
 		// walls and 'floor'
-		v0.color.set(new Color(0.0f,0.3f,0.3f,1f));//;.mul((1f*h-1-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+		v0.color.set(new Color(0.251f, 0.878f, 0.81f,1f));//;.mul((1f*h-1-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
 		// v0.color.set(this.color).mul((1f*h-1-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
 		v1.color.set(v0.color);
 		v2.color.set(v0.color);
