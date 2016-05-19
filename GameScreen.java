@@ -38,6 +38,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
@@ -70,6 +71,8 @@ public class GameScreen implements Screen, InputProcessor {
 	private Model ball;
 	private ModelInstance ballInstance;
 	private Vector3 ballPos = new Vector3(1,5,1);
+	private Vector2 lastRightMousePos = new Vector2(-1, -1);
+	private boolean draggingRight = false;
 	
 	public GameScreen(Game game) {
 		this.game = game;
@@ -109,11 +112,32 @@ public class GameScreen implements Screen, InputProcessor {
 		multiplexer.addProcessor(cam3dController);
 		Gdx.input.setInputProcessor(multiplexer);
 
-		map = new Course(8,8);
+		map = new Course(20,20);
 		// map.heightmap[2][2]=10;
 		//map.setTileInMap(3,4,false);
-		for (int i = 0; i < 1; i++) {
-			map.raiseCorner(3,3);
+		for (int i = 0; i < 100; i++) {
+			map.lowerCorner(4,4);
+		}
+		for (int i = 0; i < 100; i++) {
+			map.lowerCorner(4,5);
+		}
+		for (int i = 0; i < 100; i++) {
+			map.lowerCorner(5, 5);
+		}
+		for (int i = 0; i < 100; i++) {
+			map.lowerCorner(5, 6);
+		}
+		for (int i = 0; i < 100; i++) {
+			map.lowerCorner(6, 6);
+		}
+		for (int i = 0; i < 100; i++) {
+			map.lowerCorner(6, 7);
+		}
+		for (int i = 0; i < 100; i++) {
+			map.lowerCorner(7,8);
+		}
+		for (int i = 0; i < 100; i++) {
+			map.lowerCorner(7,7);
 		}
 		map.updateMesh();
 
@@ -203,7 +227,9 @@ public class GameScreen implements Screen, InputProcessor {
 		float radius = balls.get(0).getRadius();
 		ballInstance.transform.scale(balls.get(0).getRadius(), balls.get(0).getRadius(), balls.get(0).getRadius());
 		ballInstance.transform.setTranslation(ballPos.x, ballPos.y - (radius/2), ballPos.z);
+		Vector3 ballInstancePos = ballInstance.transform.getTranslation(new Vector3(ballPos.x, ballPos.y - (radius/2), ballPos.z));
 		modelBatch.render(ballInstance, environment);
+
 
         modelBatch.end();
 
@@ -226,6 +252,21 @@ public class GameScreen implements Screen, InputProcessor {
 		font.draw(spriteBatch, "Test Text", 0, h-font.getCapHeight(), w, Align.center, false);
 		spriteBatch.end();
 
+
+		shapeRenderer.begin(ShapeType.Line);
+		if ((draggingRight && lastRightMousePos.x != -1 && lastRightMousePos.y != -1)){
+				shapeRenderer.setColor(1, 1, 0, 1);
+				Vector3 mouseInWorld = cam3d.unproject(new Vector3(lastRightMousePos.x, lastRightMousePos.y, 0));
+				Vector3 line = mouseInWorld.cpy();
+				line.sub((float)ballInstancePos.x, (float)ballInstancePos.y, (float)ballInstancePos.z);
+
+
+
+				Vector3 ballOnScreen = cam3d.project(ballInstancePos.cpy(), 0, 0, cam2d.viewportWidth, cam2d.viewportHeight);
+				Vector3 lineOnScreen = cam3d.project(line.cpy(), 0, 0, cam2d.viewportWidth, cam2d.viewportHeight);
+				shapeRenderer.line((float)ballOnScreen.x, (float)ballOnScreen.y, (float)lineOnScreen.x/*mouseInWorld.x*/, (float)lineOnScreen.y/*mouseInWorld.y*/);
+		}
+		shapeRenderer.end();
 
 	}
 
@@ -294,14 +335,38 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	public boolean touchDown(int screenX, int screenY, int pointer, int button){
+		if(button == 1)
+			draggingRight = true;
+
 		return false;
 	}
 
 	public boolean touchDragged(int screenX, int screenY, int pointer){
+		System.out.println("touchDragged");
+		if(draggingRight)
+			lastRightMousePos.set(screenX, screenY);
+
 		return false;
 	}
 
 	public boolean touchUp(int screenX, int screenY, int pointer, int button){
+		if(button == 1){
+				// 'hit' the ball
+				Vector3 mouseInWorld = cam3d.unproject(new Vector3(screenX, screenY, 0));
+				Vector3 dx = new Vector3(mouseInWorld.x, mouseInWorld.y, mouseInWorld.z);
+				ArrayList<GolfBall> balls = mainController.getBalls();
+				Vector3 ballPos = balls.get(0).getPosition();
+				dx.sub(ballPos);
+				dx.scl(-1);
+				// multiply to scale velocity
+				//dx.mult(5);
+				balls.get(0).kick(dx);
+
+				draggingRight = false;
+				lastRightMousePos.set(-1, -1);
+
+		}
+
 		return false;
 	}
 

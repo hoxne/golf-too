@@ -85,7 +85,7 @@ public class GolfBall {
     }
 
     public void bounce(ArrayList<Vector3> normals, float deltaTime){
-        // applyFriction(deltaTime);
+       // applyFriction(deltaTime);
         Vector3 normal = new Vector3();
 
         System.out.println("Position: " + this.position);

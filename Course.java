@@ -58,7 +58,7 @@ public class Course implements Disposable {
 		this.width = width;
 		this.height = height;
 		this.startpos = new Vector2(1, 1);
-		this.holepos = new Vector2(5, 5);
+		this.holepos = new Vector2(8, 8);
 		this.obstacles = new ArrayList<>();
 		this.heightmap = new int[width+1][height+1];
 		this.isOutside = new boolean[width][height];

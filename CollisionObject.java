@@ -14,7 +14,7 @@ public class CollisionObject {
 		this.triangles = triangles;
 		this.boundingBox = new BoundingBox();
 		this.boundingBox.set(triangles);
-		this.boundingBox.ext(0.1f, 0.1f, 0.1f);
+		this.boundingBox.ext(0.5f, 0.5f, 0.5f);
 		this.trianglesNormals = findNormals();
 	}
 
