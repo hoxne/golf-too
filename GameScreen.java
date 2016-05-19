@@ -405,8 +405,8 @@ public class GameScreen implements Screen, InputProcessor {
 		this.mainController = controller;
 	}
 
-	public ArrayList<Vector3> getCollisionObjectsVertices() {
-		return map.getCollisionObjectsVertices();
+	public Course getMap(){
+		return this.map;
 	}
 
 	private MainController mainController;

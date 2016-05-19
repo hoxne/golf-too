@@ -11,12 +11,11 @@ public class MainController {
         gameScreen = new GameScreen(game);
         editorScreen = new Editor();
 
-        ArrayList<Vector3> vertices = gameScreen.getCollisionObjectsVertices();
         ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
 
-        Vector3[] triangles = vertices.toArray(new Vector3[0]);
-        CollisionObject object = new CollisionObject(triangles);
-        collisionObjects.add(object);
+        ArrayList<CollisionObject> mapCollisionObjects = gameScreen.getMap().getCollisionObjects();
+        collisionObjects.addAll(mapCollisionObjects);
+
         GolfBall golfBall = new GolfBall(new Vector3(3, 1, 3), new Vector3(0, 0, 0), 100, 0.2f);
 
         ArrayList<GolfBall> golfBalls = new ArrayList<>();

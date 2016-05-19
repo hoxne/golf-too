@@ -55,7 +55,6 @@ public class GolfBall {
         applyGravity(deltaTime);
         this.position.add(this.velocity.cpy().scl(deltaTime));
         updateBoundingBox();
-        System.out.println(this.position);
     }
 
     private void applyGravity(float deltaTime) {

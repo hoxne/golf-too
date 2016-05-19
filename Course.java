@@ -119,6 +119,49 @@ public class Course implements Disposable {
 	}
 
 
+	public ArrayList<CollisionObject> getCollisionObjects(){
+        ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
+
+        Vector3[] triangles = this.collisionVertices.toArray(new Vector3[0]);
+        CollisionObject object = new CollisionObject(triangles);
+        collisionObjects.add(object);
+
+        collisionObjects.addAll(getWallCollisionObjects());
+
+        return collisionObjects;
+	}
+
+	public ArrayList<CollisionObject> getWallCollisionObjects(){
+		ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
+		// for each tile
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if(isTileInMap(x,y)){
+					if(!isTileInMap(x-1,y)){
+						//add wall on the left of this tile
+					}
+					if(!isTileInMap(x+1,y)){
+						//add wall on the right of this tile
+					}
+					if(!isTileInMap(x,y-1)){
+						//add wall on the top of this tile
+					}
+					if(!isTileInMap(x,y+1)){
+						//add wall on the bottom of this tile
+					}
+				}
+			}
+		}
+		return collisionObjects;
+	}
+
+	public boolean isTileInMap(int x, int y){
+		if(x < 0 || x >= width || y < 0 || y >= height)
+			return false;
+		return !isOutside[x][y];
+	}
+
+
 	// v v   MESH STUFF   v v
 
 	// adds a vertex to the vertex and index array, given a MeshPartBuilder.VertexInfo
@@ -145,16 +188,6 @@ public class Course implements Disposable {
 		index++;
 
 		this.collisionVertices.add(v.position.cpy());
-	}
-
-	public ArrayList<Vector3> getCollisionObjectsVertices() {
-		// ArrayList<Vector3> result = new ArrayList<>();
-		// for (int i = 0; i < vertices.length - (stride - 1); i+=stride){
-		// 	result.add(new Vector3(vertices[i], vertices[i+1], vertices[i+2]));
-
-		// }
-		// return result;
-		return this.collisionVertices;
 	}
 
 	// function to generate a triangle from 3 vertices and add it to the vertex/index arrays
