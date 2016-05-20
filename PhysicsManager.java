@@ -9,8 +9,16 @@ public class PhysicsManager {
 	private ArrayList<CollisionObject>		colObjs;
 	private ArrayList<GolfBall> 			balls;
 	
-	PhysicsManager(ArrayList<CollisionObject> colObjs, ArrayList<GolfBall> balls) {
+	PhysicsManager(ArrayList<CollisionObject> colObjs) {
 		this.colObjs = colObjs;
+		balls = new ArrayList<>();
+	}
+
+	public void addBall(GolfBall ball) {
+		balls.add(ball);
+	}
+
+	public void addBalls(ArrayList<GolfBall> balls) {
 		this.balls = balls;
 	}
 
@@ -19,8 +27,11 @@ public class PhysicsManager {
 		ArrayList<GolfBall> ballsDeepCopy = new ArrayList<GolfBall>();
 		for(GolfBall b: this.balls)
 			ballsDeepCopy.add(b.clone());
+
+		PhysicsManager cloned = new PhysicsManager(colObjs);
+		cloned.addBalls(ballsDeepCopy);
 		
-		return new PhysicsManager(colObjs, ballsDeepCopy);
+		return cloned;
 	}
 	
 	public Map<GolfBall, ArrayList<CollisionObject>> getBallBoundingBoxCollisions() {

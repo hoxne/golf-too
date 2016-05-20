@@ -42,6 +42,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
 import java.io.*;
@@ -61,7 +62,7 @@ public class GameScreen implements Screen, InputProcessor {
 	private Environment environment;
 	// private Model model;
 	// private ModelInstance instance;
-	private Course map;
+
 	private Renderable terrain;
 
 	private ShapeRenderer shapeRenderer;
@@ -69,14 +70,17 @@ public class GameScreen implements Screen, InputProcessor {
 	private ModelBatch modelBatch;
 	private BitmapFont font;
 
-	private Model ball;
-	private ModelInstance ballInstance;
+	//private Model ball;
+	private HashMap<GolfBall, Model> balls;
+	//private ModelInstance ballInstance;
+	private HashMap<GolfBall, ModelInstance> ballsInstances;
 	private Vector3 ballPos = new Vector3(1,5,1);
 	private Vector2 lastRightMousePos = new Vector2(-1, -1);
 	private boolean draggingRight = false;
 	
-	public GameScreen(Game game) {
+	public GameScreen(Game game, MainController mainController) {
 		this.game = game;
+		this.mainController = mainController;
 
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
@@ -112,35 +116,6 @@ public class GameScreen implements Screen, InputProcessor {
  		cam3dController = new CameraInputController(cam3d);
 		inputMultiplexer.addProcessor(cam3dController);
 
-		map = new Course(20,20);
-		// map.heightmap[2][2]=10;
-		//map.setTileInMap(3,4,false);
-		for (int i = 0; i < 100; i++) {
-			map.lowerCorner(4,4);
-		}
-		for (int i = 0; i < 100; i++) {
-			map.lowerCorner(4,5);
-		}
-		for (int i = 0; i < 100; i++) {
-			map.lowerCorner(5, 5);
-		}
-		for (int i = 0; i < 100; i++) {
-			map.lowerCorner(5, 6);
-		}
-		for (int i = 0; i < 100; i++) {
-			map.lowerCorner(6, 6);
-		}
-		for (int i = 0; i < 100; i++) {
-			map.lowerCorner(6, 7);
-		}
-		for (int i = 0; i < 100; i++) {
-			map.lowerCorner(7,8);
-		}
-		for (int i = 0; i < 100; i++) {
-			map.lowerCorner(7,7);
-		}
-		map.updateMesh();
-
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -149,11 +124,11 @@ public class GameScreen implements Screen, InputProcessor {
 					int x = in.nextInt();
 					int y = in.nextInt();
 					// for(int i = 0; i < 4; i++)
-						map.raiseCorner(x,y);
+					gameController().getMap().raiseCorner(x, y);
 					Gdx.app.postRunnable(new Runnable() {
 						@Override
 						public void run() {
-							map.updateMesh();
+							gameController().getMap().updateMesh();
 						}
 					});
 				}
@@ -163,21 +138,32 @@ public class GameScreen implements Screen, InputProcessor {
 
 		terrain = new Renderable();
 		terrain.environment = environment;
-		terrain.meshPart.mesh = map.mesh;
+		terrain.meshPart.mesh = gameController().getMap().mesh;
 		// terrain.meshPart.primitiveType = GL20.GL_LINE_STRIP;
 		terrain.meshPart.primitiveType = GL20.GL_TRIANGLES;
 		terrain.meshPart.offset = 0;
-		terrain.meshPart.size = map.mesh.getNumIndices();
+		terrain.meshPart.size = gameController().getMap().mesh.getNumIndices();
 		terrain.meshPart.update();
 		terrain.material = new Material();
 
+		balls = new HashMap<>();
+		ballsInstances = new HashMap<>();
+	}
 
-        ModelBuilder modelBuilder = new ModelBuilder();
-        // modelBuilder.begin();
-        ball = modelBuilder.createSphere(1.0f, 1.0f, 1.0f, 20, 20, new Material(ColorAttribute.createDiffuse(new Color(0.224f, 1, 0.078f, 1))), Usage.Position | Usage.Normal);
-        // ball = modelBuilder.end();
-        ballInstance = new ModelInstance(ball);
+	public void loadBallModels() {
+		ModelBuilder modelBuilder = new ModelBuilder();
+		// modelBuilder.begin();
+		ArrayList<GolfBall> golfBalls = gameController().getBalls();
 
+		for (GolfBall curBall : golfBalls) {
+			Model ball = modelBuilder.createSphere(1.0f, 1.0f, 1.0f, 20, 20, new Material(ColorAttribute.createDiffuse(curBall.getColor())), Usage.Position | Usage.Normal);
+			if (balls.get(curBall) == null)
+				balls.put(curBall, ball);
+			// ball = modelBuilder.end();
+			ModelInstance ballInstance = new ModelInstance(ball);
+			if (ballsInstances.get(curBall) == null)
+				ballsInstances.put(curBall, ballInstance);
+		}
 	}
 
 	private void updateCamera(){
@@ -194,6 +180,10 @@ public class GameScreen implements Screen, InputProcessor {
 		cam2d.update();
 	}
 
+	public Player getCurrentPlayer() {
+		return mainController.getGameController().getCurrentPlayer();
+	}
+
 	@Override
 	public void render(float delta) {
 		// if(delta > 1f/60 * 1.1)
@@ -202,14 +192,14 @@ public class GameScreen implements Screen, InputProcessor {
 		if (delta > 1f/60)
 			delta = 1f/60;
 
-		mainController.update(delta);
+		gameController().update(delta);
 
 		// rotate light
 		dirLight.direction.rotate(0.3f, 0,1,0);
 
 		// look at ball
-		cam3d.lookAt(mainController.getBalls().get(0).getPosition());
-		cam3dController.target = mainController.getBalls().get(0).getPosition();
+		cam3d.lookAt(getCurrentPlayer().getGolfBall().getPosition());
+		cam3dController.target = getCurrentPlayer().getGolfBall().getPosition();
 
 		cam3d.up.x = 0f;
 		cam3d.up.y = 1f;
@@ -228,16 +218,20 @@ public class GameScreen implements Screen, InputProcessor {
 		// terrain
         modelBatch.render(terrain);
         // ball
-        ballInstance.transform.idt();
-        //float y = map.getHeightAt(ballPos.x, ballPos.z);
-		ArrayList<GolfBall> balls = mainController.getBalls();
-		Vector3 ballPos = balls.get(0).getPosition();
-		float radius = balls.get(0).getRadius();
-		ballInstance.transform.scale(balls.get(0).getRadius(), balls.get(0).getRadius(), balls.get(0).getRadius());
-		ballInstance.transform.setTranslation(ballPos.x, ballPos.y - (radius/2), ballPos.z);
-		Vector3 ballInstancePos = ballInstance.transform.getTranslation(new Vector3(ballPos.x, ballPos.y - (radius/2), ballPos.z));
-		modelBatch.render(ballInstance, environment);
+		loadBallModels();
+		//GolfBall activeBall = getCurrentPlayer().getGolfBall();
+        //ModelInstance activeBallInstance = ballsInstances.get(activeBall);
 
+		for (GolfBall curBall : gameController().getBalls()) {
+			ModelInstance curBallInstance = ballsInstances.get(curBall);
+			curBallInstance.transform.idt();
+			Vector3 ballPos = curBall.getPosition();
+			float radius = curBall.getRadius();
+			curBallInstance.transform.scale(curBall.getRadius(), curBall.getRadius(), curBall.getRadius());
+			curBallInstance.transform.setTranslation(ballPos.x, ballPos.y - (radius / 2), ballPos.z);
+			Vector3 ballInstancePos = curBallInstance.transform.getTranslation(new Vector3(ballPos.x, ballPos.y - (radius / 2), ballPos.z));
+			modelBatch.render(curBallInstance, environment);
+		}
 
         modelBatch.end();
 
@@ -259,22 +253,6 @@ public class GameScreen implements Screen, InputProcessor {
 		font.getData().setScale(1f);
 		font.draw(spriteBatch, "Test Text", 0, h-font.getCapHeight(), w, Align.center, false);
 		spriteBatch.end();
-
-
-		shapeRenderer.begin(ShapeType.Line);
-		if ((draggingRight && lastRightMousePos.x != -1 && lastRightMousePos.y != -1)){
-				shapeRenderer.setColor(1, 1, 0, 1);
-				Vector3 mouseInWorld = cam3d.unproject(new Vector3(lastRightMousePos.x, lastRightMousePos.y, 0));
-				Vector3 line = mouseInWorld.cpy();
-				line.sub((float)ballInstancePos.x, (float)ballInstancePos.y, (float)ballInstancePos.z);
-
-
-
-				Vector3 ballOnScreen = cam3d.project(ballInstancePos.cpy(), 0, 0, cam2d.viewportWidth, cam2d.viewportHeight);
-				Vector3 lineOnScreen = cam3d.project(line.cpy(), 0, 0, cam2d.viewportWidth, cam2d.viewportHeight);
-				shapeRenderer.line((float)ballOnScreen.x, (float)ballOnScreen.y, (float)lineOnScreen.x/*mouseInWorld.x*/, (float)lineOnScreen.y/*mouseInWorld.y*/);
-		}
-		shapeRenderer.end();
 
 	}
 
@@ -358,17 +336,17 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	public boolean touchUp(int screenX, int screenY, int pointer, int button){
-		if(button == 1){
+		if (button == 1) {
 				// 'hit' the ball
 				Vector3 mouseInWorld = cam3d.unproject(new Vector3(screenX, screenY, 0));
 				Vector3 dx = new Vector3(mouseInWorld.x, mouseInWorld.y, mouseInWorld.z);
-				ArrayList<GolfBall> balls = mainController.getBalls();
-				Vector3 ballPos = balls.get(0).getPosition();
+				GolfBall activeBall = getCurrentPlayer().getGolfBall();
+				Vector3 ballPos = activeBall.getPosition();
 				dx.sub(ballPos);
 				dx.scl(-1);
 				// multiply to scale velocity
 				//dx.mult(5);
-				balls.get(0).kick(dx);
+				getCurrentPlayer().kick(dx);
 
 				draggingRight = false;
 				lastRightMousePos.set(-1, -1);
@@ -385,7 +363,6 @@ public class GameScreen implements Screen, InputProcessor {
 	@Override
 	public void dispose() {
 		modelBatch.dispose();
-		map.dispose();
 	}
 
 	@Override
@@ -405,9 +382,7 @@ public class GameScreen implements Screen, InputProcessor {
 		this.mainController = controller;
 	}
 
-	public Course getMap(){
-		return this.map;
-	}
+	private GameController gameController() { return mainController.getGameController(); }
 
 	private MainController mainController;
 }

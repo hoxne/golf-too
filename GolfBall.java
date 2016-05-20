@@ -2,6 +2,7 @@
  * Created by Michael on 05.05.2016.
  */
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -18,6 +19,7 @@ public class GolfBall {
     private float mass;
     public BoundingBox boundingBox;
     private Vector3 gravity;
+    private Color color = new Color(0.224f, 1, 0.078f, 1);
 
     public GolfBall(Vector3 startPos, Vector3 velocity, float mass, float radius) {
         this.position = startPos.cpy();
@@ -128,12 +130,18 @@ public class GolfBall {
         this.radius = newRadius;
     }
 
+    public Vector3 getVelocity() { return velocity; }
+
     public Vector3 getCollisionNormal(GolfBall ball) {
         Vector3 start = this.position;
         Vector3 normal = ball.position.cpy();
         normal.sub(start).nor();
 
         return  normal;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
 }

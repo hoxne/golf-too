@@ -8,47 +8,51 @@ import java.util.ArrayList;
 public class MainController {
     public MainController(Game game) {
         this.game = game;
-        gameScreen = new GameScreen(game);
+        gameController = new GameController(this);
+        editorController = new EditorController(this);
+
+        gameScreen = new GameScreen(game, this);
         editorScreen = new Editor();
-
-        ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
-
-        ArrayList<CollisionObject> mapCollisionObjects = gameScreen.getMap().getCollisionObjects();
-        collisionObjects.addAll(mapCollisionObjects);
-
-        GolfBall golfBall = new GolfBall(new Vector3(3, 1, 3), new Vector3(0, 0, 0), 100, 0.2f);
-
-        ArrayList<GolfBall> golfBalls = new ArrayList<>();
-        golfBalls.add(golfBall);
-
-        physicsManager = new PhysicsManager(collisionObjects, golfBalls);
-        Vector3 initialKick = new Vector3(0.5f, 0.1f, 0.5f);
-        golfBall.kick(initialKick);
     }
 
     public void showMainMenu()
     {
         //TODO: show the menu
+
         boolean isEditor = false;
         if (isEditor) {
             game.setScreen(editorScreen);
         }
         else {
+
+            int playersSelected = 5;
+            int ballProtoSelected = 0;
+            ArrayList<GolfBall> ballProtos = gameController.getGolfBallProtos();
+            for (int curPlayer = 0; curPlayer < playersSelected; curPlayer++) {
+                gameController.addPlayer(ballProtos.get(ballProtoSelected));
+            }
+
+            if (!gameController.startGame()) {
+                // # of players was not specified
+            }
+
             game.setScreen(gameScreen);
-            gameScreen.setMainController(this);
+
         }
     }
 
-    public ArrayList<GolfBall> getBalls() {
-        return physicsManager.getBalls();
+    public GameScreen getGameScreen() {
+        return gameScreen;
     }
 
-    public void update(float delta) {
-        physicsManager.update(delta);
-    }
+    public GameController getGameController() { return this.gameController; }
+    public EditorController getEditorController() { return  this.editorController; }
 
     private Game game;
-    private PhysicsManager physicsManager;
+
     private GameScreen gameScreen;
     private Editor editorScreen;
+    private GameController gameController;
+    private EditorController editorController;
+
 }
