@@ -110,7 +110,7 @@ public class GameController {
             currentPlayerId = currentPlayerId % players.size();
             checkOutPlayers++;
 
-            if (checkOutPlayers >= players.size())
+            if (checkOutPlayers > players.size())
                 return false;
         } while (!players.get(currentPlayerId).getStatus());
 
