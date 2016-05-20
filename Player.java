@@ -18,6 +18,10 @@ public class Player {
         gameController.ballKicked();
     }
 
+    public boolean getStatus() { return active; }
+    public void setStatus(boolean status) { active = status; }
+
     private GolfBall golfBall;
     private GameController gameController;
+    private boolean active = true;
 }

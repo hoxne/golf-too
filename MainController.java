@@ -41,6 +41,10 @@ public class MainController {
         }
     }
 
+    public void gameOver() {
+        gameScreen.setTextToShow("Game Over");
+    }
+
     public GameScreen getGameScreen() {
         return gameScreen;
     }

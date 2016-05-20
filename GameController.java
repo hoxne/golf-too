@@ -52,8 +52,14 @@ public class GameController {
         players.add(player);
     }
 
+    public void removePlayer(int playerId) {
+        players.get(playerId);
+        physicsManager.getBalls().remove(playerId);
+    }
+
     public boolean startGame() {
         if (players.size() > 0) {
+            updateScreenText();
             physicsManager.addBall(getCurrentPlayer().getGolfBall());
             return true;
         }
@@ -85,7 +91,9 @@ public class GameController {
 
         if (hasPlayerKicked && (isBallStopped() || isBallOutOfGame()))
         {
-            nextPlayer();
+            if (!nextPlayer())
+                mainController.gameOver();
+
             hasPlayerKicked = false;
         }
 
@@ -95,12 +103,31 @@ public class GameController {
         hasPlayerKicked = true;
     }
 
-    private void nextPlayer() {
-        currentPlayerId++;
-        currentPlayerId = currentPlayerId % players.size();
+    private boolean nextPlayer() {
+        int checkOutPlayers = 0;
+        do  {
+            currentPlayerId++;
+            currentPlayerId = currentPlayerId % players.size();
+            checkOutPlayers++;
+
+            if (checkOutPlayers >= players.size())
+                return false;
+        } while (!players.get(currentPlayerId).getStatus());
+
+        updateScreenText();
+
 
         if (physicsManager.getBalls().size() < currentPlayerId + 1)
             physicsManager.addBall(getCurrentPlayer().getGolfBall());
+
+        return true;
+    }
+
+    private void updateScreenText() {
+        String text;
+        text = "Player " + (currentPlayerId + 1);
+
+        mainController.getGameScreen().setTextToShow(text);
     }
 
     private boolean isBallStopped() {
@@ -123,8 +150,10 @@ public class GameController {
 
     private boolean isBallOutOfGame() {
         Vector3 activePosition = getCurrentPlayer().getGolfBall().getPosition();
-        if (activePosition.y < -10)
+        if (activePosition.y < -10) {
+            players.get(currentPlayerId).setStatus(false);
             return true;
+        }
 
         return false;
     }

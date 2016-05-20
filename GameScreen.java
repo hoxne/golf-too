@@ -251,7 +251,7 @@ public class GameScreen implements Screen, InputProcessor {
 		spriteBatch.begin();
 		font.setColor(0.251f, 0.878f, 0.81f,1);
 		font.getData().setScale(1f);
-		font.draw(spriteBatch, "Test Text", 0, h-font.getCapHeight(), w, Align.center, false);
+		font.draw(spriteBatch, textToShow, 0, h-font.getCapHeight(), w, Align.center, false);
 		spriteBatch.end();
 
 	}
@@ -382,7 +382,10 @@ public class GameScreen implements Screen, InputProcessor {
 		this.mainController = controller;
 	}
 
+	public void setTextToShow(String text) { textToShow = text; }
+
 	private GameController gameController() { return mainController.getGameController(); }
 
 	private MainController mainController;
+	private String textToShow = "Game started";
 }
