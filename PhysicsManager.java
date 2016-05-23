@@ -52,7 +52,7 @@ public class PhysicsManager {
 		return bbIntersects;
 	}
 	
-	public Map<GolfBall, ArrayList<GolfBall>> getBallBallCollisions() {
+	public Map<GolfBall, ArrayList<GolfBall>> getBallBallCollisions(float deltaTime) {
 		
 		Map<GolfBall, ArrayList<GolfBall>> bbIntersects = new HashMap<GolfBall, ArrayList<GolfBall> >();
 
@@ -70,6 +70,7 @@ public class PhysicsManager {
 				   GolfBall b2 = balls.get(k);
 
 				   if(b1.getPosition().dst2(b2.getPosition()) <= (b1.getRadius() + b2.getRadius()) * (b1.getRadius() + b2.getRadius())){
+
 					   bbIntersects.get(b1).add(b2);
 					   bbIntersects.get(b2).add(b1);
 				   }
@@ -78,9 +79,21 @@ public class PhysicsManager {
 		return bbIntersects;
 	}
 
+	private ArrayList<Vector3> getBallVsBallCollisionNormals(GolfBall ball, Map<GolfBall, ArrayList<GolfBall>> ballsCollisions) {
+		ArrayList<Vector3> normals = new ArrayList<Vector3>();
+
+		ArrayList<GolfBall> balls = ballsCollisions.get(ball);
+		for (GolfBall curBall : balls) {
+			Vector3 normal = curBall.getCollisionNormal(ball);
+			normals.add(normal);
+		}
+
+		return normals;
+	}
+
 	public void update(float deltaTime) {
 		Map<GolfBall, ArrayList<CollisionObject> > ballVsObjects = getBallBoundingBoxCollisions();
-		Map<GolfBall, ArrayList<GolfBall> > ballVsBalls = getBallBallCollisions();
+		Map<GolfBall, ArrayList<GolfBall> > ballVsBalls = getBallBallCollisions(deltaTime);
 
 		for (GolfBall ball : balls) {
 			ArrayList<CollisionObject> collisionObjects = ballVsObjects.get(ball);
@@ -91,14 +104,15 @@ public class PhysicsManager {
 					normals.add(normal);
 			}
 
-			ArrayList<GolfBall> balls = ballVsBalls.get(ball);
-			for (GolfBall curBall : balls) {
-				Vector3 normal = curBall.getCollisionNormal(ball);
-				normals.add(normal);
-			}
+			normals.addAll(getBallVsBallCollisionNormals(ball, ballVsBalls));
 
 			if (normals.size() > 0) {
 				ball.bounce(normals, deltaTime);
+				ArrayList<GolfBall> thisBallCollidesWith = ballVsBalls.get(ball);
+				for (int ballToHit = 0; ballToHit < thisBallCollidesWith.size(); ballToHit++) {
+					if (ball.getVelocity().len() > 0.1 && thisBallCollidesWith.get(ballToHit).getVelocity().len() == 0)
+						thisBallCollidesWith.get(ballToHit).setVelocity(ball.getVelocity().scl(-1f));
+				}
 			}
 		}
 

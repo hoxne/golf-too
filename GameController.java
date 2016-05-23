@@ -38,6 +38,13 @@ public class GameController {
         for (int i = 0; i < 100; i++) {
             map.lowerCorner(7,7);
         }
+
+        for (int i = 0; i < 100; i++) {
+            map.raiseCorner(4,2);
+        }
+        for (int i = 0; i < 100; i++) {
+            map.raiseCorner(5,2);
+        }
         map.updateMesh();
 
         ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
@@ -52,11 +59,6 @@ public class GameController {
         players.add(player);
     }
 
-    public void removePlayer(int playerId) {
-        players.get(playerId);
-        physicsManager.getBalls().remove(playerId);
-    }
-
     public boolean startGame() {
         if (players.size() > 0) {
             updateScreenText();
@@ -68,7 +70,7 @@ public class GameController {
     }
 
     public ArrayList<GolfBall> getGolfBallProtos() {
-        GolfBall golfBall = new GolfBall(new Vector3(3, 1, 3), new Vector3(0, 0, 0), 100, 0.2f);
+        GolfBall golfBall = new GolfBall(new Vector3(3, 0.2f, 3), new Vector3(0, 0, 0), 100, 0.2f);
         ArrayList<GolfBall> golfBallProtos = new ArrayList<>();
         golfBallProtos.add(golfBall);
 

@@ -19,7 +19,6 @@ public class GolfBall {
     private float mass;
     public BoundingBox boundingBox;
     private Vector3 gravity;
-    private Color color = new Color(0.224f, 1, 0.078f, 1);
 
     public GolfBall(Vector3 startPos, Vector3 velocity, float mass, float radius) {
         this.position = startPos.cpy();
@@ -58,6 +57,10 @@ public class GolfBall {
         this.position.add(this.velocity.cpy().scl(deltaTime));
         updateBoundingBox();
     }
+
+    public void setVelocity(Vector3 velocity) { this.velocity = velocity; }
+
+    public float getMass() { return mass; }
 
     private void applyGravity(float deltaTime) {
         if (velocity.len() > 0.01)
@@ -139,9 +142,4 @@ public class GolfBall {
 
         return  normal;
     }
-
-    public Color getColor() {
-        return color;
-    }
-
 }

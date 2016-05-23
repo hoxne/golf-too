@@ -71,7 +71,7 @@ public class GameScreen implements Screen, InputProcessor {
 	private BitmapFont font;
 
 	//private Model ball;
-	private HashMap<GolfBall, Model> balls;
+	private Model ball;
 	//private ModelInstance ballInstance;
 	private HashMap<GolfBall, ModelInstance> ballsInstances;
 	private Vector3 ballPos = new Vector3(1,5,1);
@@ -139,30 +139,28 @@ public class GameScreen implements Screen, InputProcessor {
 		terrain = new Renderable();
 		terrain.environment = environment;
 		terrain.meshPart.mesh = gameController().getMap().mesh;
-		// terrain.meshPart.primitiveType = GL20.GL_LINE_STRIP;
+		//terrain.meshPart.primitiveType = GL20.GL_LINE_STRIP;
 		terrain.meshPart.primitiveType = GL20.GL_TRIANGLES;
 		terrain.meshPart.offset = 0;
 		terrain.meshPart.size = gameController().getMap().mesh.getNumIndices();
 		terrain.meshPart.update();
 		terrain.material = new Material();
 
-		balls = new HashMap<>();
 		ballsInstances = new HashMap<>();
+
+		ModelBuilder modelBuilder = new ModelBuilder();
+		ball = modelBuilder.createSphere(1.0f, 1.0f, 1.0f, 20, 20, new Material(ColorAttribute.createDiffuse(0.224f, 1, 0.078f, 1)), Usage.Position | Usage.Normal);
 	}
 
 	public void loadBallModels() {
-		ModelBuilder modelBuilder = new ModelBuilder();
-		// modelBuilder.begin();
 		ArrayList<GolfBall> golfBalls = gameController().getBalls();
 
 		for (GolfBall curBall : golfBalls) {
-			Model ball = modelBuilder.createSphere(1.0f, 1.0f, 1.0f, 20, 20, new Material(ColorAttribute.createDiffuse(curBall.getColor())), Usage.Position | Usage.Normal);
-			if (balls.get(curBall) == null)
-				balls.put(curBall, ball);
-			// ball = modelBuilder.end();
-			ModelInstance ballInstance = new ModelInstance(ball);
-			if (ballsInstances.get(curBall) == null)
+
+			if (ballsInstances.get(curBall) == null) {
+				ModelInstance ballInstance = new ModelInstance(ball);
 				ballsInstances.put(curBall, ballInstance);
+			}
 		}
 	}
 
@@ -188,6 +186,8 @@ public class GameScreen implements Screen, InputProcessor {
 	public void render(float delta) {
 		// if(delta > 1f/60 * 1.1)
 		// 	System.out.println("dt: " + delta);
+
+		//delta = 1f/600;
 
 		if (delta > 1f/60)
 			delta = 1f/60;
@@ -229,11 +229,10 @@ public class GameScreen implements Screen, InputProcessor {
 			float radius = curBall.getRadius();
 			curBallInstance.transform.scale(curBall.getRadius(), curBall.getRadius(), curBall.getRadius());
 			curBallInstance.transform.setTranslation(ballPos.x, ballPos.y - (radius / 2), ballPos.z);
-			Vector3 ballInstancePos = curBallInstance.transform.getTranslation(new Vector3(ballPos.x, ballPos.y - (radius / 2), ballPos.z));
 			modelBatch.render(curBallInstance, environment);
 		}
 
-        modelBatch.end();
+		modelBatch.end();
 
 
 		// 2d overlay
