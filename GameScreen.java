@@ -387,4 +387,6 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private MainController mainController;
 	private String textToShow = "Game started";
+
+
 }
