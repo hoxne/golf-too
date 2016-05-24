@@ -53,9 +53,7 @@ public class GameController {
         physicsManager = new PhysicsManager(collisionObjects);
     }
 
-    public void addPlayer(GolfBall golfBall) {
-        GolfBall golfBallCopy = golfBall.clone();
-        Player player = new Player(golfBallCopy, this);
+    public void addPlayer(Player player) {
         players.add(player);
     }
 
@@ -63,6 +61,7 @@ public class GameController {
         if (players.size() > 0) {
             updateScreenText();
             physicsManager.addBall(getCurrentPlayer().getGolfBall());
+            getCurrentPlayer().play();
             return true;
         }
 
@@ -70,7 +69,7 @@ public class GameController {
     }
 
     public ArrayList<GolfBall> getGolfBallProtos() {
-        GolfBall golfBall = new GolfBall(new Vector3(3, 0.2f, 3), new Vector3(0, 0, 0), 100, 0.2f);
+        GolfBall golfBall = new GolfBall(new Vector3(3, 0.1f, 3), new Vector3(0, 0, 0), 100, 0.2f);
         ArrayList<GolfBall> golfBallProtos = new ArrayList<>();
         golfBallProtos.add(golfBall);
 
@@ -87,6 +86,8 @@ public class GameController {
     }
 
     public Course getMap() { return  map; }
+
+    public PhysicsManager getPhysicsManager() { return physicsManager; }
 
     public void update(float delta) {
         physicsManager.update(delta);
@@ -116,6 +117,7 @@ public class GameController {
                 return false;
         } while (!players.get(currentPlayerId).getStatus());
 
+        getCurrentPlayer().play();
         updateScreenText();
 
 

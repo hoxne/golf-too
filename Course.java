@@ -118,6 +118,8 @@ public class Course implements Disposable {
 			this.holepos = pos;
 	}
 
+	public Vector2 getHolePosition() { return holepos; }
+
 
 	public ArrayList<CollisionObject> getCollisionObjects(){
         ArrayList<CollisionObject> collisionObjects = new ArrayList<>();

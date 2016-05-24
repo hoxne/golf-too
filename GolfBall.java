@@ -19,6 +19,7 @@ public class GolfBall {
     private float mass;
     public BoundingBox boundingBox;
     private Vector3 gravity;
+    public boolean isAi = false;
 
     public GolfBall(Vector3 startPos, Vector3 velocity, float mass, float radius) {
         this.position = startPos.cpy();
@@ -46,7 +47,9 @@ public class GolfBall {
 
     @Override
     public GolfBall clone() {
-        return new GolfBall(this.position, this.velocity, this.mass, this.radius);
+        GolfBall cloned = new GolfBall(this.position, this.velocity, this.mass, this.radius);
+        cloned.isAi = isAi;
+        return cloned;
     }
 
     public void update(float deltaTime){

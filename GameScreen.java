@@ -40,6 +40,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Align;
+import com.sun.org.apache.xpath.internal.operations.Mod;
+import org.lwjgl.Sys;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -150,11 +152,13 @@ public class GameScreen implements Screen, InputProcessor {
 
 		ModelBuilder modelBuilder = new ModelBuilder();
 		ball = modelBuilder.createSphere(1.0f, 1.0f, 1.0f, 20, 20, new Material(ColorAttribute.createDiffuse(0.224f, 1, 0.078f, 1)), Usage.Position | Usage.Normal);
+
 	}
 
 	public void loadBallModels() {
 		ArrayList<GolfBall> golfBalls = gameController().getBalls();
 
+		GolfBall activeBall = getCurrentPlayer().getGolfBall();
 		for (GolfBall curBall : golfBalls) {
 
 			if (ballsInstances.get(curBall) == null) {
@@ -219,8 +223,7 @@ public class GameScreen implements Screen, InputProcessor {
         modelBatch.render(terrain);
         // ball
 		loadBallModels();
-		//GolfBall activeBall = getCurrentPlayer().getGolfBall();
-        //ModelInstance activeBallInstance = ballsInstances.get(activeBall);
+
 
 		for (GolfBall curBall : gameController().getBalls()) {
 			ModelInstance curBallInstance = ballsInstances.get(curBall);
@@ -228,7 +231,7 @@ public class GameScreen implements Screen, InputProcessor {
 			Vector3 ballPos = curBall.getPosition();
 			float radius = curBall.getRadius();
 			curBallInstance.transform.scale(curBall.getRadius(), curBall.getRadius(), curBall.getRadius());
-			curBallInstance.transform.setTranslation(ballPos.x, ballPos.y - (radius / 2), ballPos.z);
+			curBallInstance.transform.setTranslation(ballPos.x, ballPos.y, ballPos.z);
 			modelBatch.render(curBallInstance, environment);
 		}
 
@@ -263,8 +266,10 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 	
 	// INPUT
+	@Override
 	public boolean keyDown(int key){
 		float ds = 0.5f;
+		System.out.println("Key down");
 
 		if (key == Input.Keys.ESCAPE) {
 			mainController.showMainMenu();
