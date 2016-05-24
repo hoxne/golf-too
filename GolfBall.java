@@ -66,10 +66,10 @@ public class GolfBall {
     public float getMass() { return mass; }
 
     private void applyGravity(float deltaTime) {
-        if (velocity.len() > 0.01)
+        // if (velocity.len() > 0.01)
             this.velocity.add(gravity.cpy().scl(deltaTime));
-        else
-            velocity = new Vector3(0,0,0);
+        // else
+            // velocity = new Vector3(0,0,0);
     }
 
     private void applyFriction(Vector3 normal, float deltaTime) {

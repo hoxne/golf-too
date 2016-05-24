@@ -16,17 +16,15 @@ public class AIPlayer extends Player {
     @Override
     public void play() {
 
-
-
-        for (int attempt = 0; attempt < 100; attempt++) {
-            PhysicsManager simulator = gameController.getPhysicsManager().clone();
-            if (simulator.getBalls().size() < playerId + 1)
-                simulator.addBall(golfBall.clone());
-            GolfBall activeBall = getActiveBall(simulator);
-            Vector3 dv = new Vector3(attempt, attempt, attempt);
-            activeBall.kick(dv);
-            simulator.update(10000f);
-        }
+        // for (int attempt = 0; attempt < 100; attempt++) {
+        //     PhysicsManager simulator = gameController.getPhysicsManager().clone();
+        //     if (simulator.getBalls().size() < playerId + 1)
+        //         simulator.addBall(golfBall.clone());
+        //     GolfBall activeBall = getActiveBall(simulator);
+        //     Vector3 dv = new Vector3(attempt, attempt, attempt);
+        //     activeBall.kick(dv);
+        //     simulator.update(10000f);
+        // }
     }
 
     private GolfBall getActiveBall(PhysicsManager simulator) {

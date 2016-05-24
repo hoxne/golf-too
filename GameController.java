@@ -69,7 +69,7 @@ public class GameController {
     }
 
     public ArrayList<GolfBall> getGolfBallProtos() {
-        GolfBall golfBall = new GolfBall(new Vector3(3, 0.1f, 3), new Vector3(0, 0, 0), 100, 0.2f);
+        GolfBall golfBall = new GolfBall(new Vector3(3, 0.15f, 3), new Vector3(0, 0, 0), 100, 0.1f);
         ArrayList<GolfBall> golfBallProtos = new ArrayList<>();
         golfBallProtos.add(golfBall);
 

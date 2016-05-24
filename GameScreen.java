@@ -40,8 +40,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Align;
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import org.lwjgl.Sys;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -227,8 +225,8 @@ public class GameScreen implements Screen, InputProcessor {
 			curBallInstance.transform.idt();
 			Vector3 ballPos = curBall.getPosition();
 			float radius = curBall.getRadius();
-			curBallInstance.transform.scale(curBall.getRadius(), curBall.getRadius(), curBall.getRadius());
-			curBallInstance.transform.setTranslation(ballPos.x, ballPos.y, ballPos.z);
+			curBallInstance.transform.scale(curBall.getRadius()*2, curBall.getRadius()*2, curBall.getRadius()*2);
+			curBallInstance.transform.setTranslation(ballPos.x, ballPos.y , ballPos.z);
 			modelBatch.render(curBallInstance, environment);
 		}
 
