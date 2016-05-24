@@ -10,6 +10,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class Main extends Game {
 	private FPSLogger fps;
@@ -18,7 +19,6 @@ public class Main extends Game {
 	public void create() {
 		fps = new FPSLogger();
 		MainController mainController = new MainController(this);
-		mainController.showMainMenu();
 	}
 
 	@Override

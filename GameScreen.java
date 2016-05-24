@@ -52,8 +52,6 @@ import java.net.*;
 import java.lang.Math;
 
 public class GameScreen implements Screen, InputProcessor {
-	private Game game;
-
 	private OrthographicCamera cam2d;
 	private static float VIEWPORT_HEIGHT = 100;
 
@@ -80,8 +78,7 @@ public class GameScreen implements Screen, InputProcessor {
 	private Vector2 lastRightMousePos = new Vector2(-1, -1);
 	private boolean draggingRight = false;
 	
-	public GameScreen(Game game, MainController mainController) {
-		this.game = game;
+	public GameScreen(MainController mainController) {
 		this.mainController = mainController;
 
 		float w = Gdx.graphics.getWidth();
@@ -392,4 +389,6 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private MainController mainController;
 	private String textToShow = "Game started";
+
+
 }
