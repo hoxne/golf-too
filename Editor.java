@@ -28,10 +28,13 @@ public class Editor implements Screen, InputProcessor {
 	private Course map;
 	private BoundingBox mapBB;
 	
-	
 	private boolean raise = true;
 
-	public Editor() {
+
+    private MainController mainController;
+
+	public Editor(MainController mainController) {
+		this.mainController = mainController;
 
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 1f));
@@ -127,8 +130,11 @@ public class Editor implements Screen, InputProcessor {
 	}
 
 	@Override
-	public boolean keyDown(int arg0) {
-		// TODO Auto-generated method stub
+	public boolean keyDown(int key) {
+		if (key == Input.Keys.ESCAPE) {
+			mainController.showMainMenu();
+			return true;
+		}
 		return false;
 	}
 
@@ -137,7 +143,7 @@ public class Editor implements Screen, InputProcessor {
 
 		if(key == 'q' || key == 'Q')
 			raise = !raise;
-		
+
 		return false;
 	}
 

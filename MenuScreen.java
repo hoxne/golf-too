@@ -30,22 +30,16 @@ public class MenuScreen implements Screen {
     private Stage stage;
     private SpriteBatch batch;
 
-    private Game game;
     private MainController mainController;
 
-    public MenuScreen(Game game){
-        create();
-        this.game = game;
-    }
-
-    public MenuScreen(){
+    public MenuScreen(MainController mainController){
+        this.mainController = mainController;
         create();
     }
 
     public void create(){
         batch = new SpriteBatch();
         stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
 
         skin = new Skin();
         Pixmap pixmap = new Pixmap(300, 100, Format.RGBA8888);
@@ -60,7 +54,7 @@ public class MenuScreen implements Screen {
         TextButtonStyle textButtonStyle = new TextButtonStyle();
         textButtonStyle.up = skin.newDrawable("white", Color.LIGHT_GRAY);
         textButtonStyle.down = skin.newDrawable("white", Color.LIGHT_GRAY);
-        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
+        textButtonStyle.checked = skin.newDrawable("white", Color.LIGHT_GRAY);
         textButtonStyle.over = skin.newDrawable("white", Color.DARK_GRAY);
 
         textButtonStyle.font = skin.getFont("default");
@@ -87,25 +81,22 @@ public class MenuScreen implements Screen {
 
         textButtonPlay.addListener(new ChangeListener(){
             public void changed (ChangeEvent event, Actor actor){
-                System.out.println("It's been clicked!!");
                 textButtonPlay.setText("Here we go again!!");
-
+                mainController.showGameScreen();
             }
         });
 
         textButtonEditor.addListener(new ChangeListener(){
             public void changed (ChangeEvent event, Actor actor){
-                System.out.println("It's been clicked!!");
                 textButtonPlay.setText("Pinterest session ivl!");
-
+                mainController.showEditor();
             }
         });
 
         textButtonPause.addListener(new ChangeListener(){
             public void changed (ChangeEvent event, Actor actor){
-                System.out.println("It's been clicked!!");
                 textButtonPlay.setText("So saaaaaaaaaaad");
-
+                Gdx.app.exit();
             }
         });
 
@@ -128,7 +119,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void show(){
-
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -145,8 +136,5 @@ public class MenuScreen implements Screen {
     public void resume(){
 
     }
-
-
-
 
 }

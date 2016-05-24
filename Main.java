@@ -19,9 +19,6 @@ public class Main extends Game {
 	public void create() {
 		fps = new FPSLogger();
 		MainController mainController = new MainController(this);
-		mainController.showMainMenu();
-		setScreen(new MenuScreen( this ));
-
 	}
 
 	@Override
