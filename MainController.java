@@ -27,16 +27,22 @@ public class MainController {
 
         this.showMainMenu();
 
-        int playersSelected = 5;
+        int playersSelected = 1;
         int ballProtoSelected = 0;
         ArrayList<GolfBall> ballProtos = gameController.getGolfBallProtos();
-        for (int curPlayer = 0; curPlayer < playersSelected; curPlayer++) {
-            gameController.addPlayer(ballProtos.get(ballProtoSelected));
+        int curPlayer = 0;
+        for (; curPlayer < playersSelected; curPlayer++) {
+            Player player = new Player(curPlayer, ballProtos.get(ballProtoSelected).clone(), gameController);
+            gameController.addPlayer(player);
         }
+        gameController.addPlayer(new AIPlayer(curPlayer, ballProtos.get(ballProtoSelected).clone(), gameController));
+
 
         if (!gameController.startGame()) {
             // # of players was not specified
         }
+
+        game.setScreen(gameScreen);
     }
 
     public void showMainMenu()
