@@ -89,16 +89,16 @@ public class GolfBall {
     public void bounce(ArrayList<Vector3> normals, float deltaTime){
         Vector3 normal = new Vector3();
 
-        System.out.println("Position: " + this.position);
-        System.out.println("Velocity before bounce: " + this.velocity.toString());
+        // System.out.println("Position: " + this.position);
+        // System.out.println("Velocity before bounce: " + this.velocity.toString());
 
         for (Vector3 vect : normals) {
             normal.add(vect);
-            System.out.println("\t" + vect.toString());
+            // System.out.println("\t" + vect.toString());
         }
         normal.nor();
 
-        System.out.println("Bouncing normal: " + normal.toString());
+        // System.out.println("Bouncing normal: " + normal.toString());
 
         Vector3 componentA = normal.cpy().scl((velocity.dot(normal)));
         Vector3 componentB = velocity.cpy().sub(componentA);
@@ -109,8 +109,8 @@ public class GolfBall {
         // friction
         applyFriction(normal, deltaTime);
 
-        System.out.println("Velocity after bounce: " + this.velocity.toString());
-        System.out.println();
+        // System.out.println("Velocity after bounce: " + this.velocity.toString());
+        // System.out.println();
     }
 
     public void kick(Vector3 dv) {

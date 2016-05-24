@@ -126,7 +126,7 @@ public class CollisionObject {
 		}
 
 		if(collidingTriangles.size() > 0){
-			System.out.println("Colliding with: " + collidingTriangles);
+			// System.out.println("Colliding with: " + collidingTriangles);
 			return collidingTriangles.toArray(new Vector3[0]);
 		}else{
 			return null;

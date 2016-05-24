@@ -324,7 +324,7 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	public boolean touchDragged(int screenX, int screenY, int pointer){
-		System.out.println("touchDragged");
+		// System.out.println("touchDragged");
 		if(draggingRight)
 			lastRightMousePos.set(screenX, screenY);
 
@@ -335,6 +335,7 @@ public class GameScreen implements Screen, InputProcessor {
 		if (button == 1) {
 				// 'hit' the ball
 				Vector3 mouseInWorld = cam3d.unproject(new Vector3(screenX, screenY, 0));
+				System.out.println(mouseInWorld);
 				Vector3 dx = new Vector3(mouseInWorld.x, mouseInWorld.y, mouseInWorld.z);
 				GolfBall activeBall = getCurrentPlayer().getGolfBall();
 				Vector3 ballPos = activeBall.getPosition();

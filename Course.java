@@ -30,6 +30,7 @@ public class Course implements Disposable {
 	protected String path, name, desc;
 	// the width and height are how many tiles there are
 	// so, there are width+1 by height+1 vertices
+	protected float holeRadius;
 	protected int width, height;
 	protected Vector2 startpos, holepos;
 	protected ArrayList<Obstacle> obstacles;
@@ -57,6 +58,7 @@ public class Course implements Disposable {
 	Course(int width, int height){
 		this.width = width;
 		this.height = height;
+		this.holeRadius = 0.3f;
 		this.startpos = new Vector2(1, 1);
 		this.holepos = new Vector2(8, 8);
 		this.obstacles = new ArrayList<>();
@@ -116,6 +118,10 @@ public class Course implements Disposable {
 	public void setHolePosition(Vector2 pos){
 		if(pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height)
 			this.holepos = pos;
+	}
+
+	public Vector3 getHoleInWorld(){
+		return new Vector3(holepos.x, 0f, holepos.y).add(0.5f, 0f, 0.5f);
 	}
 
 
@@ -236,7 +242,7 @@ public class Course implements Disposable {
 		v1.color.set(v0.color);
 		v2.color.set(v0.color);
 		// radius of the hole
-		float r = 0.15f;
+		float r = holeRadius;
 		// determines how big the corners are
 		float cornermult = 0.5f;//1f/3f;
 		// generate the flat space around the hole
