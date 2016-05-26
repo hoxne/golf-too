@@ -133,6 +133,17 @@ public class GameController {
         mainController.getGameScreen().setTextToShow(text);
     }
 
+    private boolean isBallInTheHole() {
+        float xHole = getMap().getHoleInWorld().x;
+        float yHole = getMap().getHoleInWorld().y;
+        float xBall = getCurrentPlayer().getGolfBall().getPosition().x;
+        float yBall = getCurrentPlayer().getGolfBall().getPosition().y;
+
+       // if (xHole >= )
+
+        return  false;
+    }
+
     private boolean isBallStopped() {
         // probably ball stopped
         Vector3 activeVelocity = getCurrentPlayer().getGolfBall().getVelocity();

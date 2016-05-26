@@ -27,7 +27,7 @@ public class MainController {
 
         this.showMainMenu();
 
-        int playersSelected = 2;
+        int playersSelected = 1;
         int ballProtoSelected = 0;
         ArrayList<GolfBall> ballProtos = gameController.getGolfBallProtos();
         int curPlayer = 0;
