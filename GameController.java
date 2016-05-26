@@ -60,6 +60,7 @@ public class GameController {
         physicsManager.update(delta);
 
         boolean isBallStopped = isBallStopped();
+        // System.out.println(isBallStopped + " " + hasPlayerKicked);
         boolean isBallOutOfGame = isBallOutOfGame();
 
         if (hasPlayerKicked && (isBallStopped || isBallOutOfGame))
@@ -129,19 +130,12 @@ public class GameController {
     private boolean isBallStopped() {
         // probably ball stopped
         Vector3 activeVelocity = getCurrentPlayer().getGolfBall().getVelocity();
-        if (activeVelocity.len() < 0.05) {
-            if (probablyBallStopped) {
-                ballStoppedIteration++;
-                if (ballStoppedIteration > 10)
-                    return true;
-            }
-            else {
-                probablyBallStopped = true;
-                ballStoppedIteration = 0;
-            }
+        if (activeVelocity.len() < 0.1) {
+            ballStoppedIteration++;
+        }else{
+            ballStoppedIteration = 0;
         }
-
-        return  false;
+        return ballStoppedIteration > 10;
     }
 
     private boolean isBallOutOfGame() {
