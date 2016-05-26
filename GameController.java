@@ -11,40 +11,7 @@ public class GameController {
 
         players = new ArrayList<Player>();
 
-        map = new Course(20,20);
-        // map.heightmap[2][2]=10;
-        //map.setTileInMap(3,4,false);
-        for (int i = 0; i < 100; i++) {
-            map.lowerCorner(4,4);
-        }
-        for (int i = 0; i < 100; i++) {
-            map.lowerCorner(4,5);
-        }
-        for (int i = 0; i < 100; i++) {
-            map.lowerCorner(5, 5);
-        }
-        for (int i = 0; i < 100; i++) {
-            map.lowerCorner(5, 6);
-        }
-        for (int i = 0; i < 100; i++) {
-            map.lowerCorner(6, 6);
-        }
-        for (int i = 0; i < 100; i++) {
-            map.lowerCorner(6, 7);
-        }
-        for (int i = 0; i < 100; i++) {
-            map.lowerCorner(7,8);
-        }
-        for (int i = 0; i < 100; i++) {
-            map.lowerCorner(7,7);
-        }
-
-        for (int i = 0; i < 100; i++) {
-            map.raiseCorner(4,2);
-        }
-        for (int i = 0; i < 100; i++) {
-            map.raiseCorner(5,2);
-        }
+        map = mainController.getMap();
         map.updateMesh();
 
         ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
@@ -94,10 +61,9 @@ public class GameController {
 
         if (hasPlayerKicked && (isBallStopped() || isBallOutOfGame()))
         {
+            hasPlayerKicked = false;
             if (!nextPlayer())
                 mainController.gameOver();
-
-            hasPlayerKicked = false;
         }
 
     }
@@ -137,7 +103,7 @@ public class GameController {
     private boolean isBallStopped() {
         // probably ball stopped
         Vector3 activeVelocity = getCurrentPlayer().getGolfBall().getVelocity();
-        if (activeVelocity.len() < 0.01) {
+        if (activeVelocity.len() < 0.05) {
             if (probablyBallStopped) {
                 ballStoppedIteration++;
                 if (ballStoppedIteration > 10)

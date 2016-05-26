@@ -320,8 +320,10 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	public boolean touchDown(int screenX, int screenY, int pointer, int button){
-		if(button == 1)
+		if(button == 1){
 			draggingRight = true;
+			return true;
+		}
 
 		return false;
 	}

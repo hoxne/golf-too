@@ -88,7 +88,7 @@ public class MenuScreen implements Screen {
 
         textButtonEditor.addListener(new ChangeListener(){
             public void changed (ChangeEvent event, Actor actor){
-                textButtonPlay.setText("Pinterest session ivl!");
+                textButtonEditor.setText("Pinterest session ivl!");
                 mainController.showEditor();
             }
         });
