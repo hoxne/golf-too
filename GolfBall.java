@@ -11,7 +11,8 @@ import org.lwjgl.Sys;
 import java.util.ArrayList;
 
 public class GolfBall {
-    private static float FRICTION_COEFFICIENT = 10;
+    private static float FRICTION_COEFFICIENT = 10f;
+    private static float BOUNCINESS = 0.05f;
 
     private Vector3 position;
     private Vector3 velocity;
@@ -55,15 +56,9 @@ public class GolfBall {
     public void update(float deltaTime){
         //this.position.set(new Vector3(this.position.add(this.velocity.scl(deltaTime))));
 
-        //applyFriction(deltaTime);
-
-
         applyGravity(deltaTime);
-        if (deltaTime < 0.5f)
-            this.position.add(this.velocity.cpy().scl(deltaTime));
-        else
-            this.position.add(this.velocity.cpy());
 
+        this.position.add(this.velocity.cpy().scl(deltaTime));
 
         updateBoundingBox();
     }
@@ -73,15 +68,15 @@ public class GolfBall {
     public float getMass() { return mass; }
 
     private void applyGravity(float deltaTime) {
-        if (velocity.len() > 0.01)
+        // if (velocity.len() > 0.01)
             this.velocity.add(gravity.cpy().scl(deltaTime));
-        else
-            velocity = new Vector3(0,0,0);
+        // else
+            // velocity = new Vector3(0,0,0);
     }
 
-    private void applyFriction(Vector3 normal, float deltaTime) {
+    private void applyFriction(Vector3 normal, float dt) {
         if(velocity.len() > 0.01){
-            double friction = FRICTION_COEFFICIENT * mass;
+            double friction = FRICTION_COEFFICIENT;
             Vector3 frictionForce = velocity.cpy();
             Vector3 velocityUp = normal.cpy().scl((velocity.dot(normal)));
             frictionForce.scl(-1);
@@ -89,8 +84,19 @@ public class GolfBall {
             frictionForce.scl((float)friction);
             frictionForce.scl(velocityUp.len());
             Vector3 dv = frictionForce.cpy();
-            dv.scl(deltaTime / mass);
+            dv.scl(dt);
+            // System.out.println(dv);
             velocity.add(dv);
+            
+            // Vector3 velocityUp = normal.cpy().scl((velocity.dot(normal)));
+            // Vector3 velocityTan = velocity.cpy().sub(velocityUp);
+            // Vector3 friction = velocityUp.cpy();//.scl(BOUNCINESS);
+            // Vector3 constantF = velocityUp.cpy().nor().scl(0.1f);
+            // friction.add(constantF);
+            // // velocityUp
+            // Vector3 newV = velocity.cpy().sub(friction);
+            // if(newV.len2() < velocity.len2())
+            //     velocity = newV;
         }else{
             velocity = new Vector3(0,0,0);
         }
@@ -112,6 +118,7 @@ public class GolfBall {
 
         Vector3 componentA = normal.cpy().scl((velocity.dot(normal)));
         Vector3 componentB = velocity.cpy().sub(componentA);
+        // componentA.scl(BOUNCINESS);
         this.velocity = componentB.cpy().sub(componentA);
 
         this.position.add(this.velocity.cpy().scl(deltaTime));

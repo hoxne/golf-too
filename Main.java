@@ -24,7 +24,7 @@ public class Main extends Game {
 	@Override
 	public void render() {
 		super.render();
-	//	fps.log();
+		fps.log();
 	}
 
 	@Override

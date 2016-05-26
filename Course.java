@@ -60,7 +60,7 @@ public class Course implements Disposable {
 		this.height = height;
 		this.holeRadius = 0.2f;
 		this.startpos = new Vector2(1, 1);
-		this.holepos = new Vector2(8, 8);
+		this.holepos = new Vector2(width/2, height/2);
 		this.obstacles = new ArrayList<>();
 		this.heightmap = new int[width+1][height+1];
 		this.isOutside = new boolean[width][height];
@@ -99,11 +99,55 @@ public class Course implements Disposable {
 	public void raiseCorner(int x, int y){
 		if(x >= 0 && x < width+1 && y >= 0 && y < height+1 && heightmap[x][y] < MAX_HEIGHT)
 			heightmap[x][y]++;
+
+		// keep hole level
+		if(x == holepos.x && y == holepos.y){
+			heightmap[x+1][y] = heightmap[x][y];
+			heightmap[x][y+1] = heightmap[x][y];
+			heightmap[x+1][y+1] = heightmap[x][y];
+		}
+		if(x == holepos.x+1 && y == holepos.y){
+			heightmap[x-1][y] = heightmap[x][y];
+			heightmap[x][y+1] = heightmap[x][y];
+			heightmap[x-1][y+1] = heightmap[x][y];
+		}
+		if(x == holepos.x && y == holepos.y+1){
+			heightmap[x+1][y] = heightmap[x][y];
+			heightmap[x][y-1] = heightmap[x][y];
+			heightmap[x+1][y-1] = heightmap[x][y];
+		}
+		if(x == holepos.x+1 && y == holepos.y+1){
+			heightmap[x-1][y] = heightmap[x][y];
+			heightmap[x][y-1] = heightmap[x][y];
+			heightmap[x-1][y-1] = heightmap[x][y];
+		}
 	}
 
 	public void lowerCorner(int x, int y){
 		if(x >= 0 && x < width+1 && y >= 0 && y < height+1 && heightmap[x][y] > MIN_HEIGHT)
 			heightmap[x][y]--;
+
+		// keep hole level
+		if(x == holepos.x && y == holepos.y){
+			heightmap[x+1][y] = heightmap[x][y];
+			heightmap[x][y+1] = heightmap[x][y];
+			heightmap[x+1][y+1] = heightmap[x][y];
+		}
+		if(x == holepos.x+1 && y == holepos.y){
+			heightmap[x-1][y] = heightmap[x][y];
+			heightmap[x][y+1] = heightmap[x][y];
+			heightmap[x-1][y+1] = heightmap[x][y];
+		}
+		if(x == holepos.x && y == holepos.y+1){
+			heightmap[x+1][y] = heightmap[x][y];
+			heightmap[x][y-1] = heightmap[x][y];
+			heightmap[x+1][y-1] = heightmap[x][y];
+		}
+		if(x == holepos.x+1 && y == holepos.y+1){
+			heightmap[x-1][y] = heightmap[x][y];
+			heightmap[x][y-1] = heightmap[x][y];
+			heightmap[x-1][y-1] = heightmap[x][y];
+		}
 	}
 
 	public void setTileInMap(int x, int y, boolean isInMap){
@@ -123,6 +167,8 @@ public class Course implements Disposable {
 	public Vector3 getHoleInWorld(){
 		return new Vector3(holepos.x, 0f, holepos.y).add(0.5f, 0f, 0.5f);
 	}
+
+	public float getRadius() { return holeRadius; }
 
 	public ArrayList<CollisionObject> getCollisionObjects(){
         ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
@@ -354,10 +400,14 @@ public class Course implements Disposable {
 
 				// set colors
 				// lower vertices are darker, higher ones are lighter
-				v00.color.set(this.color).mul((1f*h00-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
-				v10.color.set(this.color).mul((1f*h10-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
-				v01.color.set(this.color).mul((1f*h01-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
-				v11.color.set(this.color).mul((1f*h11-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+				Color c = this.color.cpy();
+				if(x == startpos.x && y == startpos.y)
+					c.mul(2f);
+
+				v00.color.set(c).mul((1f*h00-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+				v10.color.set(c).mul((1f*h10-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+				v01.color.set(c).mul((1f*h01-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+				v11.color.set(c).mul((1f*h11-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
 
 				// check which direction the diagonal should be
 				// this is to make everything look consistent and independent of rotation

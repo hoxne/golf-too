@@ -24,11 +24,27 @@ public class GameController {
         players.add(player);
     }
 
+    public void reset(){
+        players.clear();
+        physicsManager.removeBalls();
+
+        // add new players
+        int playersSelected = 0;
+        int ballProtoSelected = 0;
+        ArrayList<GolfBall> ballProtos = getGolfBallProtos();
+        int curPlayer = 0;
+        for (; curPlayer < playersSelected; curPlayer++) {
+            Player player = new Player(curPlayer, ballProtos.get(ballProtoSelected).clone(), map);
+            addPlayer(player);
+        }
+        addPlayer(new AIPlayer(curPlayer, ballProtos.get(ballProtoSelected).clone(), map));
+    }
+
     public boolean startGame() {
         if (players.size() > 0) {
             updateScreenText();
             physicsManager.addBall(getCurrentPlayer().getGolfBall());
-            getCurrentPlayer().play();
+            getCurrentPlayer().play(physicsManager.clone());
             return true;
         }
 
@@ -36,7 +52,7 @@ public class GameController {
     }
 
     public ArrayList<GolfBall> getGolfBallProtos() {
-        GolfBall golfBall = new GolfBall(new Vector3(3, 0.15f, 3), new Vector3(0, 0, 0), 100, 0.1f);
+        GolfBall golfBall = new GolfBall(new Vector3(map.startpos.x+0.5f, 0.5f, map.startpos.y+0.5f), new Vector3(0, 0, 0), 100, 0.1f);
         ArrayList<GolfBall> golfBallProtos = new ArrayList<>();
         golfBallProtos.add(golfBall);
 
@@ -59,17 +75,22 @@ public class GameController {
     public void update(float delta) {
         physicsManager.update(delta);
 
-        if (hasPlayerKicked && (isBallStopped() || isBallOutOfGame()))
+        boolean isBallStopped = isBallStopped();
+        // System.out.println(isBallStopped + " " + hasPlayerKicked);
+        boolean isBallOutOfGame = isBallOutOfGame();
+
+        if (getCurrentPlayer().hasKicked() && (isBallStopped || isBallOutOfGame))
         {
-            hasPlayerKicked = false;
-            if (!nextPlayer())
+            getCurrentPlayer().noYouHaventKickedYet();
+
+            if (isBallStopped && isBallInTheHole()) {
+                mainController.getGameScreen().toggleInput(false);
+                mainController.gameIsWon();
+            }
+            else if (!nextPlayer())
                 mainController.gameOver();
         }
 
-    }
-
-    public void ballKicked() {
-        hasPlayerKicked = true;
     }
 
     private boolean nextPlayer() {
@@ -83,7 +104,7 @@ public class GameController {
                 return false;
         } while (!players.get(currentPlayerId).getStatus());
 
-        getCurrentPlayer().play();
+        getCurrentPlayer().play(physicsManager.clone());
         updateScreenText();
 
 
@@ -100,22 +121,33 @@ public class GameController {
         mainController.getGameScreen().setTextToShow(text);
     }
 
+    private boolean isBallInTheHole() {
+        float xHole = getMap().getHoleInWorld().x;
+        float zHole = getMap().getHoleInWorld().z;
+        float xBall = getCurrentPlayer().getGolfBall().getPosition().x;
+        float zBall = getCurrentPlayer().getGolfBall().getPosition().z;
+        float yBall = getCurrentPlayer().getGolfBall().getPosition().y;
+        float yHole = getCurrentPlayer().getGolfBall().getPosition().y;
+        float holeRadius = getMap().getRadius();
+        float ballRadius = getCurrentPlayer().getGolfBall().getRadius();
+
+        if (xHole - holeRadius < xBall && xBall < xHole + holeRadius
+                && zHole - holeRadius < zBall && zBall < zHole +holeRadius
+                && yHole >= yBall - ballRadius)
+            return true;
+
+        return  false;
+    }
+
     private boolean isBallStopped() {
         // probably ball stopped
         Vector3 activeVelocity = getCurrentPlayer().getGolfBall().getVelocity();
-        if (activeVelocity.len() < 0.05) {
-            if (probablyBallStopped) {
-                ballStoppedIteration++;
-                if (ballStoppedIteration > 10)
-                    return true;
-            }
-            else {
-                probablyBallStopped = true;
-                ballStoppedIteration = 0;
-            }
+        if (activeVelocity.len() < 0.1) {
+            ballStoppedIteration++;
+        }else{
+            ballStoppedIteration = 0;
         }
-
-        return  false;
+        return ballStoppedIteration > 10;
     }
 
     private boolean isBallOutOfGame() {
