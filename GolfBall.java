@@ -56,8 +56,15 @@ public class GolfBall {
         //this.position.set(new Vector3(this.position.add(this.velocity.scl(deltaTime))));
 
         //applyFriction(deltaTime);
+
+
         applyGravity(deltaTime);
-        this.position.add(this.velocity.cpy().scl(deltaTime));
+        if (deltaTime < 0.5f)
+            this.position.add(this.velocity.cpy().scl(deltaTime));
+        else
+            this.position.add(this.velocity.cpy());
+
+
         updateBoundingBox();
     }
 

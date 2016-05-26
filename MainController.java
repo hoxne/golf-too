@@ -42,7 +42,6 @@ public class MainController {
             // # of players was not specified
         }
 
-        game.setScreen(gameScreen);
     }
 
     public void showMainMenu()
