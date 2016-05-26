@@ -27,6 +27,7 @@ public class GameController {
     public void reset(){
         players.clear();
         physicsManager.removeBalls();
+        mainController.getGameScreen().toggleInput(true);
 
         // add new players
         int playersSelected = 0;
