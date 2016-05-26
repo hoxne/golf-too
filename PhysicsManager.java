@@ -52,49 +52,41 @@ public class PhysicsManager {
 		return bbIntersects;
 	}
 	
-	public Map<GolfBall, ArrayList<GolfBall>> getBallBallCollisions(float deltaTime) {
-		
-		Map<GolfBall, ArrayList<GolfBall>> bbIntersects = new HashMap<GolfBall, ArrayList<GolfBall> >();
-
-
-		for(GolfBall b : this.balls) {
-			ArrayList<GolfBall> list = new ArrayList<>();
-			bbIntersects.put(b, list);
-		}
+	public ArrayList<GolfBall> getBallBallCollisions(float deltaTime) {
+		ArrayList<GolfBall> bbIntersects = new ArrayList<GolfBall>();
 
 		for (int i = 0; i < this.balls.size() - 1; i++) {
-
 			for (int k = i + 1; k < this.balls.size(); k++) {
 				   
-				   GolfBall b1 = balls.get(i);
-				   GolfBall b2 = balls.get(k);
+				GolfBall b1 = balls.get(i);
+				GolfBall b2 = balls.get(k);
 
-				   if(b1.getPosition().dst2(b2.getPosition()) <= (b1.getRadius() + b2.getRadius()) * (b1.getRadius() + b2.getRadius())){
-
-					   bbIntersects.get(b1).add(b2);
-					   bbIntersects.get(b2).add(b1);
-				   }
-			   }
+				if(b1.getPosition().dst2(b2.getPosition()) <= (b1.getRadius() + b2.getRadius()) * (b1.getRadius() + b2.getRadius())){
+					bbIntersects.add(b1);
+					bbIntersects.add(b2);
+			    }
+			}
 		}
 		return bbIntersects;
 	}
 
-	private ArrayList<Vector3> getBallVsBallCollisionNormals(GolfBall ball, Map<GolfBall, ArrayList<GolfBall>> ballsCollisions) {
-		ArrayList<Vector3> normals = new ArrayList<Vector3>();
+	public void update(float deltaTime) {
+		// ball-ball collisions
+		ArrayList<GolfBall> ballVsBalls = getBallBallCollisions(deltaTime);
+		for (int i = 0; i < ballVsBalls.size(); i+=2) {
+			GolfBall b1 = ballVsBalls.get(i);
+			GolfBall b2 = ballVsBalls.get(i+1);
 
-		ArrayList<GolfBall> balls = ballsCollisions.get(ball);
-		for (GolfBall curBall : balls) {
-			Vector3 normal = curBall.getCollisionNormal(ball);
-			normals.add(normal);
+			Vector3 dv = b1.getVelocity().cpy().sub(b2.getVelocity());
+			Vector3 dx = b1.getPosition().cpy().sub(b2.getPosition());
+
+			b1.getVelocity().sub(dx.cpy().scl(dv.dot(dx) / dx.len2()));
+			dv.scl(-1); dx.scl(-1);
+			b2.getVelocity().sub(dx.cpy().scl(dv.dot(dx) / dx.len2()));
 		}
 
-		return normals;
-	}
-
-	public void update(float deltaTime) {
-		Map<GolfBall, ArrayList<CollisionObject> > ballVsObjects = getBallBoundingBoxCollisions();
-		Map<GolfBall, ArrayList<GolfBall> > ballVsBalls = getBallBallCollisions(deltaTime);
-
+		// terrain collisions
+		Map<GolfBall, ArrayList<CollisionObject>> ballVsObjects = getBallBoundingBoxCollisions();
 		for (GolfBall ball : balls) {
 			ArrayList<CollisionObject> collisionObjects = ballVsObjects.get(ball);
 			ArrayList<Vector3> normals = new ArrayList<>();
@@ -103,16 +95,9 @@ public class PhysicsManager {
 				if (normal != null)
 					normals.add(normal);
 			}
-
-			normals.addAll(getBallVsBallCollisionNormals(ball, ballVsBalls));
-
+			
 			if (normals.size() > 0) {
 				ball.bounce(normals, deltaTime);
-				ArrayList<GolfBall> thisBallCollidesWith = ballVsBalls.get(ball);
-				for (int ballToHit = 0; ballToHit < thisBallCollidesWith.size(); ballToHit++) {
-					if (ball.getVelocity().len() > 0.1 && thisBallCollidesWith.get(ballToHit).getVelocity().len() == 0)
-						thisBallCollidesWith.get(ballToHit).setVelocity(ball.getVelocity().scl(-1f));
-				}
 			}
 		}
 
