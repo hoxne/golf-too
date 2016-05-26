@@ -123,7 +123,6 @@ public class PhysicsManager {
 			time -= FIXED_DT;
 			_update(FIXED_DT);
 		}
-		System.out.println(time);
 	}
 
 	public ArrayList<GolfBall> getBalls() {
