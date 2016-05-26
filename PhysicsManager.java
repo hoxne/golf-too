@@ -119,7 +119,7 @@ public class PhysicsManager {
 
 	public void update(float dt) {
 		time += dt;
-		while(time > FIXED_DT){
+		while(time > FIXED_DT) {
 			time -= FIXED_DT;
 			_update(FIXED_DT);
 		}

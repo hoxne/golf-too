@@ -168,6 +168,8 @@ public class Course implements Disposable {
 		return new Vector3(holepos.x, 0f, holepos.y).add(0.5f, 0f, 0.5f);
 	}
 
+	public float getRadius() { return holeRadius; }
+
 	public ArrayList<CollisionObject> getCollisionObjects(){
         ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
 

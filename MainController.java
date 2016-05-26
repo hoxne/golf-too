@@ -32,7 +32,7 @@ public class MainController {
 
         this.showMainMenu();
 
-        int playersSelected = 2;
+        int playersSelected = 1;
         int ballProtoSelected = 0;
         ArrayList<GolfBall> ballProtos = gameController.getGolfBallProtos();
         int curPlayer = 0;
@@ -70,6 +70,8 @@ public class MainController {
     public void gameOver() {
         gameScreen.setTextToShow("Game Over");
     }
+
+    public void gameIsWon() { gameScreen.setTextToShow("Success!"); }
 
     public GameScreen getGameScreen() {
         return gameScreen;

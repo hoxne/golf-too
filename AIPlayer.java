@@ -19,7 +19,7 @@ public class AIPlayer extends Player {
         Vector3 bestKick = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         float closestDistance = Float.MAX_VALUE;
 
-        for (int attempt = 0; attempt < 100000; attempt++) {
+        for (int attempt = 0; attempt < 100; attempt++) {
             PhysicsManager simulator = gameController.getPhysicsManager().clone();
             if (simulator.getBalls().size() < playerId + 1)
                 simulator.addBall(golfBall.clone());
@@ -33,7 +33,7 @@ public class AIPlayer extends Player {
             dv = applyHeuristics(dv, holePos, ballPos, distToHoleLen);
 
             activeBall.kick(dv);
-            simulator.update(10000f);
+            simulator.update(100f);
 
 
             if (distToHoleLen < closestDistance) {
@@ -47,13 +47,16 @@ public class AIPlayer extends Player {
 
     private Vector3 applyHeuristics(Vector3 dv, Vector3 holePos, Vector3 ballPos, float distToHoleLen) {
 
-        float min = -2.5f;
-        float max = 2.5f;
+        float min = -0.1f;
+        float max = 0.1f;
 
         Random rand = new Random();
-        dv.x = rand.nextFloat() * (max - min) + min;;
-        dv.y = rand.nextFloat() * (max - min) + min;;
-        dv.z = rand.nextFloat() * (max - min) + min;;
+        dv.x = holePos.x + rand.nextFloat() * (max - min) + min;
+        dv.y = holePos.y + rand.nextFloat() * (max - min) + min;
+        dv.z = holePos.z + rand.nextFloat() * (max - min) + min;
+
+        dv = holePos;
+
 
         return dv;
     }
