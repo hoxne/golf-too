@@ -18,8 +18,16 @@ public class PhysicsManager {
 		balls.add(ball);
 	}
 
+	public void removeBalls(){
+		balls.clear();
+	}
+
 	public void addBalls(ArrayList<GolfBall> balls) {
 		this.balls = balls;
+	}
+
+	public void setCollisionObjects(ArrayList<CollisionObject> colObjs){
+		this.colObjs = colObjs;
 	}
 
 	@Override

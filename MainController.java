@@ -8,6 +8,8 @@ import java.util.ArrayList;
 public class MainController {
     private Game game;
 
+    private Course map;
+
     private GameScreen gameScreen;
     private Editor editorScreen;
     private MenuScreen menuScreen;
@@ -18,6 +20,9 @@ public class MainController {
 
     public MainController(Game game) {
         this.game = game;
+
+        this.map = new Course(20, 20);
+
         gameController = new GameController(this);
         editorController = new EditorController(this);
 
@@ -35,13 +40,17 @@ public class MainController {
             Player player = new Player(curPlayer, ballProtos.get(ballProtoSelected).clone(), gameController);
             gameController.addPlayer(player);
         }
-        gameController.addPlayer(new AIPlayer(curPlayer, ballProtos.get(ballProtoSelected).clone(), gameController));
+        // gameController.addPlayer(new AIPlayer(curPlayer, ballProtos.get(ballProtoSelected).clone(), gameController));
 
 
         if (!gameController.startGame()) {
             // # of players was not specified
         }
 
+    }
+
+    public Course getMap(){
+        return this.map;
     }
 
     public void showMainMenu()
@@ -51,6 +60,7 @@ public class MainController {
     public void showGameScreen()
     {
         game.setScreen(gameScreen);
+        gameController.getPhysicsManager().setCollisionObjects(map.getCollisionObjects());
     }
     public void showEditor()
     {

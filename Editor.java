@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
@@ -28,8 +29,8 @@ public class Editor implements Screen, InputProcessor {
 	private Course map;
 	private BoundingBox mapBB;
 	
-	private boolean raise = true;
-
+	private enum Mode { RAISE, LOWER, HOLE_DRAG, START_DRAG };
+	private Mode mode = Mode.RAISE;
 
     private MainController mainController;
 
@@ -42,12 +43,12 @@ public class Editor implements Screen, InputProcessor {
 		modelBatch = new ModelBatch();
 
 		// input somehow
-		createTerrain(8, 8);
+		createTerrain();
 	}
 
-	private void createTerrain(int width, int height) {
+	private void createTerrain() {
 
-		map = new Course(width, height);
+		map = mainController.getMap();
 		map.updateMesh();
 
 		int m = Math.max(map.height, map.width);
@@ -141,9 +142,18 @@ public class Editor implements Screen, InputProcessor {
 	@Override
 	public boolean keyTyped(char key) {
 
-		if(key == 'q' || key == 'Q')
-			raise = !raise;
+		if(key == 'r' || key == 'R')
+			mode = Mode.RAISE;
 
+		if(key == 'l' || key == 'L')
+			mode = Mode.LOWER;
+
+		if(key == 'h' || key == 'H')
+			mode = Mode.HOLE_DRAG;
+
+		if(key == 's' || key == 'S')
+			mode = Mode.START_DRAG;
+			
 		return false;
 	}
 
@@ -174,22 +184,33 @@ public class Editor implements Screen, InputProcessor {
 			Vector3 intersection = new Vector3();
 			
 			if (Intersector.intersectRayBounds(ray, this.mapBB, intersection)) {
-				
-				if(raise)
+								
+				switch(mode) {
+				case RAISE:
 					map.raiseCorner(Math.round(intersection.x), Math.round(intersection.z));
-				else
+					break;
+				case LOWER:
 					map.lowerCorner(Math.round(intersection.x), Math.round(intersection.z));
+					break;
+				case HOLE_DRAG:
+					map.setHolePosition(new Vector2(Math.round(intersection.x), Math.round(intersection.z)));
+					break;
+				case START_DRAG:
+					map.setStartPosition(new Vector2(Math.round(intersection.x), Math.round(intersection.z)));
+					break;
+				default:
+					break;
+				}
 				
 				map.updateMesh();
 			}
-		}
-		
-		else if(button == Input.Buttons.RIGHT) {
-			
-		}
-		
+		}		
 
 		return false;
+	}
+
+	public void changeHolePosition(Vector3 intersection) {
+		
 	}
 
 	@Override
