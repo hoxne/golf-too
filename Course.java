@@ -60,7 +60,7 @@ public class Course implements Disposable {
 		this.height = height;
 		this.holeRadius = 0.2f;
 		this.startpos = new Vector2(1, 1);
-		this.holepos = new Vector2(8, 8);
+		this.holepos = new Vector2(width/2, height/2);
 		this.obstacles = new ArrayList<>();
 		this.heightmap = new int[width+1][height+1];
 		this.isOutside = new boolean[width][height];
@@ -99,11 +99,55 @@ public class Course implements Disposable {
 	public void raiseCorner(int x, int y){
 		if(x >= 0 && x < width+1 && y >= 0 && y < height+1 && heightmap[x][y] < MAX_HEIGHT)
 			heightmap[x][y]++;
+
+		// keep hole level
+		if(x == holepos.x && y == holepos.y){
+			heightmap[x+1][y] = heightmap[x][y];
+			heightmap[x][y+1] = heightmap[x][y];
+			heightmap[x+1][y+1] = heightmap[x][y];
+		}
+		if(x == holepos.x+1 && y == holepos.y){
+			heightmap[x-1][y] = heightmap[x][y];
+			heightmap[x][y+1] = heightmap[x][y];
+			heightmap[x-1][y+1] = heightmap[x][y];
+		}
+		if(x == holepos.x && y == holepos.y+1){
+			heightmap[x+1][y] = heightmap[x][y];
+			heightmap[x][y-1] = heightmap[x][y];
+			heightmap[x+1][y-1] = heightmap[x][y];
+		}
+		if(x == holepos.x+1 && y == holepos.y+1){
+			heightmap[x-1][y] = heightmap[x][y];
+			heightmap[x][y-1] = heightmap[x][y];
+			heightmap[x-1][y-1] = heightmap[x][y];
+		}
 	}
 
 	public void lowerCorner(int x, int y){
 		if(x >= 0 && x < width+1 && y >= 0 && y < height+1 && heightmap[x][y] > MIN_HEIGHT)
 			heightmap[x][y]--;
+
+		// keep hole level
+		if(x == holepos.x && y == holepos.y){
+			heightmap[x+1][y] = heightmap[x][y];
+			heightmap[x][y+1] = heightmap[x][y];
+			heightmap[x+1][y+1] = heightmap[x][y];
+		}
+		if(x == holepos.x+1 && y == holepos.y){
+			heightmap[x-1][y] = heightmap[x][y];
+			heightmap[x][y+1] = heightmap[x][y];
+			heightmap[x-1][y+1] = heightmap[x][y];
+		}
+		if(x == holepos.x && y == holepos.y+1){
+			heightmap[x+1][y] = heightmap[x][y];
+			heightmap[x][y-1] = heightmap[x][y];
+			heightmap[x+1][y-1] = heightmap[x][y];
+		}
+		if(x == holepos.x+1 && y == holepos.y+1){
+			heightmap[x-1][y] = heightmap[x][y];
+			heightmap[x][y-1] = heightmap[x][y];
+			heightmap[x-1][y-1] = heightmap[x][y];
+		}
 	}
 
 	public void setTileInMap(int x, int y, boolean isInMap){

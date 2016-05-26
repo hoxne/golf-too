@@ -21,7 +21,7 @@ public class MainController {
     public MainController(Game game) {
         this.game = game;
 
-        this.map = new Course(20, 20);
+        this.map = new Course(19, 19);
 
         gameController = new GameController(this);
         editorController = new EditorController(this);
