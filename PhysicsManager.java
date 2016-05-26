@@ -36,6 +36,9 @@ public class PhysicsManager {
 		for(GolfBall b: this.balls)
 			ballsDeepCopy.add(b.clone());
 
+
+
+
 		PhysicsManager cloned = new PhysicsManager(colObjs);
 		cloned.addBalls(ballsDeepCopy);
 		
