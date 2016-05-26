@@ -400,10 +400,14 @@ public class Course implements Disposable {
 
 				// set colors
 				// lower vertices are darker, higher ones are lighter
-				v00.color.set(this.color).mul((1f*h00-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
-				v10.color.set(this.color).mul((1f*h10-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
-				v01.color.set(this.color).mul((1f*h01-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
-				v11.color.set(this.color).mul((1f*h11-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+				Color c = this.color.cpy();
+				if(x == startpos.x && y == startpos.y)
+					c.mul(2f);
+
+				v00.color.set(c).mul((1f*h00-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+				v10.color.set(c).mul((1f*h10-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+				v01.color.set(c).mul((1f*h01-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
+				v11.color.set(c).mul((1f*h11-MIN_HEIGHT)/(MAX_HEIGHT-MIN_HEIGHT)*(LIGHT_MULTIPLIER-DARK_MULTIPLIER)+DARK_MULTIPLIER);
 
 				// check which direction the diagonal should be
 				// this is to make everything look consistent and independent of rotation
