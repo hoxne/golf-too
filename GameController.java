@@ -24,11 +24,27 @@ public class GameController {
         players.add(player);
     }
 
+    public void reset(){
+        players.clear();
+        physicsManager.removeBalls();
+
+        // add new players
+        int playersSelected = 0;
+        int ballProtoSelected = 0;
+        ArrayList<GolfBall> ballProtos = getGolfBallProtos();
+        int curPlayer = 0;
+        for (; curPlayer < playersSelected; curPlayer++) {
+            Player player = new Player(curPlayer, ballProtos.get(ballProtoSelected).clone(), map);
+            addPlayer(player);
+        }
+        addPlayer(new AIPlayer(curPlayer, ballProtos.get(ballProtoSelected).clone(), map));
+    }
+
     public boolean startGame() {
         if (players.size() > 0) {
             updateScreenText();
             physicsManager.addBall(getCurrentPlayer().getGolfBall());
-            getCurrentPlayer().play();
+            getCurrentPlayer().play(physicsManager.clone());
             return true;
         }
 
@@ -63,9 +79,9 @@ public class GameController {
         // System.out.println(isBallStopped + " " + hasPlayerKicked);
         boolean isBallOutOfGame = isBallOutOfGame();
 
-        if (hasPlayerKicked && (isBallStopped || isBallOutOfGame))
+        if (getCurrentPlayer().hasKicked() && (isBallStopped || isBallOutOfGame))
         {
-            hasPlayerKicked = false;
+            getCurrentPlayer().noYouHaventKickedYet();
 
             if (isBallStopped && isBallInTheHole()) {
                 mainController.getGameScreen().toggleInput(false);
@@ -75,10 +91,6 @@ public class GameController {
                 mainController.gameOver();
         }
 
-    }
-
-    public void ballKicked() {
-        hasPlayerKicked = true;
     }
 
     private boolean nextPlayer() {
@@ -92,7 +104,7 @@ public class GameController {
                 return false;
         } while (!players.get(currentPlayerId).getStatus());
 
-        getCurrentPlayer().play();
+        getCurrentPlayer().play(physicsManager.clone());
         updateScreenText();
 
 

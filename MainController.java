@@ -32,20 +32,7 @@ public class MainController {
 
         this.showMainMenu();
 
-        int playersSelected = 2;
-        int ballProtoSelected = 0;
-        ArrayList<GolfBall> ballProtos = gameController.getGolfBallProtos();
-        int curPlayer = 0;
-        for (; curPlayer < playersSelected; curPlayer++) {
-            Player player = new Player(curPlayer, ballProtos.get(ballProtoSelected).clone(), gameController);
-            gameController.addPlayer(player);
-        }
-        // gameController.addPlayer(new AIPlayer(curPlayer, ballProtos.get(ballProtoSelected).clone(), gameController));
-
-
-        if (!gameController.startGame()) {
-            // # of players was not specified
-        }
+        gameController.reset();
 
     }
 
@@ -59,6 +46,10 @@ public class MainController {
     }
     public void showGameScreen()
     {
+        gameController.reset();
+        if (!gameController.startGame()) {
+            // # of players was not specified
+        }
         game.setScreen(gameScreen);
         gameController.getPhysicsManager().setCollisionObjects(map.getCollisionObjects());
     }
