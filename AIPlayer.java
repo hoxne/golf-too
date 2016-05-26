@@ -16,15 +16,46 @@ public class AIPlayer extends Player {
     @Override
     public void play() {
 
-        // for (int attempt = 0; attempt < 100; attempt++) {
-        //     PhysicsManager simulator = gameController.getPhysicsManager().clone();
-        //     if (simulator.getBalls().size() < playerId + 1)
-        //         simulator.addBall(golfBall.clone());
-        //     GolfBall activeBall = getActiveBall(simulator);
-        //     Vector3 dv = new Vector3(attempt, attempt, attempt);
-        //     activeBall.kick(dv);
-        //     simulator.update(10000f);
-        // }
+        Vector3 bestKick = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
+        float closestDistance = Float.MAX_VALUE;
+
+        for (int attempt = 0; attempt < 100000; attempt++) {
+            PhysicsManager simulator = gameController.getPhysicsManager().clone();
+            if (simulator.getBalls().size() < playerId + 1)
+                simulator.addBall(golfBall.clone());
+            GolfBall activeBall = getActiveBall(simulator);
+            Vector3 dv = new Vector3(0, 0, 0);
+
+            Vector3 holePos = gameController.getMap().getHoleInWorld();
+            Vector3 ballPos = activeBall.getPosition();
+            float distToHoleLen = holePos.dst(ballPos);
+
+            dv = applyHeuristics(dv, holePos, ballPos, distToHoleLen);
+
+            activeBall.kick(dv);
+            simulator.update(10000f);
+
+
+            if (distToHoleLen < closestDistance) {
+                bestKick = dv;
+                closestDistance = distToHoleLen;
+            }
+        }
+
+        kick(bestKick);
+    }
+
+    private Vector3 applyHeuristics(Vector3 dv, Vector3 holePos, Vector3 ballPos, float distToHoleLen) {
+
+        float min = -2.5f;
+        float max = 2.5f;
+
+        Random rand = new Random();
+        dv.x = rand.nextFloat() * (max - min) + min;;
+        dv.y = rand.nextFloat() * (max - min) + min;;
+        dv.z = rand.nextFloat() * (max - min) + min;;
+
+        return dv;
     }
 
     private GolfBall getActiveBall(PhysicsManager simulator) {

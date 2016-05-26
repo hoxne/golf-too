@@ -94,10 +94,9 @@ public class GameController {
 
         if (hasPlayerKicked && (isBallStopped() || isBallOutOfGame()))
         {
+            hasPlayerKicked = false;
             if (!nextPlayer())
                 mainController.gameOver();
-
-            hasPlayerKicked = false;
         }
 
     }
