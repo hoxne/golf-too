@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
@@ -29,7 +30,7 @@ public class Editor implements Screen, InputProcessor {
 	private BoundingBox mapBB;
 	
 	private boolean raise = true;
-
+	private boolean holeDrag = false;
 
     private MainController mainController;
 
@@ -144,6 +145,9 @@ public class Editor implements Screen, InputProcessor {
 		if(key == 'q' || key == 'Q')
 			raise = !raise;
 
+		if(key == 'h' || key == 'H')
+			holeDrag = !holeDrag;
+
 		return false;
 	}
 
@@ -174,20 +178,19 @@ public class Editor implements Screen, InputProcessor {
 			Vector3 intersection = new Vector3();
 			
 			if (Intersector.intersectRayBounds(ray, this.mapBB, intersection)) {
-				
-				if(raise)
-					map.raiseCorner(Math.round(intersection.x), Math.round(intersection.z));
-				else
-					map.lowerCorner(Math.round(intersection.x), Math.round(intersection.z));
+								
+				if(!holeDrag) {
+					if(raise)
+						map.raiseCorner(Math.round(intersection.x), Math.round(intersection.z));
+					else
+						map.lowerCorner(Math.round(intersection.x), Math.round(intersection.z));
+				} else {
+					map.setHolePosition(new Vector2(Math.round(intersection.x), Math.round(intersection.z)));
+				}
 				
 				map.updateMesh();
 			}
-		}
-		
-		else if(button == Input.Buttons.RIGHT) {
-			
-		}
-		
+		}		
 
 		return false;
 	}
