@@ -11,40 +11,7 @@ public class GameController {
 
         players = new ArrayList<Player>();
 
-        map = new Course(20,20);
-        // map.heightmap[2][2]=10;
-        //map.setTileInMap(3,4,false);
-        // for (int i = 0; i < 100; i++) {
-        //     map.lowerCorner(4,4);
-        // }
-        // for (int i = 0; i < 100; i++) {
-        //     map.lowerCorner(4,5);
-        // }
-        // for (int i = 0; i < 100; i++) {
-        //     map.lowerCorner(5, 5);
-        // }
-        // for (int i = 0; i < 100; i++) {
-        //     map.lowerCorner(5, 6);
-        // }
-        // for (int i = 0; i < 100; i++) {
-        //     map.lowerCorner(6, 6);
-        // }
-        // for (int i = 0; i < 100; i++) {
-        //     map.lowerCorner(6, 7);
-        // }
-        // for (int i = 0; i < 100; i++) {
-        //     map.lowerCorner(7,8);
-        // }
-        // for (int i = 0; i < 100; i++) {
-        //     map.lowerCorner(7,7);
-        // }
-
-        for (int i = 0; i < 100; i++) {
-            map.raiseCorner(4,2);
-        }
-        for (int i = 0; i < 100; i++) {
-            map.raiseCorner(5,2);
-        }
+        map = mainController.getMap();
         map.updateMesh();
 
         ArrayList<CollisionObject> collisionObjects = new ArrayList<>();

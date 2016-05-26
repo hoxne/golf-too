@@ -42,12 +42,12 @@ public class Editor implements Screen, InputProcessor {
 		modelBatch = new ModelBatch();
 
 		// input somehow
-		createTerrain(8, 8);
+		createTerrain();
 	}
 
-	private void createTerrain(int width, int height) {
+	private void createTerrain() {
 
-		map = new Course(width, height);
+		map = mainController.getMap();
 		map.updateMesh();
 
 		int m = Math.max(map.height, map.width);
@@ -196,7 +196,7 @@ public class Editor implements Screen, InputProcessor {
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		
 		// no way to check which button
-		touchDown(screenX, screenY, pointer, Input.Buttons.LEFT);		
+		// touchDown(screenX, screenY, pointer, Input.Buttons.LEFT);		
 		return false;
 	}
 
