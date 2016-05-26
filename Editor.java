@@ -29,8 +29,8 @@ public class Editor implements Screen, InputProcessor {
 	private Course map;
 	private BoundingBox mapBB;
 	
-	private boolean raise = true;
-	private boolean holeDrag = false;
+	private enum Mode { RAISE, LOWER, HOLE_DRAG, START_DRAG };
+	private Mode mode = Mode.RAISE;
 
     private MainController mainController;
 
@@ -142,12 +142,18 @@ public class Editor implements Screen, InputProcessor {
 	@Override
 	public boolean keyTyped(char key) {
 
-		if(key == 'q' || key == 'Q')
-			raise = !raise;
+		if(key == 'r' || key == 'R')
+			mode = Mode.RAISE;
+
+		if(key == 'l' || key == 'L')
+			mode = Mode.LOWER;
 
 		if(key == 'h' || key == 'H')
-			holeDrag = !holeDrag;
+			mode = Mode.HOLE_DRAG;
 
+		if(key == 's' || key == 'S')
+			mode = Mode.START_DRAG;
+			
 		return false;
 	}
 
@@ -179,13 +185,21 @@ public class Editor implements Screen, InputProcessor {
 			
 			if (Intersector.intersectRayBounds(ray, this.mapBB, intersection)) {
 								
-				if(!holeDrag) {
-					if(raise)
-						map.raiseCorner(Math.round(intersection.x), Math.round(intersection.z));
-					else
-						map.lowerCorner(Math.round(intersection.x), Math.round(intersection.z));
-				} else {
+				switch(mode) {
+				case RAISE:
+					map.raiseCorner(Math.round(intersection.x), Math.round(intersection.z));
+					break;
+				case LOWER:
+					map.lowerCorner(Math.round(intersection.x), Math.round(intersection.z));
+					break;
+				case HOLE_DRAG:
 					map.setHolePosition(new Vector2(Math.round(intersection.x), Math.round(intersection.z)));
+					break;
+				case START_DRAG:
+					map.setStartPosition(new Vector2(Math.round(intersection.x), Math.round(intersection.z)));
+					break;
+				default:
+					break;
 				}
 				
 				map.updateMesh();
@@ -195,11 +209,15 @@ public class Editor implements Screen, InputProcessor {
 		return false;
 	}
 
+	public void changeHolePosition(Vector3 intersection) {
+		
+	}
+
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		
 		// no way to check which button
-		// touchDown(screenX, screenY, pointer, Input.Buttons.LEFT);		
+		touchDown(screenX, screenY, pointer, Input.Buttons.LEFT);		
 		return false;
 	}
 
