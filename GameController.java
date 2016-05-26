@@ -52,7 +52,7 @@ public class GameController {
     }
 
     public ArrayList<GolfBall> getGolfBallProtos() {
-        GolfBall golfBall = new GolfBall(new Vector3(map.startpos.x+0.5f, 0.5f, map.startpos.y+0.5f), new Vector3(0, 0, 0), 100, 0.1f);
+        GolfBall golfBall = new GolfBall(new Vector3(map.startpos.x+0.5f, map.getStartHeight() + 0.5f, map.startpos.y+0.5f), new Vector3(0, 0, 0), 100, 0.1f);
         ArrayList<GolfBall> golfBallProtos = new ArrayList<>();
         golfBallProtos.add(golfBall);
 

@@ -114,7 +114,7 @@ public class PhysicsManager {
 		}
 	}
 
-	private static float FIXED_DT = 1f/60;
+	private static float FIXED_DT = 1f/600;
 	private float time = 0.0f;
 
 	public void update(float dt) {

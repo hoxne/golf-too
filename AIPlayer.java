@@ -20,7 +20,10 @@ public class AIPlayer extends Player {
         Vector3 bestKick = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         float bestScore = Float.MAX_VALUE;
 
-        for (int attempt = 0; attempt < 100; attempt++) {
+        int MAX_ATTEMPTS = 100;
+        System.out.print("Calculating shot...");
+        for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+            System.out.print("\rCalculating shot... " + (100f*attempt/MAX_ATTEMPTS) + "%");
             PhysicsManager simulator = physx.clone();
             if (simulator.getBalls().size() < playerId + 1)
                 simulator.addBall(golfBall.clone());
@@ -31,8 +34,13 @@ public class AIPlayer extends Player {
             // simulate random shot
             Vector3 dv = getRandomShot();
             activeBall.kick(dv);
-            while(activeBall.getVelocity().len() > 0.1 && activeBall.getPosition().y > -10){
-                System.out.println(activeBall.getVelocity().len());
+            int stopCounter = 0;
+            while(stopCounter < 5 && activeBall.getPosition().y > -10){
+                if(activeBall.getVelocity().len() < 0.05)
+                    stopCounter++;
+                else
+                    stopCounter = 0;
+
                 simulator.update(1f);
             }
 
@@ -45,6 +53,7 @@ public class AIPlayer extends Player {
                 bestScore = score;
             }
         }
+        System.out.println("\rCalculating shot... 100%");
 
         kick(bestKick);
     }
@@ -56,10 +65,9 @@ public class AIPlayer extends Player {
         float angle = rand.nextFloat() * (float)Math.PI * 2;
         dv.rotateRad(angle, 0,1,0);
 
-        float min = 1f;
-        float max = 10.0f;
+        float min = 0.1f;
+        float max = 5.0f;
         float force = rand.nextFloat() * (max - min) + min;
-        System.out.println(dv);
 
         dv.scl(force);
 

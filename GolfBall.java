@@ -84,7 +84,7 @@ public class GolfBall {
             frictionForce.scl((float)friction);
             frictionForce.scl(velocityUp.len());
             Vector3 dv = frictionForce.cpy();
-            dv.scl(dt);
+            dv.scl(dt*10);
             // System.out.println(dv);
             velocity.add(dv);
             
@@ -116,11 +116,14 @@ public class GolfBall {
 
         // System.out.println("Bouncing normal: " + normal.toString());
 
+        Vector3 oldV = velocity.cpy();
+
         Vector3 componentA = normal.cpy().scl((velocity.dot(normal)));
         Vector3 componentB = velocity.cpy().sub(componentA);
         // componentA.scl(BOUNCINESS);
         this.velocity = componentB.cpy().sub(componentA);
 
+        // this.position.add(oldV.cpy().scl(-deltaTime));
         this.position.add(this.velocity.cpy().scl(deltaTime));
 
         // friction
@@ -131,6 +134,10 @@ public class GolfBall {
     }
 
     public void kick(Vector3 dv) {
+        float l = dv.len();
+        if(l > 5.0f){
+            dv.scl(5.0f/l);
+        }
         this.velocity.add(dv);
     }
 

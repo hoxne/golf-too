@@ -168,6 +168,15 @@ public class Course implements Disposable {
 		return new Vector3(holepos.x, 0f, holepos.y).add(0.5f, 0f, 0.5f);
 	}
 
+	public float getStartHeight(){
+		float h0 = HEIGHT_SCALE * heightmap[(int)startpos.x][(int)startpos.y];
+		float h1 = HEIGHT_SCALE * heightmap[(int)startpos.x+1][(int)startpos.y];
+		float h2 = HEIGHT_SCALE * heightmap[(int)startpos.x][(int)startpos.y+1];
+		float h3 = HEIGHT_SCALE * heightmap[(int)startpos.x+1][(int)startpos.y+1];
+
+		return Math.max(Math.max(Math.max(h0, h1), h2), h3);
+	}
+
 	public float getRadius() { return holeRadius; }
 
 	public ArrayList<CollisionObject> getCollisionObjects(){
@@ -184,25 +193,72 @@ public class Course implements Disposable {
 
 	public ArrayList<CollisionObject> getWallCollisionObjects(){
 		ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
-		// for each tile
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				if(isTileInMap(x,y)){
-					if(!isTileInMap(x-1,y)){
-						//add wall on the left of this tile
-					}
-					if(!isTileInMap(x+1,y)){
-						//add wall on the right of this tile
-					}
-					if(!isTileInMap(x,y-1)){
-						//add wall on the top of this tile
-					}
-					if(!isTileInMap(x,y+1)){
-						//add wall on the bottom of this tile
-					}
-				}
-			}
-		}
+		ArrayList<Vector3> triangles = new ArrayList<>();
+
+		float h = 100;
+
+		// wall 1
+		triangles.add(new Vector3(0,0,0));
+		triangles.add(new Vector3(width,0,0));
+		triangles.add(new Vector3(width,h,0));
+
+		triangles.add(new Vector3(0,0,0));
+		triangles.add(new Vector3(0,h,0));
+		triangles.add(new Vector3(width,h,0));
+
+		// wall 2
+		triangles.add(new Vector3(0,0,0));
+		triangles.add(new Vector3(0,0,height));
+		triangles.add(new Vector3(0,h,height));
+
+		triangles.add(new Vector3(0,0,0));
+		triangles.add(new Vector3(0,h,0));
+		triangles.add(new Vector3(0,h,height));
+
+		// wall 3
+		triangles.add(new Vector3(width,0,0));
+		triangles.add(new Vector3(width,0,height));
+		triangles.add(new Vector3(width,h,height));
+		
+		triangles.add(new Vector3(width,0,0));
+		triangles.add(new Vector3(width,h,0));
+		triangles.add(new Vector3(width,h,height));
+
+		// wall 3
+		triangles.add(new Vector3(width,0,height));
+		triangles.add(new Vector3(0,0,height));
+		triangles.add(new Vector3(0,h,height));
+
+		triangles.add(new Vector3(width,0,height));
+		triangles.add(new Vector3(width,h,height));
+		triangles.add(new Vector3(0,h,height));
+
+
+
+
+		CollisionObject c = new CollisionObject(triangles.toArray(new Vector3[0]));
+		collisionObjects.add(c);
+
+
+		// // for each tile
+		// for (int y = 0; y < height; y++) {
+		// 	for (int x = 0; x < width; x++) {
+		// 		if(isTileInMap(x,y)){
+		// 			if(!isTileInMap(x-1,y)){
+		// 				//add wall on the left of this tile
+		// 			}
+		// 			if(!isTileInMap(x+1,y)){
+		// 				//add wall on the right of this tile
+		// 			}
+		// 			if(!isTileInMap(x,y-1)){
+		// 				//add wall on the top of this tile
+		// 			}
+		// 			if(!isTileInMap(x,y+1)){
+		// 				//add wall on the bottom of this tile
+		// 			}
+		// 		}
+		// 	}
+		// }
 		return collisionObjects;
 	}
 
