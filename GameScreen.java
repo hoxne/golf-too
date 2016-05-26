@@ -163,6 +163,10 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 
+	public void toggleInput(boolean value) {
+		isInputEnabled = value;
+	}
+
 	private void updateCamera(){
 		// cam2d.zoom = MathUtils.clamp(cam2d.zoom, 0.1f, 100/cam2d.viewportWidth*2);
 		if(cam2d.zoom < 0.1f){
@@ -270,6 +274,9 @@ public class GameScreen implements Screen, InputProcessor {
 			mainController.showMainMenu();
 		}
 
+		if (!isInputEnabled)
+			return false;
+
 		if (key == Input.Keys.LEFT || key == Input.Keys.A) {
 			ballPos.z -= ds;
 		}
@@ -320,7 +327,7 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	public boolean touchDown(int screenX, int screenY, int pointer, int button){
-		if(button == 1){
+		if(button == 1 && isInputEnabled){
 			draggingRight = true;
 			return true;
 		}
@@ -330,13 +337,16 @@ public class GameScreen implements Screen, InputProcessor {
 
 	public boolean touchDragged(int screenX, int screenY, int pointer){
 		// System.out.println("touchDragged");
-		if(draggingRight)
+		if(draggingRight && isInputEnabled)
 			lastRightMousePos.set(screenX, screenY);
 
 		return false;
 	}
 
 	public boolean touchUp(int screenX, int screenY, int pointer, int button){
+		if (!isInputEnabled)
+			return  false;
+
 		if (button == 1) {
 				// 'hit' the ball
 				Vector3 mouseInWorld = cam3d.unproject(new Vector3(screenX, screenY, 0));
@@ -390,6 +400,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private MainController mainController;
 	private String textToShow = "Game started";
+	private boolean isInputEnabled = true;
 
 
 }

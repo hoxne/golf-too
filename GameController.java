@@ -59,10 +59,18 @@ public class GameController {
     public void update(float delta) {
         physicsManager.update(delta);
 
-        if (hasPlayerKicked && (isBallStopped() || isBallOutOfGame()))
+        boolean isBallStopped = isBallStopped();
+        boolean isBallOutOfGame = isBallOutOfGame();
+
+        if (hasPlayerKicked && (isBallStopped || isBallOutOfGame))
         {
             hasPlayerKicked = false;
-            if (!nextPlayer())
+
+            if (isBallStopped && isBallInTheHole()) {
+                mainController.getGameScreen().toggleInput(false);
+                mainController.gameIsWon();
+            }
+            else if (!nextPlayer())
                 mainController.gameOver();
         }
 
@@ -102,11 +110,18 @@ public class GameController {
 
     private boolean isBallInTheHole() {
         float xHole = getMap().getHoleInWorld().x;
-        float yHole = getMap().getHoleInWorld().y;
+        float zHole = getMap().getHoleInWorld().z;
         float xBall = getCurrentPlayer().getGolfBall().getPosition().x;
+        float zBall = getCurrentPlayer().getGolfBall().getPosition().z;
         float yBall = getCurrentPlayer().getGolfBall().getPosition().y;
+        float yHole = getCurrentPlayer().getGolfBall().getPosition().y;
+        float holeRadius = getMap().getRadius();
+        float ballRadius = getCurrentPlayer().getGolfBall().getRadius();
 
-       // if (xHole >= )
+        if (xHole - holeRadius < xBall && xBall < xHole + holeRadius
+                && zHole - holeRadius < zBall && zBall < zHole +holeRadius
+                && yHole >= yBall - ballRadius)
+            return true;
 
         return  false;
     }

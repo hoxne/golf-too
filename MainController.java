@@ -71,6 +71,8 @@ public class MainController {
         gameScreen.setTextToShow("Game Over");
     }
 
+    public void gameIsWon() { gameScreen.setTextToShow("Success!"); }
+
     public GameScreen getGameScreen() {
         return gameScreen;
     }
