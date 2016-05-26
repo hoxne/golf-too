@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class GolfBall {
     private static float FRICTION_COEFFICIENT = 10;
+    private static float BOUNCINESS = 0.95f;
 
     private Vector3 position;
     private Vector3 velocity;
@@ -112,6 +113,7 @@ public class GolfBall {
 
         Vector3 componentA = normal.cpy().scl((velocity.dot(normal)));
         Vector3 componentB = velocity.cpy().sub(componentA);
+        // componentA.scl(BOUNCINESS);
         this.velocity = componentB.cpy().sub(componentA);
 
         this.position.add(this.velocity.cpy().scl(deltaTime));

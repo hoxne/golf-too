@@ -21,6 +21,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -58,8 +60,8 @@ public class GameScreen implements Screen, InputProcessor {
 	private InputMultiplexer inputMultiplexer;
 	private DirectionalLight dirLight;
 	private Environment environment;
-	// private Model model;
-	// private ModelInstance instance;
+	private DirectionalShadowLight shadowLight;
+	private ModelBatch shadowBatch;
 
 	private Renderable terrain;
 
@@ -103,8 +105,12 @@ public class GameScreen implements Screen, InputProcessor {
 
         environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-		dirLight = new DirectionalLight().set(0.4f, 0.4f, 0.4f, -0.5f, -1.0f, -0.8f);
-		environment.add(dirLight);
+		// dirLight = new DirectionalLight().set(0.4f, 0.4f, 0.4f, -0.5f, -1.0f, -0.8f);
+		// environment.add(dirLight);
+
+		environment.add((shadowLight = new DirectionalShadowLight(4096, 4096, 60f, 60f, .1f, 200f)).set(0.8f, 0.8f, 0.8f, -0.5f, -1.0f, -0.8f));
+	    environment.shadowMap = shadowLight; 
+	    shadowBatch = new ModelBatch(new DepthShaderProvider());
 		
 		modelBatch = new ModelBatch();
 
@@ -113,24 +119,24 @@ public class GameScreen implements Screen, InputProcessor {
  		cam3dController = new CameraInputController(cam3d);
 		inputMultiplexer.addProcessor(cam3dController);
 
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				Scanner in = new Scanner(System.in);
-				while(true){
-					int x = in.nextInt();
-					int y = in.nextInt();
-					// for(int i = 0; i < 4; i++)
-					gameController().getMap().raiseCorner(x, y);
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run() {
-							gameController().getMap().updateMesh();
-						}
-					});
-				}
-			}
-		}).start();
+		// new Thread(new Runnable() {
+		// 	@Override
+		// 	public void run() {
+		// 		Scanner in = new Scanner(System.in);
+		// 		while(true){
+		// 			int x = in.nextInt();
+		// 			int y = in.nextInt();
+		// 			// for(int i = 0; i < 4; i++)
+		// 			gameController().getMap().raiseCorner(x, y);
+		// 			Gdx.app.postRunnable(new Runnable() {
+		// 				@Override
+		// 				public void run() {
+		// 					gameController().getMap().updateMesh();
+		// 				}
+		// 			});
+		// 		}
+		// 	}
+		// }).start();
 
 
 		terrain = new Renderable();
@@ -194,7 +200,7 @@ public class GameScreen implements Screen, InputProcessor {
 		gameController().update(delta);
 
 		// rotate light
-		dirLight.direction.rotate(0.3f, 0,1,0);
+		// dirLight.direction.rotate(0.3f, 0,1,0);
 
 		// look at ball
 		cam3d.lookAt(getCurrentPlayer().getGolfBall().getPosition());
@@ -207,6 +213,27 @@ public class GameScreen implements Screen, InputProcessor {
 		cam2d.update();
 		cam3d.update();
 
+
+		loadBallModels();
+
+		shadowLight.begin(Vector3.Zero, cam3d.direction);
+        shadowBatch.begin(shadowLight.getCamera());
+
+        for (GolfBall curBall : gameController().getBalls()) {
+			ModelInstance curBallInstance = ballsInstances.get(curBall);
+			curBallInstance.transform.idt();
+			Vector3 ballPos = curBall.getPosition();
+			float radius = curBall.getRadius();
+			curBallInstance.transform.scale(curBall.getRadius()*2, curBall.getRadius()*2, curBall.getRadius()*2);
+			curBallInstance.transform.setTranslation(ballPos.x, ballPos.y , ballPos.z);
+			shadowBatch.render(curBallInstance);
+		}
+
+        shadowBatch.end();
+        shadowLight.end();
+
+
+
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -217,7 +244,7 @@ public class GameScreen implements Screen, InputProcessor {
 		// terrain
         modelBatch.render(terrain);
         // ball
-		loadBallModels();
+		
 
 
 		for (GolfBall curBall : gameController().getBalls()) {
