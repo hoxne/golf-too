@@ -70,9 +70,9 @@ public class PhysicsManager {
 		return bbIntersects;
 	}
 
-	public void update(float deltaTime) {
+	private void _update(float dt){
 		// ball-ball collisions
-		ArrayList<GolfBall> ballVsBalls = getBallBallCollisions(deltaTime);
+		ArrayList<GolfBall> ballVsBalls = getBallBallCollisions(dt);
 		for (int i = 0; i < ballVsBalls.size(); i+=2) {
 			GolfBall b1 = ballVsBalls.get(i);
 			GolfBall b2 = ballVsBalls.get(i+1);
@@ -95,15 +95,27 @@ public class PhysicsManager {
 				if (normal != null)
 					normals.add(normal);
 			}
-			
+
 			if (normals.size() > 0) {
-				ball.bounce(normals, deltaTime);
+				ball.bounce(normals, dt);
 			}
 		}
 
 		for (GolfBall ball : balls) {
-			ball.update(deltaTime);
+			ball.update(dt);
 		}
+	}
+
+	private static float FIXED_DT = 1f/60;
+	private float time = 0.0f;
+
+	public void update(float dt) {
+		time += dt;
+		while(time > FIXED_DT){
+			time -= FIXED_DT;
+			_update(FIXED_DT);
+		}
+		System.out.println(time);
 	}
 
 	public ArrayList<GolfBall> getBalls() {
