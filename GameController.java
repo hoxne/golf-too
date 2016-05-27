@@ -21,7 +21,13 @@ public class GameController {
     }
 
     public void addPlayer(Player player) {
-        players.add(player);
+         players.add(player);
+    }
+
+    public void addAiPlayer(){
+        int sizePlayers = players.size();
+        ArrayList<GolfBall> ballProtos = getGolfBallProtos();
+        players.add(new AIPlayer(sizePlayers, ballProtos.get(0).clone(), map));
     }
 
     public void reset(){
@@ -30,7 +36,7 @@ public class GameController {
         mainController.getGameScreen().toggleInput(true);
 
         // add new players
-        int playersSelected = 1;
+        int playersSelected = numberOfPlayers;
         int ballProtoSelected = 0;
         ArrayList<GolfBall> ballProtos = getGolfBallProtos();
         int curPlayer = 0;
@@ -38,8 +44,14 @@ public class GameController {
             Player player = new Player(curPlayer, ballProtos.get(ballProtoSelected).clone(), map);
             addPlayer(player);
         }
-        // addPlayer(new AIPlayer(curPlayer, ballProtos.get(ballProtoSelected).clone(), map));
+
+        int playersAi = numberOfAiPlayers;
+        for (; curPlayer < playersSelected + playersAi; curPlayer++) {
+            addAiPlayer();
+        }
     }
+
+
 
     public boolean startGame() {
         if (players.size() > 0) {
@@ -161,6 +173,14 @@ public class GameController {
         return false;
     }
 
+    public void setNumberOfPlayers(int players) {
+        numberOfPlayers = players;
+    }
+
+    public void setNumberOfAiPlayers(int aiPlayers) {
+        numberOfAiPlayers = aiPlayers;
+    }
+
     private MainController mainController;
     private PhysicsManager physicsManager;
     private ArrayList<Player> players;
@@ -169,4 +189,6 @@ public class GameController {
     private boolean probablyBallStopped = false;
     private int ballStoppedIteration = 0;
     private boolean hasPlayerKicked = false;
+    private int numberOfPlayers = 0;
+    private int numberOfAiPlayers = 0;
 }

@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -29,6 +30,8 @@ public class MenuScreen implements Screen {
     private Skin skin;
     private Stage stage;
     private SpriteBatch batch;
+    private int numberOfPlayer = 0;
+    private int numberOfAiPlayer = 0;
 
     private MainController mainController;
 
@@ -79,6 +82,18 @@ public class MenuScreen implements Screen {
         stage.addActor(textButtonPause);
         stage.addActor(textButtonPause);
 
+        final TextButton textButtonAI = new TextButton("Lazy Mood", textButtonStyle);
+        textButtonAI.setPosition(820, 50);
+        stage.addActor(textButtonAI);
+        stage.addActor(textButtonAI);
+        stage.addActor(textButtonAI);
+
+        final TextButton textButtonPlayer = new TextButton("Active mood", textButtonStyle);
+        textButtonPlayer.setPosition(180, 50);
+        stage.addActor(textButtonPlayer);
+        stage.addActor(textButtonPlayer);
+        stage.addActor(textButtonPlayer);
+
         textButtonPlay.addListener(new ChangeListener(){
             public void changed (ChangeEvent event, Actor actor){
                 textButtonPlay.setText("Here we go again!!");
@@ -97,6 +112,23 @@ public class MenuScreen implements Screen {
             public void changed (ChangeEvent event, Actor actor){
                 textButtonPlay.setText("So saaaaaaaaaaad");
                 Gdx.app.exit();
+            }
+        });
+
+        textButtonAI.addListener(new ChangeListener(){
+            public void changed (ChangeEvent event, Actor actor){
+                textButtonAI.setText("Lazy mood activated");
+                numberOfAiPlayer++;
+                mainController.getGameController().setNumberOfAiPlayers(numberOfAiPlayer);
+
+            }
+        });
+
+        textButtonPlayer.addListener(new ChangeListener(){
+            public void changed (ChangeEvent event, Actor actor){
+                textButtonPlayer.setText("Active Mood Activated");
+                numberOfPlayer++;
+                mainController.getGameController().setNumberOfPlayers(numberOfPlayer);
             }
         });
 

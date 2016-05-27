@@ -198,38 +198,38 @@ public class Course implements Disposable {
 		float h = 100;
 
 		// wall 1
-		triangles.add(new Vector3(0,0,0));
-		triangles.add(new Vector3(width,0,0));
+		triangles.add(new Vector3(0,-h,0));
+		triangles.add(new Vector3(width,-h,0));
 		triangles.add(new Vector3(width,h,0));
 
-		triangles.add(new Vector3(0,0,0));
+		triangles.add(new Vector3(0,-h,0));
 		triangles.add(new Vector3(0,h,0));
 		triangles.add(new Vector3(width,h,0));
 
 		// wall 2
-		triangles.add(new Vector3(0,0,0));
-		triangles.add(new Vector3(0,0,height));
+		triangles.add(new Vector3(0,-h,0));
+		triangles.add(new Vector3(0,-h,height));
 		triangles.add(new Vector3(0,h,height));
 
-		triangles.add(new Vector3(0,0,0));
+		triangles.add(new Vector3(0,-h,0));
 		triangles.add(new Vector3(0,h,0));
 		triangles.add(new Vector3(0,h,height));
 
 		// wall 3
-		triangles.add(new Vector3(width,0,0));
-		triangles.add(new Vector3(width,0,height));
+		triangles.add(new Vector3(width,-h,0));
+		triangles.add(new Vector3(width,-h,height));
 		triangles.add(new Vector3(width,h,height));
 		
-		triangles.add(new Vector3(width,0,0));
+		triangles.add(new Vector3(width,-h,0));
 		triangles.add(new Vector3(width,h,0));
 		triangles.add(new Vector3(width,h,height));
 
 		// wall 3
-		triangles.add(new Vector3(width,0,height));
-		triangles.add(new Vector3(0,0,height));
+		triangles.add(new Vector3(width,-h,height));
+		triangles.add(new Vector3(0,-h,height));
 		triangles.add(new Vector3(0,h,height));
 
-		triangles.add(new Vector3(width,0,height));
+		triangles.add(new Vector3(width,-h,height));
 		triangles.add(new Vector3(width,h,height));
 		triangles.add(new Vector3(0,h,height));
 
