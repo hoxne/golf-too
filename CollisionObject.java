@@ -112,7 +112,6 @@ public class CollisionObject {
 		return sweptCollideTriangle(a,b,c,ball,1.0f);
 	}
 
-
 	public static float sweptCollideTriangle(Vector3 a, Vector3 b, Vector3 c, GolfBall ball, float maxT){
 		// scale everything so we have a unit sphere
 		float invR = 1f/ball.getRadius();
@@ -127,15 +126,17 @@ public class CollisionObject {
 
 		// calculate triangle plane 
 		Plane tPlane = new Plane(p1, p2, p3);
-		// flip plane if it's pointing away from the ball
 		if(tPlane.normal.dot(normV) >= 0.0f){
-			tPlane.normal.scl(-1);
-			tPlane.d = -tPlane.d;
+			// // flip plane if it's pointing away from the ball
+			// tPlane.normal.scl(-1);
+			// tPlane.d = -tPlane.d;
+
+			// stop if the triangle is facing away from the ball
+			return Float.POSITIVE_INFINITY;
 		}
 
 		// distance to plane
 		float planeDist = tPlane.distance(start);
-		// System.out.println(planeDist > 0);
 
 		float t0, t1;
 		boolean inPlane = false;

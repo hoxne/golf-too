@@ -146,13 +146,13 @@ public class GameController {
         float xBall = getCurrentPlayer().getGolfBall().getPosition().x;
         float zBall = getCurrentPlayer().getGolfBall().getPosition().z;
         float yBall = getCurrentPlayer().getGolfBall().getPosition().y;
-        float yHole = getCurrentPlayer().getGolfBall().getPosition().y;
+        // float yHole = getCurrentPlayer().getGolfBall().getPosition().y;
         float holeRadius = getMap().getRadius();
         float ballRadius = getCurrentPlayer().getGolfBall().getRadius();
 
         if (xHole - holeRadius < xBall && xBall < xHole + holeRadius
-                && zHole - holeRadius < zBall && zBall < zHole +holeRadius
-                && yHole >= yBall - ballRadius)
+                && zHole - holeRadius < zBall && zBall < zHole +holeRadius)
+                // && yHole >= yBall - ballRadius)
             return true;
 
         return  false;

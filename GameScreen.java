@@ -295,7 +295,7 @@ public class GameScreen implements Screen, InputProcessor {
 	@Override
 	public boolean keyDown(int key){
 		float ds = 0.5f;
-		System.out.println("Key down");
+		// System.out.println("Key down");
 
 		if (key == Input.Keys.ESCAPE) {
 			mainController.showMainMenu();
@@ -386,7 +386,7 @@ public class GameScreen implements Screen, InputProcessor {
 				//dx.mult(5);
 				dx.y = (dx.y < 0f) ? 0f : dx.y;
 				getCurrentPlayer().kick(dx);
-				System.out.println(dx.len());
+				// System.out.println(dx.len());
 
 				draggingRight = false;
 				lastRightMousePos.set(-1, -1);

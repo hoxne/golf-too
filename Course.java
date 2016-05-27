@@ -203,13 +203,13 @@ public class Course implements Disposable {
 		triangles.add(new Vector3(width,h,0));
 
 		triangles.add(new Vector3(0,-h,0));
-		triangles.add(new Vector3(0,h,0));
 		triangles.add(new Vector3(width,h,0));
+		triangles.add(new Vector3(0,h,0));
 
 		// wall 2
 		triangles.add(new Vector3(0,-h,0));
-		triangles.add(new Vector3(0,-h,height));
 		triangles.add(new Vector3(0,h,height));
+		triangles.add(new Vector3(0,-h,height));
 
 		triangles.add(new Vector3(0,-h,0));
 		triangles.add(new Vector3(0,h,0));
@@ -221,8 +221,8 @@ public class Course implements Disposable {
 		triangles.add(new Vector3(width,h,height));
 		
 		triangles.add(new Vector3(width,-h,0));
-		triangles.add(new Vector3(width,h,0));
 		triangles.add(new Vector3(width,h,height));
+		triangles.add(new Vector3(width,h,0));
 
 		// wall 3
 		triangles.add(new Vector3(width,-h,height));
@@ -230,14 +230,29 @@ public class Course implements Disposable {
 		triangles.add(new Vector3(0,h,height));
 
 		triangles.add(new Vector3(width,-h,height));
-		triangles.add(new Vector3(width,h,height));
 		triangles.add(new Vector3(0,h,height));
+		triangles.add(new Vector3(width,h,height));
+
+
+		// draw walls
+		// MeshPartBuilder.VertexInfo v0 = new MeshPartBuilder.VertexInfo();
+		// MeshPartBuilder.VertexInfo v1 = new MeshPartBuilder.VertexInfo();
+		// MeshPartBuilder.VertexInfo v2 = new MeshPartBuilder.VertexInfo();
+		// v0.color.set(Color.GRAY);
+		// v1.color.set(v0.color);
+		// v2.color.set(v0.color);
+
+		// for(int i = 0; i < triangles.size(); i +=3){
+		// 	v0.position.set(triangles.get(i+0));
+		// 	v1.position.set(triangles.get(i+1));
+		// 	v2.position.set(triangles.get(i+2));
+		// 	generateTriangle(v0, v1, v2);
+		// }
 
 
 
-
-		CollisionObject c = new CollisionObject(triangles.toArray(new Vector3[0]));
-		collisionObjects.add(c);
+		CollisionObject col = new CollisionObject(triangles.toArray(new Vector3[0]));
+		collisionObjects.add(col);
 
 
 		// // for each tile
