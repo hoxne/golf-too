@@ -264,14 +264,14 @@ public class GameScreen implements Screen, InputProcessor {
 		modelBatch.end();
 
 
-		// 2d overlay
-		shapeRenderer.setProjectionMatrix(cam2d.combined);
+		// // 2d overlay
+		// shapeRenderer.setProjectionMatrix(cam2d.combined);
 
-		shapeRenderer.begin(ShapeType.Line);
-		// border
-		shapeRenderer.setColor(0.3f, 0.3f, 0.3f, 1);
-		shapeRenderer.rect(0, 0, (float)cam2d.viewportWidth, (float)cam2d.viewportHeight);
-		shapeRenderer.end();
+		// shapeRenderer.begin(ShapeType.Line);
+		// // border
+		// shapeRenderer.setColor(0.3f, 0.3f, 0.3f, 1);
+		// shapeRenderer.rect(0, 0, (float)cam2d.viewportWidth, (float)cam2d.viewportHeight);
+		// shapeRenderer.end();
 
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();

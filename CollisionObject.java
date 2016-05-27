@@ -108,19 +108,6 @@ public class CollisionObject {
 		return t;
 	}
 
-	private static boolean isInTriangle(Vector3 p, Vector3 t0, Vector3 t1, Vector3 t2){
-		Vector3 p0 = t0.cpy().sub(p).nor();
-		Vector3 p1 = t1.cpy().sub(p).nor();
-		Vector3 p2 = t2.cpy().sub(p).nor();
-
-		float a = p0.dot(p1);
-		float b = p1.dot(p2);
-		float c = p2.dot(p0);
-
-		float angle = (float)Math.acos(a) + (float)Math.acos(b) + (float)Math.acos(c);
-		return Math.abs(angle - (2*Math.PI)) < 0.01;
-	}
-
 	public static float sweptCollideTriangle(Vector3 a, Vector3 b, Vector3 c, GolfBall ball){
 		return sweptCollideTriangle(a,b,c,ball,1.0f);
 	}
@@ -131,6 +118,7 @@ public class CollisionObject {
 		float invR = 1f/ball.getRadius();
 		Vector3 start = ball.getPosition().cpy().scl(invR);
 		Vector3 v = ball.getVelocity().cpy().scl(invR);
+		v.scl(PhysicsManager.FIXED_DT);
 		Vector3 normV = v.cpy().nor();
 
 		Vector3 p1 = a.cpy().scl(invR);
@@ -198,14 +186,13 @@ public class CollisionObject {
 
 
             // Is that point inside the triangle?
-            // if (Intersector.isPointInTriangle(planeIntersect, p1, p2, p3)) {
-            if (isInTriangle(planeIntersect, p1, p2, p3)) {
+            if (Intersector.isPointInTriangle(planeIntersect, p1, p2, p3)) {
+            // if (isInTriangle(planeIntersect, p1, p2, p3)) {
                	return t0;
             }
         }
 
         // if we haven't found a collision by now we have to check all points and edges of the triangle
-        // float v2 = v.len2();
         float t = Float.POSITIVE_INFINITY;
 
         // check vertices
@@ -223,72 +210,72 @@ public class CollisionObject {
 	// NOTE: maybe we should add some 'working memory' vectors to this class 
 	//       so we can re-use those instead of allocating new ones every time this function is called
 	public static boolean collideTriangle(Vector3 aVector, Vector3 bVector, Vector3 cVector, GolfBall ball) {
-		// float t = sweptCollideTriangle(aVector, bVector, cVector, ball);
-		// // if(t == Float.POSITIVE_INFINITY)
-		// 	// return false;
-		// // System.out.println(t);
-		// return t <= 1.0f;
+		float t = sweptCollideTriangle(aVector, bVector, cVector, ball);
+		// if(t == Float.POSITIVE_INFINITY)
+			// return false;
+		// System.out.println(t);
+		return t <= 1.0f;
 
-		Vector3 A = aVector.cpy().sub(ball.getPosition());
-		Vector3 B = bVector.cpy().sub(ball.getPosition());
-		Vector3 C = cVector.cpy().sub(ball.getPosition());
+		// Vector3 A = aVector.cpy().sub(ball.getPosition());
+		// Vector3 B = bVector.cpy().sub(ball.getPosition());
+		// Vector3 C = cVector.cpy().sub(ball.getPosition());
 
-		float rr = ball.getRadius()*ball.getRadius();
+		// float rr = ball.getRadius()*ball.getRadius();
 
-		// check distance to triangle plane
-		Vector3 V = (B.cpy().sub(A)).crs(C.cpy().sub(A));
-		float d = A.dot(V);
-		float e = V.dot(V);
+		// // check distance to triangle plane
+		// Vector3 V = (B.cpy().sub(A)).crs(C.cpy().sub(A));
+		// float d = A.dot(V);
+		// float e = V.dot(V);
 
-		if(d*d > rr*e)
-			return false;
+		// if(d*d > rr*e)
+		// 	return false;
 
 
-		// check vertices
-		float aa = A.dot(A);
-		float ab = A.dot(B);
-		float ac = A.dot(C);
-		float bb = B.dot(B);
-		float bc = B.dot(C);
-		float cc = C.dot(C);
+		// // check vertices
+		// float aa = A.dot(A);
+		// float ab = A.dot(B);
+		// float ac = A.dot(C);
+		// float bb = B.dot(B);
+		// float bc = B.dot(C);
+		// float cc = C.dot(C);
 
-		boolean sepA = (aa > rr) && (ab > aa) && (ac > aa);
-		boolean sepB = (bb > rr) && (ab > bb) && (bc > bb);
-		boolean sepC = (cc > rr) && (ac > cc) && (bc > cc);
+		// boolean sepA = (aa > rr) && (ab > aa) && (ac > aa);
+		// boolean sepB = (bb > rr) && (ab > bb) && (bc > bb);
+		// boolean sepC = (cc > rr) && (ac > cc) && (bc > cc);
 
-		if(sepA || sepB || sepC)
-			return false;
+		// if(sepA || sepB || sepC)
+		// 	return false;
 
-		// check edges
-		Vector3 AB = B.cpy().sub(A);
-		Vector3 BC = C.cpy().sub(B);
-		Vector3 CA = A.cpy().sub(C);
+		// // check edges
+		// Vector3 AB = B.cpy().sub(A);
+		// Vector3 BC = C.cpy().sub(B);
+		// Vector3 CA = A.cpy().sub(C);
 
-		float d1 = ab - aa;
-		float d2 = bc - bb;
-		float d3 = ac - cc;
+		// float d1 = ab - aa;
+		// float d2 = bc - bb;
+		// float d3 = ac - cc;
 
-		float e1 = AB.dot(AB);
-		float e2 = BC.dot(BC);
-		float e3 = CA.dot(CA);
+		// float e1 = AB.dot(AB);
+		// float e2 = BC.dot(BC);
+		// float e3 = CA.dot(CA);
 
-		Vector3 Q1 = A.cpy().scl(e1).sub(AB.cpy().scl(d1));
-		Vector3 Q2 = B.cpy().scl(e2).sub(BC.cpy().scl(d2));
-		Vector3 Q3 = C.cpy().scl(e3).sub(CA.cpy().scl(d3));
+		// Vector3 Q1 = A.cpy().scl(e1).sub(AB.cpy().scl(d1));
+		// Vector3 Q2 = B.cpy().scl(e2).sub(BC.cpy().scl(d2));
+		// Vector3 Q3 = C.cpy().scl(e3).sub(CA.cpy().scl(d3));
 
-		Vector3 QC = C.cpy().scl(e1).sub(Q1);
-		Vector3 QA = A.cpy().scl(e2).sub(Q2);
-		Vector3 QB = B.cpy().scl(e3).sub(Q3);
+		// Vector3 QC = C.cpy().scl(e1).sub(Q1);
+		// Vector3 QA = A.cpy().scl(e2).sub(Q2);
+		// Vector3 QB = B.cpy().scl(e3).sub(Q3);
 
-		boolean sepAB = (Q1.dot(Q1) > rr * e1 * e1) && (Q1.dot(QC) > 0);
-		boolean sepBC = (Q2.dot(Q2) > rr * e2 * e2) && (Q2.dot(QA) > 0);
-		boolean sepCA = (Q3.dot(Q3) > rr * e3 * e3) && (Q3.dot(QB) > 0);
+		// boolean sepAB = (Q1.dot(Q1) > rr * e1 * e1) && (Q1.dot(QC) > 0);
+		// boolean sepBC = (Q2.dot(Q2) > rr * e2 * e2) && (Q2.dot(QA) > 0);
+		// boolean sepCA = (Q3.dot(Q3) > rr * e3 * e3) && (Q3.dot(QB) > 0);
 
-		if(sepAB || sepBC || sepCA)
-			return false;
+		// if(sepAB || sepBC || sepCA)
+		// 	return false;
 
-		// if all else fails...
-		return true;
+		// // if all else fails...
+		// return true;
 	}
 
 	// NOTE: update this so it returns all colliding triangles instead of only one
@@ -313,17 +300,18 @@ public class CollisionObject {
 
 
 	// public static void main(String[] args) {
-	// 	Vector3 a = new Vector3(5.4249997f,0.0f,5.65f);
-	// 	Vector3 b = new Vector3(5.4249997f,-0.5f,5.65f);
-	// 	Vector3 c = new Vector3(5.35f,-0.5f,5.5750003f);
+	// 	Vector3 a = new Vector3(0,0,0);
+	// 	Vector3 b = new Vector3(1,0,0);
+	// 	Vector3 c = new Vector3(0,0,1);
 
-	// 	Vector3 p = new Vector3(4.264173f,0.34265694f,4.264173f);
+	// 	// Vector3 p = new Vector3(0.5f,0.5f,0.5f);
+	// 	// Vector3 v = new Vector3(0.5f,)
 
 	// 	GolfBall ball = new GolfBall(p, new Vector3(), 1f, 0.2f);
 
-	// 	boolean colliding = collideTriangle(a, b, c, ball);
+	// 	float t = sweptCollideTriangle(a, b, c, ball);
 
-	// 	System.out.println(colliding);
+	// 	System.out.println(t);
 	// }
 
 }
