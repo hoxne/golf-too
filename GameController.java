@@ -49,6 +49,12 @@ public class GameController {
         for (; curPlayer < playersSelected + playersAi; curPlayer++) {
             addAiPlayer();
         }
+
+        if (playersSelected + playersAi == 0) {
+            Player player = new Player(curPlayer, ballProtos.get(ballProtoSelected).clone(), map);
+            addPlayer(player);
+        }
+
     }
 
 
