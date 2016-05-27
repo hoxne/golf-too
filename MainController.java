@@ -30,10 +30,8 @@ public class MainController {
         gameScreen = new GameScreen(this);
         editorScreen = new Editor(this);
 
-        this.showMainMenu();
-
         gameController.reset();
-
+        this.showMainMenu();
     }
 
     public Course getMap(){
