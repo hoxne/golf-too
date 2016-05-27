@@ -85,6 +85,7 @@ public class GolfBall {
             frictionForce.scl(velocityUp.len());
             Vector3 dv = frictionForce.cpy();
             dv.scl(dt*10);
+            // dv.scl(dt);
             // System.out.println(dv);
             velocity.add(dv);
             

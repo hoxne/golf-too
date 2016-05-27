@@ -386,6 +386,7 @@ public class GameScreen implements Screen, InputProcessor {
 				//dx.mult(5);
 				dx.y = (dx.y < 0f) ? 0f : dx.y;
 				getCurrentPlayer().kick(dx);
+				System.out.println(dx.len());
 
 				draggingRight = false;
 				lastRightMousePos.set(-1, -1);

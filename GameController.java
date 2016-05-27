@@ -30,7 +30,7 @@ public class GameController {
         mainController.getGameScreen().toggleInput(true);
 
         // add new players
-        int playersSelected = 0;
+        int playersSelected = 1;
         int ballProtoSelected = 0;
         ArrayList<GolfBall> ballProtos = getGolfBallProtos();
         int curPlayer = 0;
@@ -38,7 +38,7 @@ public class GameController {
             Player player = new Player(curPlayer, ballProtos.get(ballProtoSelected).clone(), map);
             addPlayer(player);
         }
-        addPlayer(new AIPlayer(curPlayer, ballProtos.get(ballProtoSelected).clone(), map));
+        // addPlayer(new AIPlayer(curPlayer, ballProtos.get(ballProtoSelected).clone(), map));
     }
 
     public boolean startGame() {
@@ -148,7 +148,7 @@ public class GameController {
         }else{
             ballStoppedIteration = 0;
         }
-        return ballStoppedIteration > 10;
+        return ballStoppedIteration > 20;
     }
 
     private boolean isBallOutOfGame() {
