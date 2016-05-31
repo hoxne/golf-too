@@ -53,7 +53,8 @@ public class Course implements Disposable {
 	private int norPos;
 	private int colPos;
 
-	private ArrayList<Vector3> collisionVertices;
+	private ArrayList<Vector3> currentCollisionVertices;
+	private ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
 
 	Course(int width, int height){
 		this.width = width;
@@ -88,7 +89,7 @@ public class Course implements Disposable {
 		// allocate arrar to store indices
 		this.indices = new short[numIndices];
 
-		this.collisionVertices =  new ArrayList<>();
+		this.currentCollisionVertices =  new ArrayList<>();
 	}
 
 	public void setCorner(int x, int y, int h){
@@ -179,20 +180,20 @@ public class Course implements Disposable {
 
 	public float getRadius() { return holeRadius; }
 
+	private void currentCollisionObjectFinished(){
+		Vector3[] triangles = currentCollisionVertices.toArray(new Vector3[0]);
+		CollisionObject object = new CollisionObject(triangles);
+		collisionObjects.add(object);
+		this.currentCollisionVertices = new ArrayList<>();
+	}
+
 	public ArrayList<CollisionObject> getCollisionObjects(){
-        ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
-
-        Vector3[] triangles = this.collisionVertices.toArray(new Vector3[0]);
-        CollisionObject object = new CollisionObject(triangles);
-        collisionObjects.add(object);
-
-        collisionObjects.addAll(getWallCollisionObjects());
-
-        return collisionObjects;
+		collisionObjects.addAll(getWallCollisionObjects());
+		return collisionObjects;
 	}
 
 	public ArrayList<CollisionObject> getWallCollisionObjects(){
-		ArrayList<CollisionObject> collisionObjects = new ArrayList<>();
+		ArrayList<CollisionObject> colobjs = new ArrayList<>();
 		ArrayList<Vector3> triangles = new ArrayList<>();
 
 		float h = 100;
@@ -252,7 +253,7 @@ public class Course implements Disposable {
 
 
 		CollisionObject col = new CollisionObject(triangles.toArray(new Vector3[0]));
-		collisionObjects.add(col);
+		colobjs.add(col);
 
 
 		// // for each tile
@@ -274,7 +275,7 @@ public class Course implements Disposable {
 		// 		}
 		// 	}
 		// }
-		return collisionObjects;
+		return colobjs;
 	}
 
 	public boolean isTileInMap(int x, int y){
@@ -309,7 +310,7 @@ public class Course implements Disposable {
 
 		index++;
 
-		this.collisionVertices.add(v.position.cpy());
+		this.currentCollisionVertices.add(v.position.cpy());
 	}
 
 	// function to generate a triangle from 3 vertices and add it to the vertex/index arrays
@@ -434,7 +435,9 @@ public class Course implements Disposable {
 	// updates the whole mesh, based on the heightmap and isTerrain array
 	public void updateMesh(){
 		// reset collisionVertices
-		this.collisionVertices =  new ArrayList<>();
+		this.currentCollisionVertices = new ArrayList<>();
+		this.collisionObjects = new ArrayList<>();
+
 		// reset index to overwrite the arrays
 		this.index = 0;
 		// buffer variables to store temporary vertex data
@@ -454,6 +457,7 @@ public class Course implements Disposable {
 				// generate hole instead of tile if we're at the holepos
 				if(x==holepos.x && y==holepos.y){
 					generateHole(heightmap[x][y]);
+					currentCollisionObjectFinished();
 					continue;
 				}
 			
@@ -498,6 +502,8 @@ public class Course implements Disposable {
 					// second triangle (00 - 01 - 11)
 					generateTriangle(v00,v01,v11);
 				}
+
+				currentCollisionObjectFinished();
 			}	
 		}
 		// pass data to mesh

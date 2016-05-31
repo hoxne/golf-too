@@ -36,31 +36,21 @@ public class PhysicsManager {
 		for(GolfBall b: this.balls)
 			ballsDeepCopy.add(b.clone());
 
-
-
-
 		PhysicsManager cloned = new PhysicsManager(colObjs);
 		cloned.addBalls(ballsDeepCopy);
 		
 		return cloned;
 	}
 	
-	public Map<GolfBall, ArrayList<CollisionObject>> getBallBoundingBoxCollisions() {
-		
-		Map<GolfBall, ArrayList<CollisionObject>> bbIntersects = new HashMap<GolfBall, ArrayList<CollisionObject>>();
-
-		for(GolfBall b : this.balls) {
-			ArrayList<CollisionObject> list = new ArrayList<>();
-			bbIntersects.put(b, list);
-			for(CollisionObject co : this.colObjs) {
-				if(b.boundingBox.intersects(co.boundingBox)) {
-					// System.out.println("bbouh");
-					list.add(co);
-				}
+	public ArrayList<CollisionObject> getBallBoundingBoxCollisions(GolfBall b) {
+		ArrayList<CollisionObject> intersects = new ArrayList<>();
+		for(CollisionObject co : this.colObjs) {
+			if(b.boundingBox.intersects(co.boundingBox)) {
+				intersects.add(co);
 			}
 		}
-
-		return bbIntersects;
+		// System.out.println(intersects.size() + " / " + colObjs.size());
+		return intersects;
 	}
 	
 	public ArrayList<GolfBall> getBallBallCollisions(float deltaTime) {
@@ -97,32 +87,48 @@ public class PhysicsManager {
 		}
 
 		// terrain collisions
-		Map<GolfBall, ArrayList<CollisionObject>> ballVsObjects = getBallBoundingBoxCollisions();
 		for (GolfBall ball : balls) {
-			ArrayList<CollisionObject> collisionObjects = ballVsObjects.get(ball);
-			ArrayList<Vector3> normals = new ArrayList<>();
-			for (CollisionObject collisionObject : collisionObjects) {
-				Vector3 normal = collisionObject.getNormal(ball);
-				if (normal != null)
+			float processedT = 0.0f;
+			while(processedT < 1.0f){
+				float t = 1.0f - processedT;
+				float a = 1.0f - processedT;
+				Vector3 normal = null;
+				ArrayList<CollisionObject> collisionObjects = getBallBoundingBoxCollisions(ball);
+
+				for (CollisionObject collisionObject : collisionObjects) {
+					Vector3 n = new Vector3();
+					float newT = collisionObject.getCollision(ball, t, n);
+					if (newT < t){
+						t = newT;
+						normal = n;
+					}
+				}
+				if(normal != null){
+					ArrayList<Vector3> normals = new ArrayList<>();
 					normals.add(normal);
-			}
+					ball.bounce(normals);
+				}
 
-			if (normals.size() > 0) {
-				ball.bounce(normals, dt);
-			}
-		}
+				ball.update(dt*t*1.0f);
+       			// System.out.println(velocity.len());
+				if(t > a){
+					System.out.println("EVERYITNHG IS BORKED");
+				}
 
-		for (GolfBall ball : balls) {
-			ball.update(dt);
+				processedT += t;
+				// System.out.println(processedT);
+			}
+			// System.out.println(processedT);
 		}
 	}
 
 	// public static float FIXED_DT = 1f/600;
-	public static float FIXED_DT = 1f/60;
+	public static float FIXED_DT = 1f/600;
+	public static float SUPER_HOT = 1.0f;
 	private float time = 0.0f;
 
 	public void update(float dt) {
-		time += dt;
+		time += dt*SUPER_HOT;
 		while(time > FIXED_DT) {
 			time -= FIXED_DT;
 			_update(FIXED_DT);

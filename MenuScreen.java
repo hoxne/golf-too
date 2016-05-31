@@ -64,31 +64,31 @@ public class MenuScreen implements Screen {
 
         skin.add("default", textButtonStyle);
 
-        final TextButton textButtonPlay = new TextButton("Let's Hit Some Balls!", textButtonStyle);
+        final TextButton textButtonPlay = new TextButton("Play", textButtonStyle);
         textButtonPlay.setPosition(500, 500);
         stage.addActor(textButtonPlay);
         stage.addActor(textButtonPlay);
         stage.addActor(textButtonPlay);
 
-        final TextButton textButtonEditor= new TextButton("My Course DIY", textButtonStyle);
+        final TextButton textButtonEditor= new TextButton("Course Editor", textButtonStyle);
         textButtonEditor.setPosition(500, 350);
         stage.addActor(textButtonEditor);
         stage.addActor(textButtonEditor);
         stage.addActor(textButtonEditor);
 
-        final TextButton textButtonPause = new TextButton("I'm Tired", textButtonStyle);
+        final TextButton textButtonPause = new TextButton("Quit", textButtonStyle);
         textButtonPause.setPosition(500, 200);
         stage.addActor(textButtonPause);
         stage.addActor(textButtonPause);
         stage.addActor(textButtonPause);
 
-        final TextButton textButtonAI = new TextButton("Lazy Mood", textButtonStyle);
+        final TextButton textButtonAI = new TextButton("AI", textButtonStyle);
         textButtonAI.setPosition(820, 50);
         stage.addActor(textButtonAI);
         stage.addActor(textButtonAI);
         stage.addActor(textButtonAI);
 
-        final TextButton textButtonPlayer = new TextButton("Active mood", textButtonStyle);
+        final TextButton textButtonPlayer = new TextButton("Human", textButtonStyle);
         textButtonPlayer.setPosition(180, 50);
         stage.addActor(textButtonPlayer);
         stage.addActor(textButtonPlayer);
@@ -96,28 +96,28 @@ public class MenuScreen implements Screen {
 
         textButtonPlay.addListener(new ChangeListener(){
             public void changed (ChangeEvent event, Actor actor){
-                textButtonPlay.setText("Here we go again!!");
+                // textButtonPlay.setText("Here we go again!!");
                 mainController.showGameScreen();
             }
         });
 
         textButtonEditor.addListener(new ChangeListener(){
             public void changed (ChangeEvent event, Actor actor){
-                textButtonEditor.setText("Pinterest session ivl!");
+                // textButtonEditor.setText("Pinterest session ivl!");
                 mainController.showEditor();
             }
         });
 
         textButtonPause.addListener(new ChangeListener(){
             public void changed (ChangeEvent event, Actor actor){
-                textButtonPlay.setText("So saaaaaaaaaaad");
+                // textButtonPlay.setText("So saaaaaaaaaaad");
                 Gdx.app.exit();
             }
         });
 
         textButtonAI.addListener(new ChangeListener(){
             public void changed (ChangeEvent event, Actor actor){
-                textButtonAI.setText("Lazy mood activated");
+                // textButtonAI.setText("Lazy mood activated");
                 numberOfAiPlayer++;
                 mainController.getGameController().setNumberOfAiPlayers(numberOfAiPlayer);
 
@@ -126,7 +126,7 @@ public class MenuScreen implements Screen {
 
         textButtonPlayer.addListener(new ChangeListener(){
             public void changed (ChangeEvent event, Actor actor){
-                textButtonPlayer.setText("Active Mood Activated");
+                // textButtonPlayer.setText("Active Mood Activated");
                 numberOfPlayer++;
                 mainController.getGameController().setNumberOfPlayers(numberOfPlayer);
             }

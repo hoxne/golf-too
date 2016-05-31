@@ -20,7 +20,7 @@ public class AIPlayer extends Player {
         Vector3 bestKick = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         float bestScore = Float.MAX_VALUE;
 
-        int MAX_ATTEMPTS = 50;
+        int MAX_ATTEMPTS = 500;
         System.out.print("Calculating shot...");
         for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
             System.out.print("\rCalculating shot... " + (100f*attempt/MAX_ATTEMPTS) + "%");
