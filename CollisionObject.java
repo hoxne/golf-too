@@ -14,7 +14,7 @@ public class CollisionObject {
 		this.triangles = triangles;
 		this.boundingBox = new BoundingBox();
 		this.boundingBox.set(triangles);
-		// this.boundingBox.ext(0.1f, 0.1f, 0.1f);
+		this.boundingBox.ext(0.1f, 0.1f, 0.1f);
 	}
 
 	// normal is a reference in which this funtion will store the result
@@ -125,7 +125,7 @@ public class CollisionObject {
 		boolean inPlane = false;
 
 		float normdotV = tPlane.normal.dot(v);
-
+		
 		// is sphere travelling parallel to plane?
 		if(normdotV == 0.0f){
 			// is sphere inside of the plane?
@@ -160,8 +160,9 @@ public class CollisionObject {
 
 		// if the closest possible collision point is further away
         // than maxT  then there's no point in testing further.
-        if(t0 >= maxT)
+        if(t0 >= maxT){
         	return Float.POSITIVE_INFINITY;
+        }
 
         // check for collision againt the triangle face:
         if (!inPlane) {

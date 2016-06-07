@@ -119,25 +119,6 @@ public class GameScreen implements Screen, InputProcessor {
  		cam3dController = new CameraInputController(cam3d);
 		inputMultiplexer.addProcessor(cam3dController);
 
-		// new Thread(new Runnable() {
-		// 	@Override
-		// 	public void run() {
-		// 		Scanner in = new Scanner(System.in);
-		// 		while(true){
-		// 			int x = in.nextInt();
-		// 			int y = in.nextInt();
-		// 			// for(int i = 0; i < 4; i++)
-		// 			gameController().getMap().raiseCorner(x, y);
-		// 			Gdx.app.postRunnable(new Runnable() {
-		// 				@Override
-		// 				public void run() {
-		// 					gameController().getMap().updateMesh();
-		// 				}
-		// 			});
-		// 		}
-		// 	}
-		// }).start();
-
 
 		terrain = new Renderable();
 		terrain.environment = environment;

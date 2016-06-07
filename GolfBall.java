@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class GolfBall {
     private static float FRICTION_COEFFICIENT = 0.5f;
-    private static float BOUNCINESS = 0.30f;
+    private static float BOUNCINESS = 0.40f;
 
     private Vector3 position;
     private Vector3 velocity;
@@ -80,11 +80,11 @@ public class GolfBall {
         Vector3 friction = vSide.cpy().nor().scl(-1 * FRICTION_COEFFICIENT);
         friction.scl(vUp.len());
         // System.out.println(dv);
-        // if(vSide.len2() > friction.len2()){
+        if(vSide.len2() > friction.len2()){
             velocity.add(friction);
-        // }else{
-            // velocity.sub(vSide);
-        // }
+        }else{
+            velocity.sub(vSide);
+        }
     }
 
     public void bounce(ArrayList<Vector3> normals){

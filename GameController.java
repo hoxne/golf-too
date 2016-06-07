@@ -6,6 +6,8 @@ import java.util.ArrayList;
  * Created by Michael on 13.05.2016.
  */
 public class GameController {
+    private static final boolean ENABLE_NOISE = true;
+
     public GameController(MainController mainController) {
         this.mainController = mainController;
 
@@ -92,7 +94,7 @@ public class GameController {
     public PhysicsManager getPhysicsManager() { return physicsManager; }
 
     public void update(float delta) {
-        physicsManager.update(delta);
+        physicsManager.update(delta, ENABLE_NOISE);
 
         boolean isBallStopped = isBallStopped();
         // System.out.println(isBallStopped + " " + hasPlayerKicked);
@@ -161,12 +163,12 @@ public class GameController {
     private boolean isBallStopped() {
         // probably ball stopped
         Vector3 activeVelocity = getCurrentPlayer().getGolfBall().getVelocity();
-        if (activeVelocity.len() < 0.1) {
+        if (activeVelocity.len() < 0.2) {
             ballStoppedIteration++;
         }else{
             ballStoppedIteration = 0;
         }
-        return ballStoppedIteration > 20;
+        return ballStoppedIteration > 60;
     }
 
     private boolean isBallOutOfGame() {

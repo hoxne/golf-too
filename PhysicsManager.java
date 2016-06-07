@@ -71,7 +71,7 @@ public class PhysicsManager {
 		return bbIntersects;
 	}
 
-	private void _update(float dt){
+	private void _update(float dt, boolean noise){
 		// ball-ball collisions
 		ArrayList<GolfBall> ballVsBalls = getBallBallCollisions(dt);
 		for (int i = 0; i < ballVsBalls.size(); i+=2) {
@@ -91,7 +91,6 @@ public class PhysicsManager {
 			float processedT = 0.0f;
 			while(processedT < 1.0f){
 				float t = 1.0f - processedT;
-				float a = 1.0f - processedT;
 				Vector3 normal = null;
 				ArrayList<CollisionObject> collisionObjects = getBallBoundingBoxCollisions(ball);
 
@@ -103,35 +102,34 @@ public class PhysicsManager {
 						normal = n;
 					}
 				}
+				ball.update(dt*t*0.95f);
+
 				if(normal != null){
+					// noise
+					Vector3 dv = (new Vector3()).setToRandomDirection();
+					dv.scl(0.1f);
+					normal.add(dv).nor();
 					ArrayList<Vector3> normals = new ArrayList<>();
 					normals.add(normal);
 					ball.bounce(normals);
 				}
 
-				ball.update(dt*t*1.0f);
        			// System.out.println(velocity.len());
-				if(t > a){
-					System.out.println("EVERYITNHG IS BORKED");
-				}
 
 				processedT += t;
-				// System.out.println(processedT);
 			}
-			// System.out.println(processedT);
 		}
 	}
 
-	// public static float FIXED_DT = 1f/600;
-	public static float FIXED_DT = 1f/600;
-	public static float SUPER_HOT = 1.0f;
+	public static final float FIXED_DT = 1f/60;
+	public static final float SUPER_HOT = 1.0f;
 	private float time = 0.0f;
 
-	public void update(float dt) {
-		time += dt*SUPER_HOT;
+	public void update(float dt, boolean noise) {
+		time += dt/SUPER_HOT;
 		while(time > FIXED_DT) {
 			time -= FIXED_DT;
-			_update(FIXED_DT);
+			_update(FIXED_DT, noise);
 		}
 	}
 

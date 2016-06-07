@@ -8,6 +8,7 @@ import java.lang.Math;
  * Created by Michael on 24.05.2016.
  */
 public class AIPlayer extends Player {
+    private static final boolean ENABLE_NOISE = true;
 
     public AIPlayer(int playerId, GolfBall golfBall, Course map) {
         super(playerId, golfBall, map);
@@ -20,7 +21,7 @@ public class AIPlayer extends Player {
         Vector3 bestKick = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         float bestScore = Float.MAX_VALUE;
 
-        int MAX_ATTEMPTS = 500;
+        int MAX_ATTEMPTS = 1000;
         System.out.print("Calculating shot...");
         for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
             System.out.print("\rCalculating shot... " + (100f*attempt/MAX_ATTEMPTS) + "%");
@@ -33,18 +34,24 @@ public class AIPlayer extends Player {
             Vector3 ballPos = activeBall.getPosition();
 
             // simulate random shot
-            // Vector3 dv = getRandomShot();
-            Vector3 dv = getRandomShotToHole(ballPos, holePos);
+            Vector3 dv = getRandomShot();
+            // Vector3 dv = getRandomShotToHole(ballPos, holePos);
             activeBall.kick(dv);
             int stopCounter = 0;
-            while(stopCounter < 5 && activeBall.getPosition().y > -10){
-                if(activeBall.getVelocity().len() < 0.05)
+            int counter = 0;
+            int MAX_STEPS = 1200;
+            while(counter < MAX_STEPS && stopCounter < 60 && activeBall.getPosition().y > -10){
+                if(activeBall.getVelocity().len() < 0.2)
                     stopCounter++;
                 else
                     stopCounter = 0;
 
-                simulator.update(1f);
+                // simulator.update(1f);
+                simulator.update(PhysicsManager.FIXED_DT, ENABLE_NOISE);
+                counter++;
             }
+            if(counter == MAX_STEPS)
+                continue;
 
             ballPos = activeBall.getPosition();
 
